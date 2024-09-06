@@ -13,20 +13,24 @@ class AddNewRoleViewBody extends StatefulWidget {
 
 class _AddNewRoleViewBodyState extends State<AddNewRoleViewBody> {
   final TextEditingController _roleController = TextEditingController();
+
+  final TextEditingController _roleDescriptionController =
+      TextEditingController();
   final List<Authority> _roles = [];
 
   void _addRole() {
     final roleName = _roleController.text.trim();
+    final roleDescription = _roleDescriptionController.text.trim();
     if (roleName.isNotEmpty) {
       setState(() {
         _roles.add(Authority(
             authority: roleName,
-            description: '',
-            id: 1,
+            description: roleDescription,
             permissionIds: [],
             userIds: []));
       });
       _roleController.clear();
+      _roleDescriptionController.clear();
     }
   }
 
@@ -44,14 +48,24 @@ class _AddNewRoleViewBodyState extends State<AddNewRoleViewBody> {
           const SizedBox(height: 16),
           TextField(
             controller: _roleController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Role Name',
               border: OutlineInputBorder(),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: _addRole,
-              ),
             ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          TextField(
+            controller: _roleDescriptionController,
+            decoration: const InputDecoration(
+              labelText: 'Role Description',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _addRole,
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -61,6 +75,7 @@ class _AddNewRoleViewBodyState extends State<AddNewRoleViewBody> {
                 final role = _roles[index];
                 return ListTile(
                   title: Text(role.authority!),
+                  subtitle: Text(role.description ?? ''),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {

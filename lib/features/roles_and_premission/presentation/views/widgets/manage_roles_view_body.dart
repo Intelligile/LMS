@@ -79,6 +79,7 @@ class ManageRolesViewBody extends StatelessWidget {
                               onTap: () {
                                 // Handle role tap
                               },
+                              subtitle: Text(role.description ?? ''),
                             ),
                           );
                         },
