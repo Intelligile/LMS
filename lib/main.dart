@@ -11,6 +11,7 @@ import 'package:lms/features/roles_and_premission/data/repositories/authority_re
 import 'package:lms/features/roles_and_premission/data/repositories/permission_repository_impl.dart';
 import 'package:lms/features/roles_and_premission/data/repositories/user_repository_impl.dart';
 import 'package:lms/features/roles_and_premission/domain/use_case/authority_use_case/add_authorities_use_case.dart';
+import 'package:lms/features/roles_and_premission/domain/use_case/authority_use_case/delete_authority_use_case.dart';
 import 'package:lms/features/roles_and_premission/domain/use_case/authority_use_case/get_authorities_use_case.dart';
 import 'package:lms/features/roles_and_premission/domain/use_case/authority_use_case/update_authority_permissions_use_case.dart';
 import 'package:lms/features/roles_and_premission/domain/use_case/permission_use_case/add_permission_use_case.dart';
@@ -48,7 +49,11 @@ class MyApp extends StatelessWidget {
                 authorityRepository: locator.get<AuthorityRepositoryImpl>(),
               ),
               UpdateAuthorityPermissionsUseCase(
-                  authorityRepository: locator.get<AuthorityRepositoryImpl>())),
+                authorityRepository: locator.get<AuthorityRepositoryImpl>(),
+              ),
+              DeleteAuthorityUseCase(
+                authorityRepository: locator.get<AuthorityRepositoryImpl>(),
+              )),
         ),
         BlocProvider<PermissionCubit>(
           create: (context) => PermissionCubit(

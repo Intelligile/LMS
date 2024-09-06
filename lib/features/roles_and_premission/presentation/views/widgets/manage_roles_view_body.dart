@@ -8,7 +8,7 @@ import 'package:lms/features/roles_and_premission/presentation/manager/authoriy_
 import 'package:lms/features/roles_and_premission/presentation/views/roles_and_permission_dashboard_view.dart';
 
 class ManageRolesViewBody extends StatelessWidget {
-  ManageRolesViewBody({super.key});
+  const ManageRolesViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +47,32 @@ class ManageRolesViewBody extends StatelessWidget {
                             margin: const EdgeInsets.symmetric(vertical: 4),
                             child: ListTile(
                               title: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(role.authority ?? ''),
+                                  const Spacer(),
+                                  IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<AuthorityCubit>()
+                                            .deleteAuthority(
+                                                authorityId: role.id);
+                                        context
+                                            .read<AuthorityCubit>()
+                                            .getAuthorities();
+                                      },
+                                      icon: const Icon(Icons.delete)),
                                   InkWell(
                                     onTap: () {
-                                      GoRouter.of(context).push(AppRouter.kUsersView , extra: role);
+                                      GoRouter.of(context).push(
+                                          AppRouter.kUsersView,
+                                          extra: role);
                                     },
-                                    child: Text('view users',style: Styles.textStyle20.copyWith(color: Colors.blue),),
+                                    child: Text(
+                                      'view users',
+                                      style: Styles.textStyle20
+                                          .copyWith(color: Colors.blue),
+                                    ),
                                   )
                                 ],
                               ),

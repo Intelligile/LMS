@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -61,25 +59,14 @@ class Api {
     return response.data as Map<String, dynamic>;
   }
 
-  Future<dynamic> delete({
-    required String endPoint,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    try {
-      final response = await _dio.delete(
-        "$baseUrl$endPoint",
-        queryParameters: queryParameters,
-        options: options,
-      );
-      return response.data;
-    } catch (e) {
-      if (e is DioException && e.response?.statusCode == 404) {
-        print('Resource not found (404).'); // Specific handling for 404 errors
-      } else {
-        print('Failed to delete: $e'); // General error handling
-      }
-      throw Exception('Failed to delete: $e');
+  Future<dynamic> delete(
+      {required String endPoint, @required String? token}) async {
+    if (token != null) {
+      _dio.options.headers['Authorization'] = 'Bearer $token';
     }
+    final response = await _dio.delete(
+      "$baseUrl$endPoint",
+    );
+    return response.data;
   }
 }
