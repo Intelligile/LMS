@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:lms/core/utils/api.dart';
-import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
 import 'package:lms/features/user_management/data/models/user_model.dart';
 
@@ -10,7 +9,7 @@ import 'user_card.dart';
 class UserListPage extends StatefulWidget {
   final Function(UserModel) onEditUser;
 
-  UserListPage({required this.onEditUser});
+  const UserListPage({super.key, required this.onEditUser});
 
   @override
   _UserListPageState createState() => _UserListPageState();
@@ -59,7 +58,7 @@ class _UserListPageState extends State<UserListPage> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : ListView.builder(
             itemCount: _users.length,
             itemBuilder: (context, index) {

@@ -3,8 +3,7 @@ import 'package:lms/constants.dart';
 
 // ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
-  CustomButton({Key? key, this.color, required this.buttonName, this.onTap})
-      : super(key: key);
+  CustomButton({super.key, this.color, required this.buttonName, this.onTap});
   String buttonName;
   VoidCallback? onTap;
   Color? color;

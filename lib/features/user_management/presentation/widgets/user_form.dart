@@ -8,8 +8,11 @@ class UserForm extends StatefulWidget {
       isEditing; // Flag to indicate whether the form is for editing or adding
   final Function(List<UserModel>) onSubmit;
 
-  UserForm(
-      {required this.users, required this.isEditing, required this.onSubmit});
+  const UserForm(
+      {super.key,
+      required this.users,
+      required this.isEditing,
+      required this.onSubmit});
 
   @override
   _UserFormState createState() => _UserFormState();
@@ -55,14 +58,14 @@ class _UserFormState extends State<UserForm> {
 
       if (usernames.length != _users.length) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Duplicate usernames are not allowed')),
+          const SnackBar(content: Text('Duplicate usernames are not allowed')),
         );
         return;
       }
 
       if (emails.length != _users.length) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Duplicate emails are not allowed')),
+          const SnackBar(content: Text('Duplicate emails are not allowed')),
         );
         return;
       }
@@ -117,14 +120,14 @@ class _UserFormState extends State<UserForm> {
         children: [
           FloatingActionButton(
             onPressed: _addUser,
-            child: Icon(Icons.add),
             tooltip: 'Add Another User',
+            child: const Icon(Icons.add),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: _submitForm,
-            child: Icon(Icons.save),
             tooltip: 'Submit Users',
+            child: const Icon(Icons.save),
           ),
         ],
       ),
@@ -133,14 +136,14 @@ class _UserFormState extends State<UserForm> {
 
   Widget _buildUserForm(int index) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextFormField(
               initialValue: _users[index].username,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: const InputDecoration(labelText: 'Username'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter a username';
                 if (_users.where((user) => user.username == value).length > 1) {
@@ -153,7 +156,7 @@ class _UserFormState extends State<UserForm> {
             if (!widget.isEditing)
               TextFormField(
                 initialValue: _users[index].password,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 validator: (value) {
                   if (value!.isEmpty) return 'Please enter a password';
                   return null;
@@ -162,11 +165,12 @@ class _UserFormState extends State<UserForm> {
               ),
             TextFormField(
               initialValue: _users[index].email,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter an email';
-                if (!EmailValidator.validate(value))
+                if (!EmailValidator.validate(value)) {
                   return 'Invalid email format';
+                }
                 if (_users.where((user) => user.email == value).length > 1) {
                   return 'Email already exists';
                 }
@@ -176,7 +180,7 @@ class _UserFormState extends State<UserForm> {
             ),
             TextFormField(
               initialValue: _users[index].firstname,
-              decoration: InputDecoration(labelText: 'First Name'),
+              decoration: const InputDecoration(labelText: 'First Name'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter a first name';
                 return null;
@@ -185,7 +189,7 @@ class _UserFormState extends State<UserForm> {
             ),
             TextFormField(
               initialValue: _users[index].lastname,
-              decoration: InputDecoration(labelText: 'Last Name'),
+              decoration: const InputDecoration(labelText: 'Last Name'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter a last name';
                 return null;
@@ -194,7 +198,7 @@ class _UserFormState extends State<UserForm> {
             ),
             TextFormField(
               initialValue: _users[index].phone,
-              decoration: InputDecoration(labelText: 'Phone'),
+              decoration: const InputDecoration(labelText: 'Phone'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter a phone number';
                 return null;
@@ -202,7 +206,7 @@ class _UserFormState extends State<UserForm> {
               onSaved: (value) => _users[index].phone = value!,
             ),
             SwitchListTile(
-              title: Text('Enabled'),
+              title: const Text('Enabled'),
               value: _users[index].enabled,
               onChanged: (value) {
                 setState(() {
@@ -211,13 +215,14 @@ class _UserFormState extends State<UserForm> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
               onPressed: () {
                 if (_users.length > 1) {
                   _removeUser(index);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('At least one user is required')),
+                    const SnackBar(
+                        content: Text('At least one user is required')),
                   );
                 }
               },

@@ -7,11 +7,11 @@ class UserCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const UserCard({
-    Key? key,
+    super.key,
     required this.user,
     required this.onEdit,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class UserCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     user.username,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -36,12 +36,12 @@ class UserCard extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       onPressed: onEdit,
                       tooltip: 'Edit User',
                     ),
                     IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       onPressed: onDelete,
                       tooltip: 'Delete User',
                     ),
@@ -49,13 +49,13 @@ class UserCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text("Email: ${user.email}"),
             Text("First Name: ${user.firstname}"),
             Text("Last Name: ${user.lastname}"),
             Text("Phone: ${user.phone}"),
             Text("Enabled: ${user.enabled ? 'Yes' : 'No'}"),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             // Wrap(
             //   spacing: 8.0,
             //   children: user.authorityIDs

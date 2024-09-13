@@ -26,7 +26,7 @@ class PermissionRemoteDataSourceImpl extends PermissionRemoteDataSource {
   Future<List<Permission>> getPermissions({String? roleName}) async {
     List<Permission> permissions = [];
     print(jwtToken);
-    var result;
+    List result;
     if (roleName == null) {
       result = await api.get(endPoint: 'api/permissions', token: jwtToken);
     } else {

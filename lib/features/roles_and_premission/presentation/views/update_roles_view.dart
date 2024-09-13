@@ -7,9 +7,9 @@ class UpdateRolesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xfffef7ff),
+        backgroundColor: const Color(0xfffef7ff),
       ),
-      body: UpdateRolesViewBody(),
+      body: const UpdateRolesViewBody(),
     );
   }
 }

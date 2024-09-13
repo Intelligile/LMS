@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/features/user_groups/data/models/group_model.dart';
-import '../../domain/entities/group.dart';
 
 class GroupCard extends StatelessWidget {
   final GroupModel group;
 
-  const GroupCard({Key? key, required this.group}) : super(key: key);
+  const GroupCard({super.key, required this.group});
 
   @override
   Widget build(BuildContext context) {

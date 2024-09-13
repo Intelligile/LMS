@@ -6,7 +6,6 @@ import 'package:lms/core/simple_bloc_observer.dart';
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/features/purchase_product/application/providers/cart_provider.dart';
-import 'package:lms/features/roles_and_premission/data/remote_data_source/user_remote_data_source.dart';
 import 'package:lms/features/roles_and_premission/data/repositories/authority_repository_impl.dart';
 import 'package:lms/features/roles_and_premission/data/repositories/permission_repository_impl.dart';
 import 'package:lms/features/roles_and_premission/data/repositories/user_repository_impl.dart';
@@ -16,7 +15,8 @@ import 'package:lms/features/roles_and_premission/domain/use_case/authority_use_
 import 'package:lms/features/roles_and_premission/domain/use_case/authority_use_case/update_authority_permissions_use_case.dart';
 import 'package:lms/features/roles_and_premission/domain/use_case/permission_use_case/add_permission_use_case.dart';
 import 'package:lms/features/roles_and_premission/domain/use_case/permission_use_case/get_permission_use_case.dart';
-import 'package:lms/features/roles_and_premission/domain/use_case/user_use_case.dart';
+import 'package:lms/features/roles_and_premission/domain/use_case/user_use_case/update_user_authorities_use_case.dart';
+import 'package:lms/features/roles_and_premission/domain/use_case/user_use_case/user_use_case.dart';
 import 'package:lms/features/roles_and_premission/presentation/manager/authoriy_cubit/authority_cubit.dart';
 import 'package:lms/features/roles_and_premission/presentation/manager/permission_cubit/permission_cubit.dart';
 import 'package:lms/features/roles_and_premission/presentation/manager/user_cubit/user_dto_cubit.dart';
@@ -66,13 +66,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<UserDtoCubit>(
           create: (context) => UserDtoCubit(
             FetchUsersUseCase(
-              userRepository: UserRepositoryImpl(
-                userRemoteDataSource: UserRemoteDataSourceImpl(
-                  api: Api(
-                    Dio(),
-                  ),
-                ),
-              ),
+                userRepository: locator.get<UserRepositoryImpl>()),
+            UpdateUserAuthoritiesUseCase(
+              userRepository: locator.get<UserRepositoryImpl>(),
             ),
           ),
         ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ResetPasswordForm extends StatefulWidget {
+  const ResetPasswordForm({super.key});
+
   @override
   _ResetPasswordFormState createState() => _ResetPasswordFormState();
 }

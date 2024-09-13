@@ -46,7 +46,7 @@ class UserOptionsIcons extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        UserNameIcon()
+        const UserNameIcon()
       ],
     );
   }

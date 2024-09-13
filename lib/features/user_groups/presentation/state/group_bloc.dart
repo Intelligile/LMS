@@ -3,7 +3,7 @@ import 'package:lms/core/errors/failure.dart';
 import 'package:lms/features/user_groups/data/models/group_model.dart';
 
 import 'package:lms/features/user_groups/domain/use_cases/get_groups.dart'; // Adjust according to your use case location
-import '../../domain/entities/group.dart'; // Adjust according to your entity location
+// Adjust according to your entity location
 
 // Events
 abstract class GroupEvent {

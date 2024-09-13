@@ -1,5 +1,5 @@
 class Authority {
-  dynamic id;
+  int? id;
   String? authority;
   dynamic description;
   List<dynamic>? permissionIds;
@@ -14,7 +14,7 @@ class Authority {
   });
 
   factory Authority.fromJson(Map<String, dynamic> json) => Authority(
-        id: json['id'] as dynamic,
+        id: json['id'] as int,
         authority: json['authority'] as String?,
         description: json['description'] as String?,
         permissionIds: json['permissionIds'] as List<dynamic>?,

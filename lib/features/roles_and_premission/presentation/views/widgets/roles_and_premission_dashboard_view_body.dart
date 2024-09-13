@@ -1,10 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/features/roles_and_premission/data/models/user_dto.dart';
 import 'package:lms/features/roles_and_premission/presentation/manager/user_cubit/user_dto_cubit.dart';
-import 'package:lms/features/roles_and_premission/presentation/views/roles_and_permission_dashboard_view.dart';
+import 'package:lms/features/roles_and_premission/presentation/views/change_user_role_view.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/pop_up_menu_actions_button.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/users_table_filtering_row.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/users_table_header.dart';
@@ -19,6 +18,18 @@ class RolesAndPermissionDashboardViewBody extends StatefulWidget {
 
 class _RolesAndPermissionDashboardViewBodyState
     extends State<RolesAndPermissionDashboardViewBody> {
+  List<UserDto> users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshUsers();
+  }
+
+  void _refreshUsers() {
+    context.read<UserDtoCubit>().getUsers();
+  }
+
   void _removeUser(UserDto user) {
     setState(() {
       users.remove(user);
@@ -27,50 +38,39 @@ class _RolesAndPermissionDashboardViewBodyState
 
   @override
   Widget build(BuildContext context) {
-    context.read<UserDtoCubit>().getUsers();
-
-    return BlocListener<UserDtoCubit, UserDtoState>(
-      listener: (context, state) {
-        if (state is FetchUserFailureState) {
-          showSnackBar(context, state.errorMessage, Colors.red);
+    return BlocBuilder<UserDtoCubit, UserDtoState>(
+      builder: (context, state) {
+        if (state is FetchUserLoadingState) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is FetchUserFailureState) {
+          return Center(child: Text('Error: ${state.errorMessage}'));
         } else if (state is FetchUserSuccessState) {
           users = state.users;
         }
-      },
-      child: BlocBuilder<UserDtoCubit, UserDtoState>(
-        builder: (context, state) {
-          return Column(
-            children: [
-              // Filters Row
-              const UsersTableFilteringRow(),
-              // Data Row
-              const UsersTableHeader(),
-              // List of Users
-              state is FetchUserLoadingState
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Expanded(
-                      // This ensures the ListView takes the remaining space
-                      child: ListView.builder(
-                        itemCount: users.length,
-                        itemBuilder: (context, index) {
-                          UserDto user = users[index];
-                          return Column(
-                            children: [
-                              displayUserRow(user: user),
-                              const Divider(
-                                thickness: .5,
-                              )
-                            ],
-                          );
-                        },
-                      ),
+
+        return Column(
+          children: [
+            const UsersTableFilteringRow(),
+            const UsersTableHeader(),
+            users.isEmpty
+                ? const Center(child: Text('No users found.'))
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: users.length,
+                      itemBuilder: (context, index) {
+                        UserDto user = users[index];
+                        return Column(
+                          children: [
+                            displayUserRow(user: user),
+                            const Divider(thickness: 0.5),
+                          ],
+                        );
+                      },
                     ),
-            ],
-          );
-        },
-      ),
+                  ),
+          ],
+        );
+      },
     );
   }
 
@@ -78,7 +78,7 @@ class _RolesAndPermissionDashboardViewBodyState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start, // Align items to the top
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child:
@@ -91,7 +91,7 @@ class _RolesAndPermissionDashboardViewBodyState
               children: user.roles!
                   .map(
                     (role) => Container(
-                      constraints: BoxConstraints(maxWidth: 150),
+                      constraints: const BoxConstraints(maxWidth: 150),
                       child: Text(
                         role.trim(),
                         style: const TextStyle(
@@ -109,6 +109,17 @@ class _RolesAndPermissionDashboardViewBodyState
             onSelected: (value) {
               if (value == 'Remove') {
                 _removeUser(user);
+              } else if (value == 'Change Role') {
+                Navigator.of(context)
+                    .push(
+                  MaterialPageRoute(
+                    builder: (context) => ChangeUserRoleView(userDto: user),
+                  ),
+                )
+                    .then((_) {
+                  // Refresh the users list when returning from ChangeUserRoleView
+                  _refreshUsers();
+                });
               }
             },
           ),

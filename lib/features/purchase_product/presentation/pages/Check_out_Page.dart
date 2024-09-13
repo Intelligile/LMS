@@ -4,18 +4,20 @@ import 'package:lms/features/purchase_product/application/providers/cart_provide
 import 'package:lms/features/purchase_product/presentation/pages/Payment_Summary_Page.dart';
 
 class CheckoutPage extends StatelessWidget {
+  const CheckoutPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checkout'),
+        title: const Text('Checkout'),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Text(
               'Summary of Purchase',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -42,13 +44,14 @@ class CheckoutPage extends StatelessWidget {
               children: [
                 Text(
                   'Total: \$${cartProvider.totalAmount.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     _showPaymentMethodDialog(context);
                   },
-                  child: Text('Pay'),
+                  child: const Text('Pay'),
                 ),
               ],
             ),
@@ -59,7 +62,7 @@ class CheckoutPage extends StatelessWidget {
   }
 
   void _showPaymentMethodDialog(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     String paymentMethod = '';
     String cardNumber = '';
     String expiryDate = '';
@@ -73,15 +76,16 @@ class CheckoutPage extends StatelessWidget {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Choose Payment Method'),
+              title: const Text('Choose Payment Method'),
               content: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
-                      decoration: InputDecoration(labelText: 'Payment Method'),
-                      items: [
+                      decoration:
+                          const InputDecoration(labelText: 'Payment Method'),
+                      items: const [
                         DropdownMenuItem(
                           value: 'Credit Card',
                           child: Text('Credit Card'),
@@ -109,7 +113,8 @@ class CheckoutPage extends StatelessWidget {
                     ),
                     if (paymentMethod == 'Credit Card') ...[
                       TextFormField(
-                        decoration: InputDecoration(labelText: 'Card Number'),
+                        decoration:
+                            const InputDecoration(labelText: 'Card Number'),
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           cardNumber = value;
@@ -122,8 +127,8 @@ class CheckoutPage extends StatelessWidget {
                         },
                       ),
                       TextFormField(
-                        decoration:
-                            InputDecoration(labelText: 'Expiry Date (MM/YY)'),
+                        decoration: const InputDecoration(
+                            labelText: 'Expiry Date (MM/YY)'),
                         keyboardType: TextInputType.datetime,
                         onChanged: (value) {
                           expiryDate = value;
@@ -136,7 +141,7 @@ class CheckoutPage extends StatelessWidget {
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(labelText: 'CVV'),
+                        decoration: const InputDecoration(labelText: 'CVV'),
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           cvv = value;
@@ -150,7 +155,8 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ] else if (paymentMethod == 'PayPal') ...[
                       TextFormField(
-                        decoration: InputDecoration(labelText: 'PayPal Email'),
+                        decoration:
+                            const InputDecoration(labelText: 'PayPal Email'),
                         keyboardType: TextInputType.emailAddress,
                         onChanged: (value) {
                           paypalEmail = value;
@@ -164,8 +170,8 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ] else if (paymentMethod == 'Bank Transfer') ...[
                       TextFormField(
-                        decoration:
-                            InputDecoration(labelText: 'Bank Account Number'),
+                        decoration: const InputDecoration(
+                            labelText: 'Bank Account Number'),
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           bankAccount = value;
@@ -186,17 +192,17 @@ class CheckoutPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (formKey.currentState!.validate()) {
                       Navigator.of(context).pop();
                       _showConfirmationPage(context, paymentMethod, cardNumber,
                           expiryDate, cvv, bankAccount, paypalEmail);
                     }
                   },
-                  child: Text('Pay'),
+                  child: const Text('Pay'),
                 ),
               ],
             );

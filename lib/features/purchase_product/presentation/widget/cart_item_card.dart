@@ -7,11 +7,11 @@ class CartItemCard extends StatelessWidget {
   final VoidCallback onRemove;
 
   const CartItemCard({
-    Key? key,
+    super.key,
     required this.cartItem,
     required this.onQuantityUpdated,
     required this.onRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class CartItemCard extends StatelessWidget {
         title: Text(cartItem.product.name),
         subtitle: Row(
           children: [
-            Text('Quantity: '),
+            const Text('Quantity: '),
             Expanded(
               child: TextField(
                 keyboardType: TextInputType.number,
@@ -35,9 +35,10 @@ class CartItemCard extends StatelessWidget {
         ),
         trailing: Column(
           children: [
-            Text('Total: \$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
+            Text(
+                'Total: \$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
             IconButton(
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
               onPressed: onRemove,
             ),
           ],

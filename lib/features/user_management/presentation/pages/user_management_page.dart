@@ -5,9 +5,10 @@ import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
 import 'package:lms/features/user_management/data/models/user_model.dart';
 import 'package:lms/features/user_management/presentation/widgets/user_form.dart';
-import 'package:lms/features/user_management/presentation/widgets/user_list.dart';
 
 class UserManagementPage extends StatefulWidget {
+  const UserManagementPage({super.key});
+
   @override
   _UserManagementPageState createState() => _UserManagementPageState();
 }
@@ -98,14 +99,14 @@ class _UserManagementPageState extends State<UserManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('User Management')),
+      appBar: AppBar(title: const Text('User Management')),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 Expanded(
                   child: _users.isEmpty
-                      ? Center(child: Text('No users found.'))
+                      ? const Center(child: Text('No users found.'))
                       : ListView.builder(
                           itemCount: _users.length,
                           itemBuilder: (context, index) {
@@ -117,12 +118,12 @@ class _UserManagementPageState extends State<UserManagementPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.edit),
+                                    icon: const Icon(Icons.edit),
                                     onPressed: () => _openUserForm(context,
                                         users: [user], isEditing: true),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.delete),
+                                    icon: const Icon(Icons.delete),
                                     onPressed: () async {
                                       try {
                                         print(
@@ -131,7 +132,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                                             .removeUser(user.id);
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
-                                          SnackBar(
+                                          const SnackBar(
                                             content: Text(
                                                 'User deleted successfully'),
                                           ),
@@ -160,7 +161,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                 ),
                 ElevatedButton(
                   onPressed: () => _openUserForm(context, isEditing: false),
-                  child: Text('Add User'),
+                  child: const Text('Add User'),
                 ),
               ],
             ),

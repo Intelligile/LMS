@@ -5,13 +5,13 @@ import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/features/user_groups/data/data_sources/user_group_service.dart';
 import 'package:lms/features/user_groups/data/models/group_model.dart';
-import '../../domain/entities/group.dart';
 import 'package:lms/features/user_groups/data/repositories/group_repository.dart';
 
 class GroupForm extends StatefulWidget {
   final GroupModel? group; // Group to edit, if available
 
-  GroupForm({this.group}); // Accept group as optional parameter
+  const GroupForm(
+      {super.key, this.group}); // Accept group as optional parameter
 
   @override
   _GroupFormState createState() => _GroupFormState();
@@ -42,7 +42,7 @@ class _GroupFormState extends State<GroupForm> {
       appBar: AppBar(
         title: Text(widget.group != null ? 'Edit Group' : 'Create Group'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             GoRouter.of(context).push(AppRouter
                 .kGroupList); // Navigate back when the back button is pressed
@@ -56,20 +56,20 @@ class _GroupFormState extends State<GroupForm> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Group Name'),
+                decoration: const InputDecoration(labelText: 'Group Name'),
                 initialValue: _name, // Pre-fill if editing
                 onSaved: (value) {
                   _name = value ?? '';
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Description'),
                 initialValue: _description, // Pre-fill if editing
                 onSaved: (value) {
                   _description = value ?? '';
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -91,14 +91,14 @@ class _GroupFormState extends State<GroupForm> {
                             // Create new group
                             await groupService.createGroup(group);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                   content: Text('Group created successfully!')),
                             );
                           } else {
                             // Update existing group
                             await groupService.updateGroup(group);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                   content: Text('Group updated successfully!')),
                             );
                           }
@@ -111,7 +111,7 @@ class _GroupFormState extends State<GroupForm> {
                         }
                       }
                     },
-                    child: Text('Save'),
+                    child: const Text('Save'),
                   ),
                   if (widget.group !=
                       null) // Show delete button only if editing
@@ -122,7 +122,7 @@ class _GroupFormState extends State<GroupForm> {
                       onPressed: () async {
                         _showDeleteConfirmation(context);
                       },
-                      child: Text('Delete'),
+                      child: const Text('Delete'),
                     ),
                 ],
               ),
@@ -139,17 +139,16 @@ class _GroupFormState extends State<GroupForm> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete this group?'),
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this group?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(dialogContext).pop(); // Close the dialog
               },
             ),
             TextButton(
-              child: Text('Delete'),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red, // Red text for danger
               ),
@@ -161,7 +160,8 @@ class _GroupFormState extends State<GroupForm> {
 
                   await groupService.deleteGroup(widget.group!.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Group deleted successfully!')),
+                    const SnackBar(
+                        content: Text('Group deleted successfully!')),
                   );
 
                   Navigator.of(dialogContext).pop(); // Close the dialog
@@ -173,6 +173,7 @@ class _GroupFormState extends State<GroupForm> {
                   Navigator.of(dialogContext).pop();
                 }
               },
+              child: const Text('Delete'),
             ),
           ],
         );

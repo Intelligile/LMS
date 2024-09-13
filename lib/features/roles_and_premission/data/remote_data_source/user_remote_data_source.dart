@@ -5,16 +5,19 @@ import 'package:lms/features/roles_and_premission/data/models/user_dto.dart';
 
 abstract class UserRemoteDataSource {
   Future<List<UserDto>> getUsers({dynamic roleId});
+  Future<void> updateUserAuthorities(
+      {required int userId, required List<int> authoritiesId});
 }
+
 class UserRemoteDataSourceImpl extends UserRemoteDataSource {
   final Api api;
   UserRemoteDataSourceImpl({
     required this.api,
   });
   @override
-  Future<List<UserDto>> getUsers({dynamic roleId}) async{
+  Future<List<UserDto>> getUsers({dynamic roleId}) async {
     List<UserDto> users = [];
-    var result;
+    List result;
     if (roleId == null) {
       result = await api.get(endPoint: 'api/users/with-roles', token: jwtToken);
     } else {
@@ -27,4 +30,12 @@ class UserRemoteDataSourceImpl extends UserRemoteDataSource {
     return users;
   }
 
+  @override
+  Future<void> updateUserAuthorities(
+      {required int userId, required List<int> authoritiesId}) async {
+    await api.put(
+        endPoint: 'api/users/$userId/roles',
+        body: authoritiesId,
+        token: jwtToken);
+  }
 }

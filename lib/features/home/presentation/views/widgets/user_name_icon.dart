@@ -22,6 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:lms/core/utils/styles.dart';
 
 class UserNameIcon extends StatelessWidget {
+  const UserNameIcon({super.key});
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;

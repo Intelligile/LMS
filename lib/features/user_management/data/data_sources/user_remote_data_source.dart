@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:lms/core/utils/api.dart';
 
-import '../../../roles_and_premission/data/models/authority.dart';
 import '../models/user_model.dart';
 
 class UserRemoteDataSource {
@@ -76,7 +75,7 @@ class UserRemoteDataSource {
       return "User removed successfully";
     } catch (e) {
       print("Failed to remove user: $e");
-      throw e; // Re-throw the exception to handle it in the calling code
+      rethrow; // Re-throw the exception to handle it in the calling code
     }
   }
 
@@ -86,10 +85,6 @@ class UserRemoteDataSource {
 
       // Debugging: Print the response
       print("Response: $response");
-
-      if (response == null || response is! List) {
-        throw Exception('Unexpected response format');
-      }
 
       List<UserModel> users = [];
 

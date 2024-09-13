@@ -56,7 +56,7 @@ class ManageRolesViewBody extends StatelessWidget {
                                         context
                                             .read<AuthorityCubit>()
                                             .deleteAuthority(
-                                                authorityId: role.id);
+                                                authorityId: role.id!);
                                         context
                                             .read<AuthorityCubit>()
                                             .getAuthorities();

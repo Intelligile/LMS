@@ -1,6 +1,4 @@
-import 'package:http/http.dart' as http;
 import 'package:lms/core/utils/api.dart';
-import 'dart:convert';
 import 'package:lms/features/user_groups/data/models/group_model.dart';
 
 class ApiService {
@@ -10,7 +8,7 @@ class ApiService {
 
   Future<List<GroupModel>> fetchGroups({dynamic filter}) async {
     List<GroupModel> groupsList = [];
-    var result;
+    List result;
 
     // If you have specific filtering logic, adjust the endpoint accordingly
     result = await api.get(endPoint: 'api/auth/groups', token: '');

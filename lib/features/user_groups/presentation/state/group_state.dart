@@ -1,6 +1,6 @@
 import 'package:lms/features/user_groups/data/models/group_model.dart';
 
-import '../../domain/entities/group.dart'; // Adjust according to your entity location
+// Adjust according to your entity location
 
 abstract class GroupState {
   @override

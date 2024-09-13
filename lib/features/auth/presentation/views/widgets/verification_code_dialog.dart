@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 class VerificationCodeDialog extends StatefulWidget {
   final void Function(String code)? onSubmit;
 
-  const VerificationCodeDialog({Key? key, this.onSubmit}) : super(key: key);
+  const VerificationCodeDialog({super.key, this.onSubmit});
 
   @override
   _VerificationCodeDialogState createState() => _VerificationCodeDialogState();

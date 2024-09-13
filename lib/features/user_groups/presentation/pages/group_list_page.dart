@@ -11,9 +11,7 @@ import 'package:lms/core/utils/app_router.dart';
 class GroupListPage extends StatelessWidget {
   final ApiService _apiService;
 
-  GroupListPage({Key? key})
-      : _apiService = ApiService(api: Api(Dio())),
-        super(key: key);
+  GroupListPage({super.key}) : _apiService = ApiService(api: Api(Dio()));
 
   Future<List<GroupModel>> _fetchGroups() async {
     try {
@@ -29,9 +27,9 @@ class GroupListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Groups'),
+        title: const Text('User Groups'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             GoRouter.of(context).push(AppRouter
                 .kHomeView); // Navigate back when the back button is pressed
@@ -49,14 +47,14 @@ class GroupListPage extends StatelessWidget {
           print('Has error: ${snapshot.hasError}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             print('Error details: ${snapshot.error}');
-            return Center(child: Text('Failed to load groups'));
+            return const Center(child: Text('Failed to load groups'));
           } else if (snapshot.hasData) {
             List<GroupModel>? groups = snapshot.data;
             if (groups == null || groups.isEmpty) {
-              return Center(child: Text('No groups available'));
+              return const Center(child: Text('No groups available'));
             }
             return ListView.builder(
               itemCount: groups.length,
@@ -65,7 +63,7 @@ class GroupListPage extends StatelessWidget {
               },
             );
           } else {
-            return Center(child: Text('Unexpected error'));
+            return const Center(child: Text('Unexpected error'));
           }
         },
       ),
@@ -73,7 +71,7 @@ class GroupListPage extends StatelessWidget {
         onPressed: () {
           GoRouter.of(context).go(AppRouter.kAddGroup);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

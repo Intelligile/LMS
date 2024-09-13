@@ -8,7 +8,7 @@ import 'cart_page.dart'; // Import the CartPage
 class ProductListPage extends StatelessWidget {
   final List<Product> products;
 
-  const ProductListPage({Key? key, required this.products}) : super(key: key);
+  const ProductListPage({super.key, required this.products});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class ProductListPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CartPage(),
+                    builder: (context) => const CartPage(),
                   ),
                 );
               },

@@ -10,12 +10,13 @@ import 'package:lms/features/payment/presentation/views/payment_view.dart';
 import 'package:lms/features/purchase_product/data/repository/product_repository.dart';
 import 'package:lms/features/purchase_product/presentation/pages/product_list_page.dart';
 import 'package:lms/features/roles_and_premission/data/models/authority.dart';
+import 'package:lms/features/roles_and_premission/data/models/user_dto.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/add_new_role_view.dart';
+import 'package:lms/features/roles_and_premission/presentation/views/change_user_role_view.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/manage_roles_view.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/roles_and_permission_dashboard_view.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/update_roles_view.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/users_view.dart';
-import 'package:lms/features/user_groups/data/data_sources/user_group_service.dart';
 import 'package:lms/features/user_groups/data/models/group_model.dart';
 import 'package:lms/features/user_groups/presentation/pages/group_list_page.dart';
 import 'package:lms/features/user_groups/presentation/widgets/group_edit_page.dart';
@@ -44,6 +45,7 @@ abstract class AppRouter {
   static const kGroupList = '/group_list_page';
 
   static const kGroupDetails = '/group_details';
+  static const kChangeUserRoleView = '/changeUserRoleView';
 
   static final router = GoRouter(
     initialLocation: kRegister,
@@ -67,11 +69,11 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: kUpdateRoleView,
-        builder: (context, state) => UpdateRolesView(),
+        builder: (context, state) => const UpdateRolesView(),
       ),
       GoRoute(
         path: kManageRolesView,
-        builder: (context, state) => ManageRolesView(),
+        builder: (context, state) => const ManageRolesView(),
       ),
       GoRoute(
         path: kHomeView,
@@ -83,11 +85,11 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: kResetPassword,
-        builder: (context, state) => ResetPasswordForm(),
+        builder: (context, state) => const ResetPasswordForm(),
       ),
       GoRoute(
         path: kUserManagement,
-        builder: (context, state) => UserManagementPage(),
+        builder: (context, state) => const UserManagementPage(),
       ),
       GoRoute(
         path: kTeamManagement,
@@ -95,7 +97,7 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: kAddGroup,
-        builder: (context, state) => GroupForm(),
+        builder: (context, state) => const GroupForm(),
       ),
       GoRoute(
         path: kGroupList,
@@ -148,6 +150,15 @@ abstract class AppRouter {
           final authority = state.extra as Authority;
           return UsersView(
             authority: authority,
+          );
+        },
+      ),
+      GoRoute(
+        path: kChangeUserRoleView,
+        builder: (BuildContext context, GoRouterState state) {
+          final userDto = state.extra as UserDto;
+          return ChangeUserRoleView(
+            userDto: userDto,
           );
         },
       ),

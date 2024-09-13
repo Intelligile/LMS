@@ -8,9 +8,9 @@ class ProductCard extends StatefulWidget {
   final Product product;
 
   const ProductCard({
-    Key? key,
+    super.key,
     required this.product,
-  }) : super(key: key);
+  });
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -24,7 +24,7 @@ class _ProductCardState extends State<ProductCard> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Product Added'),
+          title: const Text('Product Added'),
           content: Text(
               '${widget.product.name} added to cart!\nQuantity: $_quantity'),
           actions: [
@@ -32,16 +32,16 @@ class _ProductCardState extends State<ProductCard> {
               onPressed: () {
                 Navigator.of(context).pop();
                 // Navigate to the cart page after adding the product
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => CartPage()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const CartPage()));
               },
-              child: Text('View Cart'),
+              child: const Text('View Cart'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Continue Shopping'),
+              child: const Text('Continue Shopping'),
             ),
           ],
         );
@@ -59,7 +59,7 @@ class _ProductCardState extends State<ProductCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(Icons.remove),
+              icon: const Icon(Icons.remove),
               onPressed: () {
                 setState(() {
                   if (_quantity > 1) {
@@ -70,7 +70,7 @@ class _ProductCardState extends State<ProductCard> {
             ),
             Text('$_quantity'),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: () {
                 setState(() {
                   _quantity++;
@@ -78,7 +78,7 @@ class _ProductCardState extends State<ProductCard> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.add_shopping_cart),
+              icon: const Icon(Icons.add_shopping_cart),
               onPressed: () {
                 Provider.of<CartProvider>(context, listen: false)
                     .addProduct(widget.product, _quantity);

@@ -4,4 +4,6 @@ import 'package:lms/features/roles_and_premission/data/models/user_dto.dart';
 
 abstract class UserRepository {
   Future<Either<Failure, List<UserDto>>> getUsers({dynamic roleId});
+  Future<Either<Failure, Unit>> updateUserRoles(
+      {required int userId, required List<int> authoritiesId});
 }

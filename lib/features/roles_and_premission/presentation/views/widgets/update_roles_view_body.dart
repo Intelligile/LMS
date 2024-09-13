@@ -107,7 +107,7 @@ class UpdateRolesViewBody extends StatelessWidget {
                               ? const Center(child: CircularProgressIndicator())
                               : ActionsContainer(
                                   containerBgColor: Colors.green,
-                                  containerIcon: Icon(Icons.save),
+                                  containerIcon: const Icon(Icons.save),
                                   containerText: 'Save',
                                   txtColor: Colors.white,
                                   onPressed: () {
