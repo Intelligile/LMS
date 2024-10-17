@@ -12,9 +12,10 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
       double amount,
       int periodMonths,
       double totalCredit,
-      String licenseeId,
-      String productId,
-      double discount) async {
+      int licenseeId,
+      int productId,
+      double discount,
+      int productLimit) async {
     final response = await http.post(
       Uri.parse('$baseUrl/amount-based'),
       headers: {'Content-Type': 'application/json'},
@@ -25,6 +26,7 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
         'licenseeId': licenseeId,
         'productId': productId,
         'discount': discount,
+        'productLimit': 0,
       }),
     );
     if (response.statusCode == 200) {
@@ -35,8 +37,8 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
   }
 
   @override
-  Future<AuthorizationCode> generateProductBasedCode(int productLimit,
-      String licenseeId, String productId, double discount) async {
+  Future<AuthorizationCode> generateProductBasedCode(
+      int productLimit, int licenseeId, int productId, double discount) async {
     final response = await http.post(
       Uri.parse('$baseUrl/product-based'),
       headers: {'Content-Type': 'application/json'},
@@ -60,8 +62,8 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
       int periodMonths,
       double totalCredit,
       int productLimit,
-      String licenseeId,
-      String productId,
+      int licenseeId,
+      int productId,
       double discount) async {
     final response = await http.post(
       Uri.parse('$baseUrl/combined'),

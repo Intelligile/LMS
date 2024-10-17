@@ -5,17 +5,19 @@ abstract class AuthorizationCodeRepository {
       double amount,
       int periodMonths,
       double totalCredit,
-      String licenseeId,
-      String productId,
-      double discount);
+      int licenseeId,
+      int productId,
+      double discount,
+      int productLimit);
+
   Future<AuthorizationCode> generateProductBasedCode(
-      int productLimit, String licenseeId, String productId, double discount);
+      int productLimit, int licenseeId, int productId, double discount);
   Future<AuthorizationCode> generateCombinedCode(
       double amount,
       int periodMonths,
       double totalCredit,
       int productLimit,
-      String licenseeId,
-      String productId,
+      int licenseeId,
+      int productId,
       double discount);
 }

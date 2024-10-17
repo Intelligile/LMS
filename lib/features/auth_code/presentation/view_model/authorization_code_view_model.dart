@@ -10,20 +10,22 @@ class AuthorizationCodeViewModel with ChangeNotifier {
       double amount,
       int periodMonths,
       double totalCredit,
-      String licenseeId,
-      String productId,
-      double discount) async {
+      int licenseeId,
+      int productId,
+      double discount,
+      int productLimit) async {
     try {
-      await repository.generateAmountBasedCode(
-          amount, periodMonths, totalCredit, licenseeId, productId, discount);
+      await repository.generateAmountBasedCode(amount, periodMonths,
+          totalCredit, licenseeId, productId, discount, productLimit);
+      print("SUCCESS");
       notifyListeners();
     } catch (e) {
       print("Error generating amount-based code: $e");
     }
   }
 
-  Future<void> generateProductBasedCode(int productLimit, String licenseeId,
-      String productId, double discount) async {
+  Future<void> generateProductBasedCode(
+      int productLimit, int licenseeId, int productId, double discount) async {
     try {
       await repository.generateProductBasedCode(
           productLimit, licenseeId, productId, discount);
@@ -38,8 +40,8 @@ class AuthorizationCodeViewModel with ChangeNotifier {
       int periodMonths,
       double totalCredit,
       int productLimit,
-      String licenseeId,
-      String productId,
+      int licenseeId,
+      int productId,
       double discount) async {
     try {
       await repository.generateCombinedCode(amount, periodMonths, totalCredit,
