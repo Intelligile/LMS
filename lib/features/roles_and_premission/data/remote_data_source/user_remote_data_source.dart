@@ -6,13 +6,14 @@ import 'package:lms/features/roles_and_premission/data/models/user_dto.dart';
 abstract class UserRemoteDataSource {
   Future<List<UserDto>> getUsers({dynamic roleId});
 }
+
 class UserRemoteDataSourceImpl extends UserRemoteDataSource {
   final Api api;
   UserRemoteDataSourceImpl({
     required this.api,
   });
   @override
-  Future<List<UserDto>> getUsers({dynamic roleId}) async{
+  Future<List<UserDto>> getUsers({dynamic roleId}) async {
     List<UserDto> users = [];
     var result;
     if (roleId == null) {
@@ -26,5 +27,4 @@ class UserRemoteDataSourceImpl extends UserRemoteDataSource {
     }
     return users;
   }
-
 }

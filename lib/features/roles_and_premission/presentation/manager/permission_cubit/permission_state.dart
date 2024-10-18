@@ -14,6 +14,7 @@ final class GetPermissionStateSuccess extends PermissionState {
 
   GetPermissionStateSuccess({required this.permissions});
 }
+
 final class GetAllPermissionStateSuccess extends PermissionState {
   final List<Permission> permissions;
 

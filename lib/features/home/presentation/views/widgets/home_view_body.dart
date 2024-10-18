@@ -11,7 +11,12 @@ import 'package:lms/features/home/presentation/views/widgets/custom_tab_bar.dart
 import 'package:lms/features/home/presentation/views/widgets/custom_tab_bar_view.dart';
 
 class HomeViewBody extends StatefulWidget {
-  const HomeViewBody({super.key});
+  final String username; // Add this parameter
+
+  const HomeViewBody({
+    super.key,
+    required this.username, // Add this required parameter
+  });
 
   @override
   _HomeViewBodyState createState() => _HomeViewBodyState();
@@ -21,6 +26,7 @@ class _HomeViewBodyState extends State<HomeViewBody>
     with SingleTickerProviderStateMixin {
   bool _drawerOpen = false;
   late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +51,9 @@ class _HomeViewBodyState extends State<HomeViewBody>
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CustomAppBar(),
+          CustomAppBar(
+            username: widget.username, // Pass the username here
+          ),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,8 +94,8 @@ class _HomeViewBodyState extends State<HomeViewBody>
                           const SizedBox(
                             height: 50,
                           ),
-                          const Text(
-                            'Good moorning , Fadl Al Zohbi',
+                          Text(
+                            'Good morning, ${widget.username}', // Use the username here
                             style: Styles.textStyle28,
                           ),
                           const Text(

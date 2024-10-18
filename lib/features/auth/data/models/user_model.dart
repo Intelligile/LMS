@@ -1,5 +1,6 @@
 // lib/models/user.dart
 class User {
+  final int id;
   final String username;
   final String password;
   final String firstName;
@@ -10,6 +11,7 @@ class User {
   final List<dynamic> authorityIDs;
 
   User({
+    required this.id,
     required this.username,
     required this.password,
     required this.firstName,
@@ -35,6 +37,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['id'],
       username: json['username'],
       password: json['password'],
       firstName: json['firstname'],
@@ -48,6 +51,7 @@ class User {
   // Convert a User object to a map
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'firstName': firstName,
       'lastName': lastName,
       'username': username,
@@ -62,6 +66,7 @@ class User {
   // Create a User object from a map
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
+      id: map['id'],
       firstName: map['firstName'],
       lastName: map['lastName'],
       username: map['username'],

@@ -14,10 +14,9 @@ class UserRepositoryImpl extends UserRepository {
   });
 
   @override
-  Future<Either<Failure, List<UserDto>>> getUsers({dynamic roleId}) async{
+  Future<Either<Failure, List<UserDto>>> getUsers({dynamic roleId}) async {
     try {
-      List<UserDto> users =
-          await userRemoteDataSource.getUsers(roleId: roleId);
+      List<UserDto> users = await userRemoteDataSource.getUsers(roleId: roleId);
       return right(users); // Return Unit from dartz
     } catch (e) {
       print("Error in registerUser: $e"); // Logging the error
@@ -27,6 +26,4 @@ class UserRepositoryImpl extends UserRepository {
       return left(ServerFailure(e.toString()));
     }
   }
-  
-  
 }

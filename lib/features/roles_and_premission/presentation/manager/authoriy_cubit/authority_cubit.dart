@@ -8,7 +8,8 @@ import 'package:meta/meta.dart';
 part 'authority_state.dart';
 
 class AuthorityCubit extends Cubit<AuthorityState> {
-  AuthorityCubit(this.addAuthoritiesUseCase, this.getAuthoritiesUseCase, this.updateAuthorityPermissionsUseCase)
+  AuthorityCubit(this.addAuthoritiesUseCase, this.getAuthoritiesUseCase,
+      this.updateAuthorityPermissionsUseCase)
       : super(AuthorityStateInitial());
   final AddAuthoritiesUseCase addAuthoritiesUseCase;
   final GetAuthoritiesUseCase getAuthoritiesUseCase;
@@ -27,13 +28,15 @@ class AuthorityCubit extends Cubit<AuthorityState> {
     );
   }
 
-
-  Future<void> updateAuthorityPermissions({dynamic authorityId,required List<dynamic> authorities}) async {
+  Future<void> updateAuthorityPermissions(
+      {dynamic authorityId, required List<dynamic> authorities}) async {
     emit(UpdateAuthorityPermissionsStateLoading());
-    var result = await updateAuthorityPermissionsUseCase.call(authorityId: authorityId , newAuthorities: authorities);
+    var result = await updateAuthorityPermissionsUseCase.call(
+        authorityId: authorityId, newAuthorities: authorities);
     result.fold(
       (failure) {
-        emit(UpdateAuthorityPermissionsStateFailure(errorMessage: failure.message));
+        emit(UpdateAuthorityPermissionsStateFailure(
+            errorMessage: failure.message));
       },
       (Unit) {
         emit(UpdateAuthorityPermissionsStateSuccess());

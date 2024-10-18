@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
@@ -12,7 +13,7 @@ class UserManagementPage extends StatefulWidget {
 }
 
 class _UserManagementPageState extends State<UserManagementPage> {
-  late UserRemoteDataSource _userRemoteDataSource;
+  late UserManagementRemoteDataSource _userRemoteDataSource;
   List<UserModel> _users = [];
   bool _isLoading = true;
 
@@ -21,7 +22,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     super.initState();
     Dio dio = Dio(BaseOptions(baseUrl: 'http://localhost:8080'));
     Api api = Api(dio);
-    _userRemoteDataSource = UserRemoteDataSource(api);
+    _userRemoteDataSource = UserManagementRemoteDataSource(api);
     _fetchUsers();
   }
 
@@ -80,9 +81,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
               _fetchUsers(); // Refresh the user list after adding/updating
 
               // Display combined results
-              scaffoldMessenger.showSnackBar(
-                SnackBar(content: Text(results.join('\n'))),
-              );
+              showSnackBar(context, results.join('\n'), Colors.green);
             } catch (e) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(content: Text('Failed to update users: $e')),

@@ -14,7 +14,9 @@ class PaymentViewBody extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const CustomAppBar(),
+          const CustomAppBar(
+            username: '',
+          ),
           const SizedBox(
             height: 20,
           ),

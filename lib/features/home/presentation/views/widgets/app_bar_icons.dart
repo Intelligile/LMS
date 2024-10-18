@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lms/features/home/presentation/views/widgets/user_name_icon.dart';
 
 class UserOptionsIcons extends StatelessWidget {
+  final String username;
+
   const UserOptionsIcons({
-    super.key,
-  });
+    Key? key,
+    required this.username, // Add this parameter
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,9 @@ class UserOptionsIcons extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        UserNameIcon()
+        UserNameIcon(
+          username: username, // Pass the username here
+        ),
       ],
     );
   }

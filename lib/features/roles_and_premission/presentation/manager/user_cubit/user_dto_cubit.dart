@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 part 'user_dto_state.dart';
 
 class UserDtoCubit extends Cubit<UserDtoState> {
-
   FetchUsersUseCase fetchUsersUseCase;
   UserDtoCubit(
     this.fetchUsersUseCase,

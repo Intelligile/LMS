@@ -49,10 +49,10 @@ class _SignInState extends State<SignIn> {
                   LoginUseCase(
                     AuthRepositoryImpl(
                       authRemoteDataSource: AuthRemoteDataSourceImpl(
-                        api: Api(
-                          Dio(),
-                        ),
-                      ),
+                          api: Api(
+                            Dio(),
+                          ),
+                          context),
                     ),
                   ),
                 ),

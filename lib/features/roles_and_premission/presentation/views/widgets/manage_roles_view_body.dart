@@ -47,14 +47,21 @@ class ManageRolesViewBody extends StatelessWidget {
                             margin: const EdgeInsets.symmetric(vertical: 4),
                             child: ListTile(
                               title: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(role.authority ?? ''),
                                   InkWell(
                                     onTap: () {
-                                      GoRouter.of(context).push(AppRouter.kUsersView , extra: role);
+                                      GoRouter.of(context).push(
+                                          AppRouter.kUsersView,
+                                          extra: role);
                                     },
-                                    child: Text('view users',style: Styles.textStyle20.copyWith(color: Colors.blue),),
+                                    child: Text(
+                                      'view users',
+                                      style: Styles.textStyle20
+                                          .copyWith(color: Colors.blue),
+                                    ),
                                   )
                                 ],
                               ),

@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/features/auth/data/models/user_model.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
+import 'package:lms/features/auth/presentation/manager/user_state.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String jwtToken = '';
@@ -9,7 +12,8 @@ abstract class AuthRemoteDataSource {
   Future<void> loginUser(
       {String username, String password, required bool isLicensor});
   Future<void> registerUser(
-      {String firstName,
+      {int id,
+      String firstName,
       String lastName,
       String username,
       String password,
@@ -20,8 +24,8 @@ abstract class AuthRemoteDataSource {
 
 class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   final Api api;
-
-  AuthRemoteDataSourceImpl({required this.api});
+  final BuildContext context;
+  AuthRemoteDataSourceImpl(this.context, {required this.api});
 
   @override
   Future<void> loginUser(
@@ -45,16 +49,28 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
             },
           );
     userRole = result['roles'];
+    // isLicensor = result['isLicensor'];
+
+    Provider.of<UserState>(context, listen: false)
+        .setUserInfo(result['isLicensor']
+            // List<String>.from(result['roles']),
+            );
+    print(isLicensor);
     print(userRole);
     // Save the JWT token using SharedPreferences
     jwtToken = result['jwtToken'];
+    username = result['username'];
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('jwtToken', result['jwtToken']);
+
+    SharedPreferences usernamePrefs = await SharedPreferences.getInstance();
+    await usernamePrefs.setString('username', result['username']);
   }
 
   @override
   Future<void> registerUser(
-      {String firstName = '',
+      {int id = 0,
+      String firstName = '',
       String lastName = '',
       String username = '',
       String password = '',
@@ -62,6 +78,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       String email = '',
       required bool isLicensor}) async {
     User user = User(
+        id: id,
         firstName: firstName,
         lastName: lastName,
         username: username,

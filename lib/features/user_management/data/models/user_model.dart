@@ -1,4 +1,5 @@
 import 'package:lms/features/roles_and_premission/data/models/authority.dart';
+import 'package:lms/features/user_groups/data/models/group_model.dart';
 
 class UserModel {
   final int id;
@@ -10,6 +11,7 @@ class UserModel {
   late String phone;
   late bool enabled;
   late List<Authority> authorities;
+  final List<GroupModel> groups;
 
   UserModel({
     required this.id,
@@ -21,30 +23,69 @@ class UserModel {
     required this.phone,
     this.enabled = true,
     required this.authorities,
+    required this.groups,
   });
 
-  // Add fromJson and toJson methods if needed for API communication.
-  // Factory constructor to create an instance from JSON
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    var authoritiesJson = json['authorities'] as List<dynamic>? ?? [];
-    List<Authority> authorities = authoritiesJson.map((authJson) {
-      if (authJson is Map<String, dynamic>) {
-        return Authority.fromJson(authJson);
-      } else {
-        throw Exception('Invalid authority data format');
-      }
-    }).toList();
+    // print("Parsing JSON in UserModel.fromJson: $json");
+
+    // Parsing authorities
+    var authoritiesJson = json['authorities'];
+    List<Authority> authorities = [];
+    if (authoritiesJson is List) {
+      authorities = authoritiesJson.map((authJson) {
+        if (authJson is Map<String, dynamic>) {
+          return Authority.fromJson(authJson);
+        } else {
+          throw Exception('Invalid authority data format');
+        }
+      }).toList();
+    } else {
+      print('Authorities field is not a list: $authoritiesJson');
+    }
+
+    // Parsing groups
+    var groupsJson = json['groups'];
+    List<GroupModel> groups = [];
+    if (groupsJson is List) {
+      groups = groupsJson.map((groupJson) {
+        if (groupJson is Map<String, dynamic>) {
+          return GroupModel.fromJson(groupJson);
+        } else {
+          throw Exception('Invalid group data format');
+        }
+      }).toList();
+    } else {
+      print('Groups field is not a list: $groupsJson');
+    }
 
     return UserModel(
       id: json['id'] ?? 0,
       username: json['username'] ?? '',
-      password: "", // Password typically not returned
+      password: json['password'] ?? '',
       email: json['email'] ?? '',
       firstname: json['firstname'] ?? '',
       lastname: json['lastname'] ?? '',
       phone: json['phone'] ?? '',
       enabled: json['enabled'] ?? true,
       authorities: authorities,
+      groups: groups,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'password': password,
+      'email': email,
+      'firstname': firstname,
+      'lastname': lastname,
+      'phone': phone,
+      'enabled': enabled,
+      'authorities':
+          authorities.map((authority) => authority.toJson()).toList(),
+      'groups': groups.map((group) => group.toJson()).toList(),
+    };
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/features/user_management/data/models/user_model.dart';
 
 class UserForm extends StatefulWidget {
@@ -27,7 +28,7 @@ class _UserFormState extends State<UserForm> {
     if (widget.isEditing) {
       // If editing, ensure that the existing users are set up correctly
       for (var user in _users) {
-        user.password = ''; // Don't pre-fill password when editing
+        // user.password = ''; // Don't pre-fill password when editing
       }
     } else {
       // If adding, initialize with a blank user
@@ -41,6 +42,7 @@ class _UserFormState extends State<UserForm> {
         phone: '',
         enabled: true,
         authorities: [],
+        groups: [], // Initialize the groups field with an empty list
       ));
     }
   }
@@ -54,16 +56,13 @@ class _UserFormState extends State<UserForm> {
       final emails = _users.map((user) => user.email).toSet();
 
       if (usernames.length != _users.length) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Duplicate usernames are not allowed')),
-        );
+        showSnackBar(
+            context, 'Duplicate usernames are not allowed', Colors.red);
         return;
       }
 
       if (emails.length != _users.length) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Duplicate emails are not allowed')),
-        );
+        showSnackBar(context, 'Duplicate emails are not allowed', Colors.red);
         return;
       }
 
@@ -84,6 +83,7 @@ class _UserFormState extends State<UserForm> {
         phone: '',
         enabled: true,
         authorities: [],
+        groups: [], // Initialize the groups field with an empty list
       ));
     });
   }
@@ -150,7 +150,7 @@ class _UserFormState extends State<UserForm> {
               },
               onSaved: (value) => _users[index].username = value!,
             ),
-            if (!widget.isEditing)
+            if (widget.isEditing)
               TextFormField(
                 initialValue: _users[index].password,
                 decoration: InputDecoration(labelText: 'Password'),
@@ -216,9 +216,8 @@ class _UserFormState extends State<UserForm> {
                 if (_users.length > 1) {
                   _removeUser(index);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('At least one user is required')),
-                  );
+                  showSnackBar(
+                      context, 'At least one user is required', Colors.red);
                 }
               },
               tooltip: 'Remove User',
