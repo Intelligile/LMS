@@ -1,8 +1,9 @@
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
+import 'package:lms/features/user_management/data/models/user_model.dart';
 import 'package:lms/features/user_management/domain/entities/license.dart';
 import 'package:lms/features/user_management/domain/repositories/user_repository.dart';
 
-import 'package:lms/features/user_management/data/models/user_model.dart';
+String userName = '';
 
 class UserRepositoryManagementImpl implements UserRepository {
   final UserManagementRemoteDataSource remoteDataSource;
@@ -50,9 +51,12 @@ class UserRepositoryManagementImpl implements UserRepository {
 
   @override
   Future<UserModel> getUserProfile(String username) async {
+    final UserModel user;
     try {
       final userData = await remoteDataSource.getUserProfile(username);
-      return UserModel.fromJson(userData as Map<String, dynamic>);
+      user = UserModel.fromJson(userData);
+      userName = user.username;
+      return user;
     } catch (error) {
       throw Exception('Error fetching user profile: $error');
     }

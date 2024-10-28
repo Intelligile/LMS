@@ -15,7 +15,7 @@ class CustomTabBar extends StatelessWidget {
       width: 570,
       child: TabBar(
         controller: _tabController,
-        labelColor: Colors.black,
+        // labelColor: Colors.black,
         indicatorColor: const Color.fromARGB(255, 4, 128, 163),
         unselectedLabelColor: Colors.grey,
         dividerColor: Colors.transparent,

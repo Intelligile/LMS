@@ -10,7 +10,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    final Color lmsPrimaryColor = const Color(0xFF017278); // LMS color
+    const Color lmsPrimaryColor = Color(0xFF017278); // LMS color
 
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +81,7 @@ class CartPage extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  // color: Colors.black87,
                 ),
               ),
               ElevatedButton(

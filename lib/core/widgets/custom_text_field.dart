@@ -32,25 +32,22 @@ class CustomTextField extends StatelessWidget {
                   : null,
               border: const OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.black,
                   width: 1.0,
                 ),
               ),
               focusedBorder: const OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.black,
                   width: 1.0,
                 ),
               ),
               enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.black,
                   width: 1.0,
                 ),
               ),
               labelText: label ?? '',
               floatingLabelBehavior: FloatingLabelBehavior.always,
-              labelStyle: const TextStyle(color: Colors.black),
+              labelStyle: const TextStyle(),
               hintText: hint ?? '',
               hintStyle: Styles.textStyle16),
         ),

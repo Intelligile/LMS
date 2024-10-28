@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 class FormPage extends StatelessWidget {
   final AuthorizationCodeViewModel viewModel;
 
-  FormPage({Key? key, required this.viewModel}) : super(key: key);
+  FormPage({super.key, required this.viewModel});
 
   final _formKey = GlobalKey<FormState>();
   int? licenseeId, productId;
@@ -194,7 +194,8 @@ class FormPage extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon,
-              color: Color(0xFF017278)), // Set icon color to primary color
+              color:
+                  const Color(0xFF017278)), // Set icon color to primary color
           filled: true,
           fillColor: Colors.grey[100],
           border: OutlineInputBorder(

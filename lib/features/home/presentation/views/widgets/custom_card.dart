@@ -29,8 +29,8 @@ class _CustomCardState extends State<CustomCard> {
             flex: 1,
             child: DropdownButton(
               style: TextStyle(
-                  fontSize: getResponsiveFontSize(context, baseFontSize: 16),
-                  color: Colors.black),
+                fontSize: getResponsiveFontSize(context, baseFontSize: 16),
+              ),
               underline: const Text(''),
               focusColor: Colors.transparent,
               isExpanded: true,

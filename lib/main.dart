@@ -143,6 +143,7 @@ import 'package:lms/core/functions/set_up_service_locator.dart';
 import 'package:lms/core/simple_bloc_observer.dart';
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/app_router.dart';
+import 'package:lms/core/utils/theme_provider.dart';
 import 'package:lms/features/auth_code/data/repositories/authorization_code_repository_impl.dart';
 import 'package:lms/features/auth_code/domain/repositories/authorization_code_repository.dart';
 import 'package:lms/features/auth_code/presentation/view_model/authorization_code_view_model.dart';
@@ -202,7 +203,16 @@ void main() {
   // Create the GoRouter instance using the method
   final router = appRouter.createRouter();
 
-  runApp(MyApp(router: router));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
+      ],
+      child: MyApp(router: router),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -324,36 +334,84 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ],
-        child: MaterialApp.router(
-          routerConfig: router,
-          debugShowCheckedModeBanner: true,
-          theme: ThemeData.light().copyWith(
-            iconTheme: const IconThemeData(color: Colors.black),
-            iconButtonTheme: const IconButtonThemeData(
-              style: ButtonStyle(
-                iconColor: WidgetStatePropertyAll(Colors.black),
+        child: Consumer<ThemeProvider>(
+          builder: (context, themeProvider, child) {
+            return MaterialApp.router(
+              routerConfig: router,
+              debugShowCheckedModeBanner: true,
+              theme: ThemeData.light().copyWith(
+                iconTheme: const IconThemeData(color: Colors.black),
+                hintColor: Colors.black,
+                // Other light theme settings
+
+                iconButtonTheme: const IconButtonThemeData(
+                  style: ButtonStyle(
+                    iconColor: WidgetStatePropertyAll(Colors.black),
+                  ),
+                ),
+
+                colorScheme: const ColorScheme.light(),
+                listTileTheme: const ListTileThemeData(
+                    selectedColor: kPrimaryColor,
+                    selectedTileColor: kPrimaryColor),
+                textSelectionTheme:
+                    const TextSelectionThemeData(selectionColor: kPrimaryColor),
+                radioTheme: const RadioThemeData(
+                  fillColor: WidgetStatePropertyAll(kPrimaryColor),
+                  overlayColor: WidgetStatePropertyAll(Colors.black),
+                ),
+                elevatedButtonTheme: const ElevatedButtonThemeData(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(kPrimaryColor),
+                  ),
+                ),
+                inputDecorationTheme: const InputDecorationTheme(
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
               ),
-            ),
-            hintColor: Colors.black,
-            colorScheme: const ColorScheme.light(),
-            radioTheme: const RadioThemeData(
-              fillColor: WidgetStatePropertyAll(kPrimaryColor),
-            ),
-            elevatedButtonTheme: const ElevatedButtonThemeData(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(kPrimaryColor),
+              darkTheme: ThemeData.dark().copyWith(
+                iconTheme: const IconThemeData(color: Colors.white),
+                hintColor: Colors.white,
+                // Other dark theme settings
+                textSelectionTheme:
+                    const TextSelectionThemeData(selectionColor: kPrimaryColor),
+                iconButtonTheme: const IconButtonThemeData(
+                  style: ButtonStyle(
+                    iconColor: WidgetStatePropertyAll(kPrimaryColor),
+                  ),
+                ),
+                colorScheme: const ColorScheme.dark(),
+                radioTheme: const RadioThemeData(
+                  overlayColor: WidgetStatePropertyAll(Colors.white),
+                  fillColor: WidgetStatePropertyAll(kPrimaryColor),
+                ),
+                elevatedButtonTheme: const ElevatedButtonThemeData(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.white),
+                  ),
+                ),
+                listTileTheme: const ListTileThemeData(
+                    selectedColor: kPrimaryColor,
+                    selectedTileColor: kPrimaryColor),
+                inputDecorationTheme: const InputDecorationTheme(
+                  labelStyle: TextStyle(color: Colors.white),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                ),
               ),
-            ),
-            inputDecorationTheme: const InputDecorationTheme(
-              labelStyle: TextStyle(color: Colors.black),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-            ),
-          ),
+              themeMode: themeProvider.themeMode,
+            );
+          },
         ),
       ),
     );

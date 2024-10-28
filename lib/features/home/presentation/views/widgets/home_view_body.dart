@@ -46,93 +46,84 @@ class _HomeViewBodyState extends State<HomeViewBody>
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Expanded(child: CustomExpandedDrawer()),
-        Expanded(
-          flex: 4,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: SingleChildScrollView(
-              // Add SingleChildScrollView here
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const CustomCard(),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Text(
-                    'Good morning, ${widget.username}', // Use the username here
-                    style: Styles.textStyle28,
-                  ),
-                  const Text(
-                    'The Simplified view helps you focus on the most common tasks for the organization like you',
-                    style: Styles.textStyle16,
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        'For organization like yours',
-                        style: Styles.textStyle20,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Show more',
-                        style: Styles.textStyle20.copyWith(color: kIconColor),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Row(
-                    children: [
-                      CustomContainer(
-                          iconPath: AssetsData.copilotImage,
-                          cardTitle: 'Assign unused licenses',
-                          cardText:
-                              'You have 1 unused license for Microsoft 365 Business Standard.'),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      CustomContainer(
-                          icon: Icon(FontAwesomeIcons.chalkboardUser),
-                          cardTitle: 'Help people stay productive on the go',
-                          cardText:
-                              'Share training for the Microsoft 365 app for iOS or Android.'),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const Text(
-                    'Your organization',
-                    style: Styles.textStyle20,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTabBar(tabController: _tabController),
-                  SizedBox(
-                    height: 400, // Add a fixed height for the TabBarView
-                    child: CustomTabBarView(tabController: _tabController),
-                  ),
-                ],
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: SingleChildScrollView(
+        // Add SingleChildScrollView here
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 30,
             ),
-          ),
-        )
-      ],
+            const CustomCard(),
+            const SizedBox(
+              height: 50,
+            ),
+            Text(
+              'Good morning, ${widget.username}', // Use the username here
+              style: Styles.textStyle28,
+            ),
+            const Text(
+              'The Simplified view helps you focus on the most common tasks for the organization like you',
+              style: Styles.textStyle16,
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Row(
+              children: [
+                const Text(
+                  'For organization like yours',
+                  style: Styles.textStyle20,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  'Show more',
+                  style: Styles.textStyle20.copyWith(color: kIconColor),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const Row(
+              children: [
+                CustomContainer(
+                    iconPath: AssetsData.copilotImage,
+                    cardTitle: 'Assign unused licenses',
+                    cardText:
+                        'You have 1 unused license for Microsoft 365 Business Standard.'),
+                SizedBox(
+                  width: 50,
+                ),
+                CustomContainer(
+                    icon: Icon(FontAwesomeIcons.chalkboardUser),
+                    cardTitle: 'Help people stay productive on the go',
+                    cardText:
+                        'Share training for the Microsoft 365 app for iOS or Android.'),
+              ],
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            const Text(
+              'Your organization',
+              style: Styles.textStyle20,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomTabBar(tabController: _tabController),
+            SizedBox(
+              height: 400, // Add a fixed height for the TabBarView
+              child: CustomTabBarView(tabController: _tabController),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

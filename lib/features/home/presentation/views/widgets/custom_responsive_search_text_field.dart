@@ -33,7 +33,7 @@ class CustomSearchTextField extends StatelessWidget {
     return TextField(
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.white,
+        // fillColor: Colors.white,
         enabledBorder: buildOutlineInputBorder(),
         focusedBorder: buildOutlineInputBorder(),
         hintText: 'Search',

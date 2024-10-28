@@ -13,7 +13,6 @@ Widget buildListTile(
       children: [
         Icon(
           icon,
-          color: color ?? Colors.black,
         ),
         const SizedBox(width: 5),
         Flexible(
@@ -21,7 +20,7 @@ Widget buildListTile(
             title ?? '',
             style: TextStyle(
                 fontSize: getResponsiveFontSize(context, baseFontSize: 14),
-                color: color ?? Colors.black),
+                color: color),
           ),
         ),
       ],
@@ -42,7 +41,7 @@ Widget buildExpansionTile(
       children: [
         Icon(
           icon,
-          color: color ?? Colors.black,
+          color: color,
         ),
         const SizedBox(width: 5),
         Flexible(
@@ -50,7 +49,7 @@ Widget buildExpansionTile(
             title ?? '',
             style: TextStyle(
                 fontSize: getResponsiveFontSize(context, baseFontSize: 14),
-                color: color ?? Colors.black),
+                color: color),
           ),
         ),
       ],
