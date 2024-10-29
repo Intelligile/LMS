@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/utils/assets.dart';
 import 'package:lms/core/widgets/build_list_tile.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
@@ -8,6 +10,9 @@ import 'package:lms/features/home/data/models/expansion_tile_model.dart';
 import 'package:lms/features/home/data/models/list_tile_model.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_item.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_menu.dart';
+
+int selectedIndex = 0;
+int selectedChildIndex = 0;
 
 class CustomExpandedDrawer extends StatefulWidget {
   const CustomExpandedDrawer({super.key});
@@ -21,122 +26,94 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
     ListTileItemModel(
       icon: Icons.home_outlined,
       title: 'Home',
-      onTap: () {
-        // Navigate to Home
-        // GoRouter.of(context).go(AppRouter.kHomeView);
-      },
+      path: AppRouter.kHomeView, // Set path
     ),
     if (userRole.contains('ROLE_ADMIN'))
       ExpansionListTileItemModel(
+        isExpanded: true,
         icon: Icons.person_outline_sharp,
         title: 'Users',
         children: [
           ListTileItemModel(
             icon: Icons.manage_accounts,
             title: 'Manage Users',
-            onTap: () {
-              // GoRouter.of(context).push(AppRouter.kUserManagement);
-            },
+            path: AppRouter.kUserManagement, // Set path
           ),
         ],
       ),
     ExpansionListTileItemModel(
+      isExpanded: true,
       icon: Icons.groups_outlined,
       title: 'Teams & Groups',
       children: [
         ListTileItemModel(
           icon: Icons.group,
           title: 'Show Groups',
-          onTap: () {
-            // GoRouter.of(context).push(AppRouter.kTeamManagement);
-          },
+          path: AppRouter.kTeamManagement, // Set path
         ),
       ],
     ),
     ExpansionListTileItemModel(
+      isExpanded: true,
       icon: FontAwesomeIcons.moneyBill,
       title: 'Billing',
       children: [
         ListTileItemModel(
           icon: FontAwesomeIcons.solidCreditCard,
           title: 'View Payments',
-          onTap: () {
-            // GoRouter.of(context).push(AppRouter.kPaymentView);
-          },
+          path: AppRouter.kPaymentView, // Set path
         ),
       ],
     ),
     ListTileItemModel(
       icon: Icons.verified_user,
       title: 'Roles and permissions',
-      onTap: () {
-        // GoRouter.of(context).push(AppRouter.kRolesAndPermissionView);
-      },
+      path: AppRouter.kRolesAndPermissionView, // Set path
     ),
     ListTileItemModel(
       icon: Icons.settings,
       title: 'Product Management',
-      onTap: () {
-        // GoRouter.of(context).push(AppRouter.kProductManagement);
-      },
+      path: AppRouter.kProductManagement, // Set path
     ),
     ExpansionListTileItemModel(
+      isExpanded: true,
       icon: Icons.add_shopping_cart_sharp,
       title: 'Product',
       children: [
         ListTileItemModel(
           icon: Icons.shopping_cart,
           title: 'Purchase Product',
-          onTap: () {
-            // GoRouter.of(context).push(AppRouter.kProductList);
-          },
+          path: AppRouter.kProductList, // Set path
         ),
         ListTileItemModel(
           icon: Icons.manage_accounts,
           title: 'Manage Purchased Products',
-          onTap: () {
-            // GoRouter.of(context).push(AppRouter.kLicenseRenewalView);
-          },
+          path: AppRouter.kLicenseRenewalView, // Set path
         ),
       ],
     ),
     ListTileItemModel(
       icon: Icons.generating_tokens_sharp,
       title: 'Generate Auth Code',
-      onTap: () {
-        // GoRouter.of(context).push(AppRouter.kLicensorAuthGenerator);
-      },
+      path: AppRouter.kLicensorAuthGenerator, // Set path
     ),
     ListTileItemModel(
       icon: Icons.token_outlined,
       title: 'Authorization Codes',
-      onTap: () {
-        // GoRouter.of(context).push(AppRouter.kLicensorListAuthCodes);
-      },
+      path: AppRouter.kLicensorListAuthCodes, // Set path
     ),
     ListTileItemModel(
       icon: FontAwesomeIcons.wrench,
       title: 'Setup',
-      onTap: () {
-        // Navigate to Setup
-      },
+      //path: AppRouter.kSetup, // Set path
     ),
     ListTileItemModel(
       icon: FontAwesomeIcons.ellipsis,
       title: 'Show all items',
-      onTap: () {
-        // Show all items
-      },
+      // path: AppRouter.kShowAllItems, // Set path
     ),
   ];
-  void onChildTap(int index) {
-    setState(() {
-      selectedChildIndex = index;
-    });
-  }
 
-  int selectedIndex = 0;
-  int selectedChildIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -154,8 +131,11 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
                     if (selectedIndex != index) {
                       setState(() {
                         selectedIndex = index;
-                        selectedChildIndex = 0; // Reset child index if needed
+                        selectedChildIndex = 0;
                       });
+                      if (item.path != null) {
+                        GoRouter.of(context).go(item.path!);
+                      }
                     }
                   },
                   child: DrawerItem(
