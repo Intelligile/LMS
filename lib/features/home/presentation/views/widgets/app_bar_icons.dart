@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/home/presentation/views/widgets/user_name_icon.dart';
 
 class UserOptionsIcons extends StatelessWidget {
@@ -12,7 +13,7 @@ class UserOptionsIcons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UserNameIcon(
-      username: username, // Pass the username here
+      username: usernamePublic, // Pass the username here
     );
   }
 }

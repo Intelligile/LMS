@@ -8,8 +8,11 @@ class UserForm extends StatefulWidget {
   final bool isEditing;
   final Function(List<UserModel>) onSubmit;
 
-  UserForm(
-      {required this.users, required this.isEditing, required this.onSubmit});
+  UserForm({
+    required this.users,
+    required this.isEditing,
+    required this.onSubmit,
+  });
 
   @override
   _UserFormState createState() => _UserFormState();
@@ -58,8 +61,26 @@ class _UserFormState extends State<UserForm> {
         return;
       }
 
-      widget.onSubmit(_users);
-      Navigator.of(context).pop();
+      // Remove encoded passwords before submission
+      final usersToSubmit = _users.map((user) {
+        // Check for an encoded password (assuming BCrypt starts with "$2a$")
+        final isEncodedPassword = user.password.startsWith(r'$2a$');
+        return UserModel(
+          id: user.id,
+          username: user.username,
+          password: isEncodedPassword ? '' : user.password,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          phone: user.phone,
+          enabled: user.enabled,
+          authorities: user.authorities,
+          groups: user.groups,
+        );
+      }).toList();
+
+      widget.onSubmit(usersToSubmit);
+      // Navigator.of(context).pop();
     }
   }
 
@@ -89,25 +110,35 @@ class _UserFormState extends State<UserForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.isEditing ? 'Edit Users' : 'Add Multiple Users'),
-        backgroundColor: Color(0xFF017278), // LMS color
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView.builder(
-            itemCount: _users.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  _buildUserForm(index),
-                  SizedBox(height: 16.0), // Space between user forms
-                ],
-              );
-            },
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Back arrow icon without the AppBar
+            IconButton(
+              icon: Icon(Icons.arrow_back, color: Color(0xFF017278)),
+              onPressed: () => Navigator.of(context).pop(),
+              tooltip: 'Back',
+            ),
+            SizedBox(height: 8.0), // Spacing after the back arrow
+            Expanded(
+              child: Form(
+                key: _formKey,
+                child: ListView.builder(
+                  itemCount: _users.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        _buildUserForm(index),
+                        SizedBox(height: 16.0), // Space between user forms
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: Column(
