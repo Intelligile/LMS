@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lms/core/functions/get_responsive_font_size.dart';
 import 'package:lms/features/home/data/models/expansion_tile_model.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_item.dart';
+import 'package:lms/features/home/presentation/views/widgets/drawer_state.dart';
+import 'package:provider/provider.dart';
 
-class DrawerMenu extends StatefulWidget {
+class DrawerMenu extends StatelessWidget {
   const DrawerMenu({
     super.key,
     required this.item,
@@ -15,39 +16,35 @@ class DrawerMenu extends StatefulWidget {
   final ExpansionListTileItemModel item;
   final int selectedChildIndex;
   final ValueChanged<int> onChildTap;
-  @override
-  State<DrawerMenu> createState() => _DrawerMenuState();
-}
 
-class _DrawerMenuState extends State<DrawerMenu> {
   @override
   Widget build(BuildContext context) {
+    final drawerStateProvider = Provider.of<DrawerStateProvider>(context);
+    final isExpanded = drawerStateProvider.isExpanded(item.title);
+
     return ExpansionTile(
-      initiallyExpanded: true,
-      leading: Icon(widget.item.icon),
-      title: Text(
-        widget.item.title,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: getResponsiveFontSize(context, baseFontSize: 14),
-        ),
-      ),
+      initiallyExpanded: isExpanded,
+      onExpansionChanged: (value) {
+        drawerStateProvider.toggleExpansion(item.title);
+      },
+      leading: Icon(item.icon),
+      title: Text(item.title, style: const TextStyle(color: Colors.black)),
       iconColor: Colors.black,
       collapsedIconColor: Colors.black,
-      children: widget.item.children.asMap().entries.map(
+      children: item.children.asMap().entries.map(
         (entry) {
           final index = entry.key;
           final child = entry.value;
           return GestureDetector(
             onTap: () {
-              widget.onChildTap(index);
+              onChildTap(index);
               if (child.path != null) {
                 GoRouter.of(context).go(child.path!);
               }
             },
             child: DrawerItem(
               item: child,
-              isSelected: widget.selectedChildIndex == index,
+              isSelected: selectedChildIndex == index,
             ),
           );
         },

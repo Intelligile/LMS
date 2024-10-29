@@ -30,7 +30,7 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
     ),
     if (userRole.contains('ROLE_ADMIN'))
       ExpansionListTileItemModel(
-        isExpanded: true,
+        isExpanded: false,
         icon: Icons.person_outline_sharp,
         title: 'Users',
         children: [
@@ -42,7 +42,7 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
         ],
       ),
     ExpansionListTileItemModel(
-      isExpanded: true,
+      isExpanded: false,
       icon: Icons.groups_outlined,
       title: 'Teams & Groups',
       children: [
@@ -54,7 +54,7 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
       ],
     ),
     ExpansionListTileItemModel(
-      isExpanded: true,
+      isExpanded: false,
       icon: FontAwesomeIcons.moneyBill,
       title: 'Billing',
       children: [
@@ -76,7 +76,7 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
       path: AppRouter.kProductManagement, // Set path
     ),
     ExpansionListTileItemModel(
-      isExpanded: true,
+      isExpanded: false,
       icon: Icons.add_shopping_cart_sharp,
       title: 'Product',
       children: [

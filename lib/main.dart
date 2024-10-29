@@ -147,6 +147,7 @@ import 'package:lms/core/utils/theme_provider.dart';
 import 'package:lms/features/auth_code/data/repositories/authorization_code_repository_impl.dart';
 import 'package:lms/features/auth_code/domain/repositories/authorization_code_repository.dart';
 import 'package:lms/features/auth_code/presentation/view_model/authorization_code_view_model.dart';
+import 'package:lms/features/home/presentation/views/widgets/drawer_state.dart';
 import 'package:lms/features/product_region_management/data/repository/product_repository_impl.dart';
 import 'package:lms/features/product_region_management/data/repository/region_repository_impl.dart';
 import 'package:lms/features/product_region_management/domain/use_case/product_use_cases/add_product_use_case.dart';
@@ -209,6 +210,9 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => DrawerStateProvider(),
+        )
       ],
       child: MyApp(router: router),
     ),

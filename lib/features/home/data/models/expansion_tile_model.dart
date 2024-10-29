@@ -5,7 +5,7 @@ class ExpansionListTileItemModel {
   final IconData icon;
   final String title;
   final List<ListTileItemModel> children;
-  final bool isExpanded;
+  bool isExpanded;
   ExpansionListTileItemModel({
     required this.isExpanded,
     required this.icon,
