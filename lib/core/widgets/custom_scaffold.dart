@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/home/presentation/views/widgets/custom_app_bar.dart';
 import 'package:lms/features/home/presentation/views/widgets/custom_drawer.dart';
-import 'package:lms/features/user_management/data/repositories/user_repository.dart';
 
 class CustomScaffold extends StatelessWidget {
   final Widget body;
@@ -20,7 +20,7 @@ class CustomScaffold extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, 60),
         child: CustomAppBar(
-          username: userName, // Pass the username here
+          username: usernamePublic, // Pass the username here
         ),
       ),
       backgroundColor: backgroudColor ?? Colors.white,

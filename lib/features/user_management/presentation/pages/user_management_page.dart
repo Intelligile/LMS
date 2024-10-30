@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:lms/constants.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
@@ -21,17 +20,11 @@ class _UserManagementPageState extends State<UserManagementPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      // appbar: AppBar(
-      //   title: const Text('User Management'),
-      //   backgroundColor: kPrimaryColor,
-      //   centerTitle: true,
-      // ),
-      body: AdaptiveLayout(
-        mobileLayout: (context) => const SizedBox(),
-        tabletLayout: (context) => const SizedBox(),
-        desktopLayout: (context) => const UserManagementPageBody(),
-      ),
-    );
+        body: AdaptiveLayout(
+      mobileLayout: (context) => const SizedBox(),
+      tabletLayout: (context) => const SizedBox(),
+      desktopLayout: (context) => const UserManagementPageBody(),
+    ));
   }
 }
 
@@ -46,6 +39,9 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
   late UserManagementRemoteDataSource _userRemoteDataSource;
   List<UserModel> _users = [];
   bool _isLoading = true;
+
+  final Color primaryColor = const Color(0xFF017278); // LMS Primary Color
+  final Color accentColor = Colors.white; // Accent color for text on buttons
 
   @override
   void initState() {
@@ -71,277 +67,259 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
           _isLoading = false;
         });
       }
-
       print("Failed to fetch users: $e");
     }
   }
 
-  void _openUserForm(BuildContext context,
-      {List<UserModel>? users, required bool isEditing}) {
+  void _openUserFormFromRight(BuildContext context,
+      {UserModel? user, required bool isEditing}) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => UserForm(
-          users: users ?? [],
-          isEditing: isEditing,
-          onSubmit: (List<UserModel> updatedUsers) async {
-            try {
-              List<String> results = [];
-
-              for (var user in updatedUsers) {
-                if (user.id != 0) {
-                  String result =
-                      await _userRemoteDataSource.updateUser(user, jwtToken);
-                  results.add(result);
-                } else {
-                  String result = await _userRemoteDataSource.addUsers([user]);
-                  results.add(result);
-                }
-              }
-
-              _fetchUsers();
-
-              showSnackBar(context, results.join('\n'), Colors.green);
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to update users: $e')),
-              );
-            }
-          },
+      PageRouteBuilder(
+        opaque: false, // Allows the background to remain visible
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            SlideTransition(
+          position:
+              Tween<Offset>(begin: const Offset(1, 0), end: const Offset(0, 0))
+                  .animate(animation),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              width: MediaQuery.of(context).size.width *
+                  0.6, // 60% width of screen
+              height: MediaQuery.of(context).size.height,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 12,
+                    offset: Offset(-4, 0),
+                  ),
+                ],
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                ),
+              ),
+              child: Scaffold(
+                body: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: UserForm(
+                    users: user != null ? [user] : [],
+                    isEditing: isEditing,
+                    onSubmit: (List<UserModel> updatedUsers) async {
+                      try {
+                        List<String> results = [];
+                        for (var user in updatedUsers) {
+                          if (user.id != 0) {
+                            String result = await _userRemoteDataSource
+                                .updateUser(user, jwtToken);
+                            results.add(result);
+                          } else {
+                            String result =
+                                await _userRemoteDataSource.addUsers([user]);
+                            results.add(result);
+                          }
+                        }
+                        _fetchUsers();
+                        Navigator.of(context).pop();
+                        showSnackBar(context, results.join('\n'), Colors.green);
+                      } catch (e) {
+                        showSnackBar(
+                            context, 'Failed to update users: $e', Colors.red);
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
+        transitionDuration: const Duration(milliseconds: 400),
       ),
+    );
+  }
+
+//  Modify delete icon appearance in _buildUserListDataRow
+  DataRow _buildUserListDataRow(UserModel user) {
+    return DataRow(
+      cells: [
+        DataCell(
+          GestureDetector(
+            onTap: () =>
+                _openUserFormFromRight(context, user: user, isEditing: true),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: false,
+                  onChanged: (bool? newValue) {},
+                ),
+                const SizedBox(
+                    width:
+                        16), // Increase spacing between checkbox and username
+                Text(user.username,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+        DataCell(Text(user.email)),
+        DataCell(Text(user.phone ?? "Unlicensed")),
+        DataCell(
+          IconButton(
+            icon: Icon(Icons.delete_outline, color: primaryColor),
+            onPressed: () async {
+              try {
+                await _userRemoteDataSource.removeUser(user.id);
+                showSnackBar(
+                    context, 'User deleted successfully', Colors.green);
+                _fetchUsers();
+              } catch (e) {
+                showSnackBar(context, 'Failed to delete user: $e', Colors.red);
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title
-          const Text(
-            'Active Users',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Action Row
-          Row(
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                ),
-                onPressed: () => _openUserForm(context, isEditing: false),
-                child: const Text('Add User'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                ),
-                onPressed: () {}, // Add functionality here
-                child: const Text('User Templates'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                ),
-                onPressed: () {}, // Add functionality here
-                child: const Text('Add Multiple Users'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                ),
-                onPressed: () {}, // Add functionality here
-                child: const Text('Multi-Factor Authentication'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                ),
-                onPressed: () {}, // Add functionality here
-                child: const Text('Delete a User'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Header Row
-          Container(
-            color: Colors.grey[200],
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: const Row(
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    'Display Name',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black54),
-                    textAlign: TextAlign.center,
+                // "Active Users" title with modified font
+                const SizedBox(
+                  height: 30,
+                ),
+                const Text(
+                  'Active Users',
+                  style: TextStyle(
+                    fontSize: 28, // Increased font size
+                    fontFamily: 'Roboto', // Change to preferred font family
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    'Username',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black54),
-                    textAlign: TextAlign.center,
-                  ),
+                const SizedBox(height: 16), // Padding below title
+                Divider(
+                    color: Colors.grey[300],
+                    thickness: 1), // Light grey divider
+
+                // Action buttons with additional options
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () =>
+                          _openUserFormFromRight(context, isEditing: false),
+                      icon: const Icon(Icons.add, color: Colors.white),
+                      label: const Text('Add a user',
+                          style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: () {}, // Placeholder for add group action
+                      icon: const Icon(Icons.group_add, color: Colors.black),
+                      label: const Text('Add group',
+                          style: TextStyle(color: Colors.black)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _fetchUsers, // Refresh action
+                      icon: const Icon(Icons.refresh, color: Colors.black),
+                      label: const Text('Refresh',
+                          style: TextStyle(color: Colors.black)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed:
+                          () {}, // Placeholder for export to Excel action
+                      icon:
+                          const Icon(Icons.file_download, color: Colors.black),
+                      label: const Text('Export to Excel',
+                          style: TextStyle(color: Colors.black)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 16),
+                Divider(
+                    color: Colors.grey[300],
+                    thickness: 1), // Light grey divider
+
+                // User table
                 Expanded(
-                  flex: 2,
-                  child: Text(
-                    'License',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black54),
-                    textAlign: TextAlign.center,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          minWidth: MediaQuery.of(context).size.width),
+                      child: DataTable(
+                        dividerThickness: 1,
+                        columnSpacing: 24.0,
+                        columns: const [
+                          DataColumn(
+                              label: Text('Display Name',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Username',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Licenses',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Actions',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                        ],
+                        rows: _users
+                            .map((user) => _buildUserListDataRow(user))
+                            .toList(),
+                      ),
+                    ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: SizedBox.shrink(),
                 ),
               ],
             ),
-          ),
-          const Divider(height: 1, color: Colors.grey),
-
-          // User List
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Expanded(
-                  child: _users.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'No users found.',
-                            style:
-                                TextStyle(fontSize: 18, color: kPrimaryColor),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: _users.length,
-                          itemBuilder: (context, index) {
-                            final user = _users[index];
-                            return Column(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Center(
-                                          child: Text(
-                                            user.username,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Center(
-                                          child: Text(
-                                            user.username,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Expanded(
-                                        flex: 2,
-                                        child: Center(
-                                          child: Text(
-                                            // user.licenseStatus ??
-                                            "Unlicensed",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(Icons.edit,
-                                                  color: kPrimaryColor),
-                                              onPressed: () => _openUserForm(
-                                                  context,
-                                                  users: [user],
-                                                  isEditing: true),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(Icons.delete,
-                                                  color: Colors.redAccent),
-                                              onPressed: () async {
-                                                try {
-                                                  await _userRemoteDataSource
-                                                      .removeUser(user.id);
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    const SnackBar(
-                                                      content: Text(
-                                                          'User deleted successfully'),
-                                                    ),
-                                                  );
-                                                  _fetchUsers();
-                                                } catch (e) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                          'Failed to delete user: $e'),
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Divider(height: 1, color: Colors.grey),
-                              ],
-                            );
-                          },
-                        ),
-                ),
-        ],
-      ),
-    );
+          );
   }
 }

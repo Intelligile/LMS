@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/auth/presentation/views/forgot_password_page.dart';
 import 'package:lms/features/auth/presentation/views/register_screen.dart';
 import 'package:lms/features/auth/presentation/views/signin_screen.dart';
@@ -107,7 +108,7 @@ class AppRouter {
                 }
                 final username = snapshot.data ??
                     'Guest'; // Default to 'Guest' if no username found
-                return HomeView(username: username);
+                return HomeView(username: usernamePublic);
               },
             );
           },

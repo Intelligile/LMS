@@ -344,6 +344,10 @@ class MyApp extends StatelessWidget {
               routerConfig: router,
               debugShowCheckedModeBanner: true,
               theme: ThemeData.light().copyWith(
+                textTheme: ThemeData.light().textTheme.apply(
+                      fontFamily: 'Avenir',
+                    ),
+
                 iconTheme: const IconThemeData(color: Colors.black),
                 hintColor: Colors.black,
                 // Other light theme settings
@@ -380,6 +384,10 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               darkTheme: ThemeData.dark().copyWith(
+                textTheme: ThemeData.dark().textTheme.apply(
+                      fontFamily: 'Avenir',
+                    ),
+
                 iconTheme: const IconThemeData(color: Colors.white),
                 hintColor: Colors.white,
                 // Other dark theme settings
