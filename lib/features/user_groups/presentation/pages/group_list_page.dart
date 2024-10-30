@@ -1,21 +1,57 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dio/dio.dart';
+import 'package:lms/constants.dart';
 import 'package:lms/core/utils/api.dart';
+import 'package:lms/core/utils/app_router.dart';
+import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/user_groups/data/data_sources/user_group_service.dart';
 import 'package:lms/features/user_groups/data/models/group_model.dart';
 import 'package:lms/features/user_groups/presentation/widgets/group_card.dart';
-import 'package:lms/core/utils/app_router.dart';
 
 class GroupListPage extends StatelessWidget {
-  final ApiService _apiService;
+  const GroupListPage({super.key});
 
-  GroupListPage({Key? key})
-      : _apiService = ApiService(api: Api(Dio())),
-        super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return CustomScaffold(
+      body: AdaptiveLayout(
+        mobileLayout: (context) => const SizedBox(),
+        tabletLayout: (context) => const SizedBox(),
+        desktopLayout: (context) => GroupListPageBody(),
+      ),
+      floatingActionButton: const CustomAddFloatingActionButton(),
+    );
+  }
+}
+
+class CustomAddFloatingActionButton extends StatelessWidget {
+  const CustomAddFloatingActionButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        // Navigate to the Add Group page when the FAB is pressed
+        GoRouter.of(context).go(AppRouter.kAddGroup);
+      },
+      backgroundColor: kPrimaryColor,
+      child: const Icon(Icons.add), // Use LMS color
+    );
+  }
+}
+
+class GroupListPageBody extends StatelessWidget {
+  final ApiService _apiService;
+  GroupListPageBody({
+    super.key,
+  }) : _apiService = ApiService(api: Api(Dio()));
 
   // Fetches the list of groups asynchronously
-  Future<List<GroupModel>> _fetchGroups() async {
+  Future<List<GroupModel>> fetchGroups() async {
     try {
       return await _apiService.fetchGroups();
     } catch (e) {
@@ -27,61 +63,41 @@ class GroupListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Groups'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // Navigate back when the back button is pressed
-            GoRouter.of(context).push(AppRouter.kHomeView);
-          },
-        ),
-      ),
-      body: FutureBuilder<List<GroupModel>>(
-        future: _fetchGroups(),
-        builder: (context, snapshot) {
-          // Print the connection state and other debug info
-          print('Connection state: ${snapshot.connectionState}');
-          print('Has data: ${snapshot.hasData}');
-          print('Has error: ${snapshot.hasError}');
+    return FutureBuilder<List<GroupModel>>(
+      future: fetchGroups(),
+      builder: (context, snapshot) {
+        // Print the connection state and other debug info
+        print('Connection state: ${snapshot.connectionState}');
+        print('Has data: ${snapshot.hasData}');
+        print('Has error: ${snapshot.hasError}');
 
-          // Show loading indicator while fetching data
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+        // Show loading indicator while fetching data
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        // Show error message if data fetch fails
+        else if (snapshot.hasError) {
+          print('Error details: ${snapshot.error}');
+          return const Center(child: Text('Failed to load groups'));
+        }
+        // Show group list if data is available
+        else if (snapshot.hasData) {
+          List<GroupModel>? groups = snapshot.data;
+          if (groups == null || groups.isEmpty) {
+            return const Center(child: Text('No groups available'));
           }
-          // Show error message if data fetch fails
-          else if (snapshot.hasError) {
-            print('Error details: ${snapshot.error}');
-            return const Center(child: Text('Failed to load groups'));
-          }
-          // Show group list if data is available
-          else if (snapshot.hasData) {
-            List<GroupModel>? groups = snapshot.data;
-            if (groups == null || groups.isEmpty) {
-              return const Center(child: Text('No groups available'));
-            }
-            return ListView.builder(
-              itemCount: groups.length,
-              itemBuilder: (context, index) {
-                return GroupCard(group: groups[index]);
-              },
-            );
-          }
-          // Handle unexpected scenarios
-          else {
-            return const Center(child: Text('Unexpected error'));
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to the Add Group page when the FAB is pressed
-          GoRouter.of(context).go(AppRouter.kAddGroup);
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: const Color(0xFF017278), // Use LMS color
-      ),
+          return ListView.builder(
+            itemCount: groups.length,
+            itemBuilder: (context, index) {
+              return GroupCard(group: groups[index]);
+            },
+          );
+        }
+        // Handle unexpected scenarios
+        else {
+          return const Center(child: Text('Unexpected error'));
+        }
+      },
     );
   }
 }

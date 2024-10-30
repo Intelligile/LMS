@@ -5,11 +5,14 @@ import 'package:lms/features/user_management/data/repositories/user_repository.d
 
 class CustomScaffold extends StatelessWidget {
   final Widget body;
-  final AppBar? appbar;
   final Color? backgroudColor;
+  final Widget? floatingActionButton;
 
   const CustomScaffold(
-      {super.key, required this.body, this.appbar, this.backgroudColor});
+      {super.key,
+      required this.body,
+      this.backgroudColor,
+      this.floatingActionButton});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,7 @@ class CustomScaffold extends StatelessWidget {
           Expanded(flex: 4, child: body),
         ],
       ),
+      floatingActionButton: floatingActionButton,
     );
   }
 }

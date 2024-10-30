@@ -6,7 +6,6 @@ import 'package:lms/features/auth/presentation/views/signin_screen.dart';
 import 'package:lms/features/auth/presentation/views/widgets/reset_password_form.dart';
 import 'package:lms/features/auth_code/presentation/pages/form_page.dart';
 import 'package:lms/features/auth_code/presentation/pages/list_auth_codes.dart';
-import 'package:lms/features/auth_code/presentation/view_model/authorization_code_view_model.dart';
 import 'package:lms/features/home/presentation/views/home_view.dart';
 import 'package:lms/features/license_renewal/presentation/views/license_renewal.dart';
 import 'package:lms/features/payment/presentation/views/payment_view.dart';
@@ -29,18 +28,14 @@ import 'package:lms/features/user_groups/data/models/group_model.dart';
 import 'package:lms/features/user_groups/presentation/pages/group_list_page.dart';
 import 'package:lms/features/user_groups/presentation/widgets/group_edit_page.dart';
 import 'package:lms/features/user_groups/presentation/widgets/group_form.dart';
-import 'package:lms/features/user_management/data/models/user_model.dart';
 import 'package:lms/features/user_management/data/repositories/user_repository.dart';
 import 'package:lms/features/user_management/domain/use_cases/add_user.dart';
 import 'package:lms/features/user_management/domain/use_cases/get_user_licenses.dart';
 import 'package:lms/features/user_management/domain/use_cases/get_user_profile_data.dart';
-import 'package:lms/features/user_management/domain/use_cases/update_user.dart';
 import 'package:lms/features/user_management/domain/use_cases/update_user_profile.dart';
 import 'package:lms/features/user_management/presentation/pages/add_user_form.dart';
 import 'package:lms/features/user_management/presentation/pages/user_management_page.dart';
 import 'package:lms/features/user_management/presentation/pages/user_profile_page.dart';
-import 'package:lms/features/user_management/presentation/widgets/user_form.dart';
-
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -127,11 +122,11 @@ class AppRouter {
         ),
         GoRoute(
           path: kUserManagement,
-          builder: (context, state) => UserManagementPage(),
+          builder: (context, state) => const UserManagementPage(),
         ),
         GoRoute(
           path: kTeamManagement,
-          builder: (context, state) => GroupListPage(),
+          builder: (context, state) => const GroupListPage(),
         ),
         GoRoute(
           path: kAddGroup,
@@ -139,7 +134,7 @@ class AppRouter {
         ),
         GoRoute(
           path: kGroupList,
-          builder: (context, state) => GroupListPage(),
+          builder: (context, state) => const GroupListPage(),
         ),
 
         GoRoute(
@@ -221,10 +216,7 @@ class AppRouter {
         GoRoute(
           path: kLicensorAuthGenerator,
           builder: (context, state) {
-            final viewModel = Provider.of<AuthorizationCodeViewModel>(context);
-            return FormPage(
-              viewModel: viewModel,
-            );
+            return const FormPage();
           },
         ),
         GoRoute(

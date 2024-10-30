@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lms/core/functions/get_responsive_font_size.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/features/license_renewal/presentation/model/license_model.dart';
 
@@ -8,7 +9,6 @@ class LicenseRenewalBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Mock list of LicenseModel objects
     final List<LicenseModel> licenses = [
       LicenseModel(
         licenseName: 'License 1',
@@ -50,104 +50,104 @@ class LicenseRenewalBody extends StatelessWidget {
       ),
     ];
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double tableWidth = constraints.maxWidth;
-        double columnWidth = tableWidth / 17.7;
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: DataTable(
-            columnSpacing: columnWidth / 2.4,
-            columns: const [
-              DataColumn(label: Text('License Name')),
-              DataColumn(label: Text('License Key')),
-              DataColumn(label: Text('Purchase Date')),
-              DataColumn(label: Text('Expiration Date')),
-              DataColumn(label: Text('Status')),
-              DataColumn(label: Text('License Type')),
-              DataColumn(label: Text('Cost')),
-              DataColumn(label: Text('Renewal Cost')),
-              DataColumn(label: Text('Activation Date')),
-              DataColumn(label: Text('Auto-Renewal Status')),
-              DataColumn(label: Text('Renew')),
-            ],
-            rows: licenses.map((license) {
-              return DataRow(cells: [
-                DataCell(SizedBox(
-                    width: columnWidth, child: Text(license.licenseName))),
-                DataCell(SizedBox(
-                    width: columnWidth, child: Text(license.licenseKey))),
-                DataCell(SizedBox(
-                    width: columnWidth + 15,
-                    child: Text(license.purchaseDate.toLocal().toString()))),
-                DataCell(SizedBox(
-                    width: columnWidth + 15,
-                    child: Text(license.expirationDate.toLocal().toString()))),
-                DataCell(
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: license.status == 'Active'
-                          ? Colors.green
-                          : Colors.red,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(license.status),
-                    ),
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: DataTable(
+        columns: [
+          buildDataColumn(context, columnName: 'License Name'),
+          buildDataColumn(context, columnName: 'License Key'),
+          buildDataColumn(context, columnName: 'Purchase Date'),
+          buildDataColumn(context, columnName: 'Expiration Date'),
+          buildDataColumn(context, columnName: 'Status'),
+          buildDataColumn(context, columnName: 'License Type'),
+          buildDataColumn(context, columnName: 'Cost'),
+          buildDataColumn(context, columnName: 'Renewal Cost'),
+          buildDataColumn(context, columnName: 'Activation Date'),
+          buildDataColumn(context, columnName: 'Auto-Renewal Status'),
+          buildDataColumn(context, columnName: 'Renew'),
+        ],
+        rows: licenses.map((license) {
+          return DataRow(cells: [
+            buildDataCell(dataCell: license.licenseName),
+            buildDataCell(dataCell: license.licenseKey),
+            buildDataCell(dataCell: license.purchaseDate.toLocal().toString()),
+            buildDataCell(
+                dataCell: license.expirationDate.toLocal().toString()),
+            buildContainerDataCell(license),
+            buildDataCell(dataCell: license.licenseType),
+            buildDataCell(dataCell: '\$${license.cost.toStringAsFixed(2)}'),
+            buildDataCell(
+                dataCell: '\$${license.renewalCost.toStringAsFixed(2)}'),
+            buildDataCell(
+                dataCell:
+                    license.activationDate?.toLocal().toString() ?? 'N/A'),
+            DataCell(
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: license.autoRenewalStatus ? Colors.green : Colors.red,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      Text(license.autoRenewalStatus ? 'Enabled' : 'Disabled'),
+                ),
+              ),
+            ),
+            DataCell(
+              GestureDetector(
+                onTap: () {
+                  GoRouter.of(context).push(AppRouter.kPaymentView);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.blue,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Renew'),
                   ),
                 ),
-                DataCell(SizedBox(
-                    width: columnWidth + 10, child: Text(license.licenseType))),
-                DataCell(SizedBox(
-                    width: columnWidth - 20,
-                    child: Text('\$${license.cost.toStringAsFixed(2)}'))),
-                DataCell(SizedBox(
-                    width: columnWidth,
-                    child:
-                        Text('\$${license.renewalCost.toStringAsFixed(2)}'))),
-                DataCell(SizedBox(
-                    width: columnWidth + 15,
-                    child: Text(license.activationDate?.toLocal().toString() ??
-                        'N/A'))),
-                DataCell(
-                  Container(
-                    width: columnWidth + 0.4,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color:
-                          license.autoRenewalStatus ? Colors.green : Colors.red,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                          license.autoRenewalStatus ? 'Enabled' : 'Disabled'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  GestureDetector(
-                    onTap: () {
-                      GoRouter.of(context).push(AppRouter.kPaymentView);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue,
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Renew'),
-                      ),
-                    ),
-                  ),
-                ),
-              ]);
-            }).toList(),
-          ),
-        );
-      },
+              ),
+            ),
+          ]);
+        }).toList(),
+      ),
     );
+  }
+
+  DataCell buildContainerDataCell(LicenseModel license) {
+    return DataCell(
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: license.status == 'Active' ? Colors.green : Colors.red,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(license.status),
+        ),
+      ),
+    );
+  }
+
+  DataCell buildDataCell({required String dataCell}) {
+    return DataCell(Text(dataCell));
+  }
+
+  DataColumn buildDataColumn(BuildContext context,
+      {required String columnName}) {
+    return DataColumn(
+        label: Flexible(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          columnName,
+          style: TextStyle(
+              fontSize: getResponsiveFontSize(context, baseFontSize: 16)),
+        ),
+      ),
+    ));
   }
 }

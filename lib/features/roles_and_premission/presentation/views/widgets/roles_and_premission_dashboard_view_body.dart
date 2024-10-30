@@ -91,7 +91,7 @@ class _RolesAndPermissionDashboardViewBodyState
               children: user.roles!
                   .map(
                     (role) => Container(
-                      constraints: BoxConstraints(maxWidth: 150),
+                      constraints: const BoxConstraints(maxWidth: 150),
                       child: Text(
                         role.trim(),
                         style: const TextStyle(

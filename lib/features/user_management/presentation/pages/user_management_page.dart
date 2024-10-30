@@ -21,11 +21,11 @@ class _UserManagementPageState extends State<UserManagementPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      appbar: AppBar(
-        title: const Text('User Management'),
-        backgroundColor: kPrimaryColor,
-        centerTitle: true,
-      ),
+      // appbar: AppBar(
+      //   title: const Text('User Management'),
+      //   backgroundColor: kPrimaryColor,
+      //   centerTitle: true,
+      // ),
       body: AdaptiveLayout(
         mobileLayout: (context) => const SizedBox(),
         tabletLayout: (context) => const SizedBox(),

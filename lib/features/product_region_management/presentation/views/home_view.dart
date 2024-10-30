@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/app_router.dart';
+import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/product_region_management/data/models/product_model.dart';
 import 'package:lms/features/product_region_management/data/models/region_model.dart';
 import 'package:lms/features/product_region_management/presentation/manager/product_cubit/product_cubit.dart';
@@ -63,12 +65,16 @@ class _ProductManagementViewState extends State<ProductManagementView> {
   Widget build(BuildContext context) {
     final filteredProducts = _getFilteredProducts();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Product Management'),
-        actions: [ManageRegionButton(widget: widget)],
+    return CustomScaffold(
+      // appBar: AppBar(
+      //   title: const Text('Product Management'),
+      //   actions: [ManageRegionButton(widget: widget)],
+      // ),
+      body: AdaptiveLayout(
+        mobileLayout: (context) => const SizedBox(),
+        tabletLayout: (context) => const SizedBox(),
+        desktopLayout: (context) => _buildBody(filteredProducts),
       ),
-      body: _buildBody(filteredProducts),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToAddProduct,
         tooltip: 'Add Product',

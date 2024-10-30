@@ -1,120 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lms/core/utils/styles.dart';
 import 'package:lms/core/widgets/custom_button.dart';
 import 'package:lms/core/widgets/custom_text_field.dart';
-import 'package:lms/features/home/presentation/views/widgets/custom_app_bar.dart';
 
 class PaymentViewBody extends StatelessWidget {
   const PaymentViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const CustomAppBar(
-            username: '',
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                flex: 1,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: IconButton(
-                    onPressed: () {
-                      GoRouter.of(context).pop();
-                    },
-                    icon: const Icon(Icons.cancel),
+    return Row(
+      children: [
+        const Expanded(child: SizedBox()),
+        Expanded(
+          flex: 2,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Card(
+              elevation: 5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const CardTitle(),
+                  CustomTextField(label: 'Email'),
+                  CustomTextField(
+                    hint: '1234 1234 1234 1234',
+                    label: 'Card information',
+                    suffixIcons: const [
+                      Icon(FontAwesomeIcons.paypal),
+                      SizedBox(width: 5),
+                      Icon(FontAwesomeIcons.googlePay),
+                      SizedBox(width: 10),
+                      Icon(FontAwesomeIcons.applePay),
+                      SizedBox(width: 10),
+                      Icon(FontAwesomeIcons.ccVisa),
+                      SizedBox(width: 10),
+                      Icon(FontAwesomeIcons.ccMastercard),
+                      SizedBox(width: 10),
+                    ],
                   ),
-                ),
-              ),
-              Expanded(
-                flex: 8,
-                child: Center(
-                  child: SizedBox(
-                    width: 450,
-                    height: MediaQuery.of(context).size.height / 1.2,
-                    child: Card(
-                      elevation: 15,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const CardTitle(),
-                          CustomTextField(label: 'Email'),
-                          CustomTextField(
-                            hint: '1234 1234 1234 1234',
-                            label: 'Card information',
-                            suffixIcons: const [
-                              Icon(FontAwesomeIcons.paypal),
-                              SizedBox(width: 5),
-                              Icon(FontAwesomeIcons.googlePay),
-                              SizedBox(width: 10),
-                              Icon(FontAwesomeIcons.applePay),
-                              SizedBox(width: 10),
-                              Icon(FontAwesomeIcons.ccVisa),
-                              SizedBox(width: 10),
-                              Icon(FontAwesomeIcons.ccMastercard),
-                              SizedBox(width: 10),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomTextField(
-                                textFieldSize: 190,
-                                hint: 'MM / YY',
-                              ),
-                              CustomTextField(
-                                textFieldSize: 190,
-                                hint: 'CVC',
-                              ),
-                            ],
-                          ),
-                          CustomTextField(
-                            label: 'Name on card',
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 400,
-                                child: DropDownMenu(),
-                              ),
-                            ],
-                          ),
-                          CustomTextField(
-                            label: 'Postal code',
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: CustomButton(
-                              buttonName: 'Pay',
-                              color: const Color(0xff0175d3),
-                            ),
-                          ),
-                        ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomTextField(
+                        textFieldSize: 190,
+                        hint: 'MM / YY',
                       ),
-                    ),
+                      CustomTextField(
+                        textFieldSize: 190,
+                        hint: 'CVC',
+                      ),
+                    ],
                   ),
-                ),
+                  CustomTextField(
+                    label: 'Name on card',
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 400,
+                        child: DropDownMenu(),
+                      ),
+                    ],
+                  ),
+                  CustomTextField(
+                    label: 'Postal code',
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 38),
+                    child: buildAnimatedButton(label: 'Pay', onPressed: () {}),
+                  )
+                ],
               ),
-              Expanded(
-                  flex: 1,
-                  child: Container()), // Empty container to balance the layout
-            ],
+            ),
           ),
-        ],
-      ),
+        ),
+        const Expanded(child: SizedBox()),
+      ],
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/payment/presentation/views/widgets/payment_view_body.dart';
 
 class PaymentView extends StatelessWidget {
@@ -6,8 +8,11 @@ class PaymentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: PaymentViewBody(),
-    );
+    return CustomScaffold(
+        body: AdaptiveLayout(
+      mobileLayout: (context) => const SizedBox(),
+      tabletLayout: (context) => const SizedBox(),
+      desktopLayout: (context) => const PaymentViewBody(),
+    ));
   }
 }

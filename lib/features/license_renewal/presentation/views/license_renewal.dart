@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/license_renewal/presentation/views/widgets/license_renewal_body.dart';
 
 class LicenseRenewal extends StatelessWidget {
@@ -6,12 +8,13 @@ class LicenseRenewal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xfffef7ff),
-      ),
-      body: const SafeArea(
-        child: LicenseRenewalBody(),
+    return CustomScaffold(
+      body: SafeArea(
+        child: AdaptiveLayout(
+          mobileLayout: (context) => const SizedBox(),
+          tabletLayout: (context) => const SizedBox(),
+          desktopLayout: (context) => const LicenseRenewalBody(),
+        ),
       ),
     );
   }
