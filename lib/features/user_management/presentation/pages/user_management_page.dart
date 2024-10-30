@@ -119,7 +119,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
-// Modify delete icon appearance in _buildUserListDataRow
+//  Modify delete icon appearance in _buildUserListDataRow
   DataRow _buildUserListDataRow(UserModel user) {
     return DataRow(
       cells: [
@@ -133,6 +133,9 @@ class _UserManagementPageState extends State<UserManagementPage> {
                   value: false,
                   onChanged: (bool? newValue) {},
                 ),
+                SizedBox(
+                    width:
+                        16), // Increase spacing between checkbox and username
                 Text(user.username,
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ],
@@ -143,8 +146,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
         DataCell(Text(user.phone ?? "Unlicensed")),
         DataCell(
           IconButton(
-            icon: Icon(Icons.delete_outline,
-                color: primaryColor), // Outline trash icon
+            icon: Icon(Icons.delete_outline, color: primaryColor),
             onPressed: () async {
               try {
                 await _userRemoteDataSource.removeUser(user.id);
@@ -187,16 +189,22 @@ class _UserManagementPageState extends State<UserManagementPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Add the "Active Users" title
+                  // "Active Users" title with modified font
                   Text(
                     'Active Users',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 28, // Increased font size
+                      fontFamily: 'Roboto', // Change to preferred font family
                       fontWeight: FontWeight.bold,
                       color: primaryColor,
                     ),
                   ),
-                  SizedBox(height: 16), // Space below title
+                  SizedBox(height: 16), // Padding below title
+                  Divider(
+                      color: Colors.grey[300],
+                      thickness: 1), // Light grey divider
+
+                  // Action buttons with additional options
                   Row(
                     children: [
                       ElevatedButton.icon(
@@ -216,9 +224,40 @@ class _UserManagementPageState extends State<UserManagementPage> {
                       ),
                       SizedBox(width: 8),
                       ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: Icon(Icons.security, color: Colors.black),
-                        label: Text('Multi-factor authentication',
+                        onPressed: () {}, // Placeholder for add group action
+                        icon: Icon(Icons.group_add, color: Colors.black),
+                        label: Text('Add group',
+                            style: TextStyle(color: Colors.black)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: _fetchUsers, // Refresh action
+                        icon: Icon(Icons.refresh, color: Colors.black),
+                        label: Text('Refresh',
+                            style: TextStyle(color: Colors.black)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed:
+                            () {}, // Placeholder for export to Excel action
+                        icon: Icon(Icons.file_download, color: Colors.black),
+                        label: Text('Export to Excel',
                             style: TextStyle(color: Colors.black)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey[300],
@@ -232,6 +271,11 @@ class _UserManagementPageState extends State<UserManagementPage> {
                     ],
                   ),
                   SizedBox(height: 16),
+                  Divider(
+                      color: Colors.grey[300],
+                      thickness: 1), // Light grey divider
+
+                  // User table
                   Expanded(
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -239,8 +283,9 @@ class _UserManagementPageState extends State<UserManagementPage> {
                         constraints: BoxConstraints(
                             minWidth: MediaQuery.of(context).size.width),
                         child: DataTable(
+                          dividerThickness: 1,
                           columnSpacing: 24.0,
-                          columns: [
+                          columns: const [
                             DataColumn(
                                 label: Text('Display Name',
                                     style: TextStyle(

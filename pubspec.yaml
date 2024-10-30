@@ -64,6 +64,14 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  fonts:
+    - family: Avenir
+      fonts:
+        - asset: assets/fonts/AvenirLTProBook.otf
+          weight: 400
+        - asset: assets/fonts/AvenirLTProBlackOblique.otf
+          weight: 700
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

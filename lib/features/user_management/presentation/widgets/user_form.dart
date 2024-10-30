@@ -21,6 +21,8 @@ class UserForm extends StatefulWidget {
 class _UserFormState extends State<UserForm> {
   final _formKey = GlobalKey<FormState>();
   List<UserModel> _users = [];
+  int _currentStep = 0;
+  bool _passwordVisible = false;
 
   @override
   void initState() {
@@ -46,230 +48,216 @@ class _UserFormState extends State<UserForm> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
-      final usernames = _users.map((user) => user.username).toSet();
-      final emails = _users.map((user) => user.email).toSet();
-
-      if (usernames.length != _users.length) {
-        showSnackBar(
-            context, 'Duplicate usernames are not allowed', Colors.red);
-        return;
-      }
-
-      if (emails.length != _users.length) {
-        showSnackBar(context, 'Duplicate emails are not allowed', Colors.red);
-        return;
-      }
-
-      // Remove encoded passwords before submission
-      final usersToSubmit = _users.map((user) {
-        // Check for an encoded password (assuming BCrypt starts with "$2a$")
-        final isEncodedPassword = user.password.startsWith(r'$2a$');
-        return UserModel(
-          id: user.id,
-          username: user.username,
-          password: isEncodedPassword ? '' : user.password,
-          email: user.email,
-          firstname: user.firstname,
-          lastname: user.lastname,
-          phone: user.phone,
-          enabled: user.enabled,
-          authorities: user.authorities,
-          groups: user.groups,
-        );
-      }).toList();
-
-      widget.onSubmit(usersToSubmit);
-      // Navigator.of(context).pop();
+      widget.onSubmit(_users);
     }
   }
 
-  void _addUser() {
+  void _onStepTapped(int step) {
     setState(() {
-      _users.add(UserModel(
-        id: 0,
-        username: '',
-        password: '',
-        email: '',
-        firstname: '',
-        lastname: '',
-        phone: '',
-        enabled: true,
-        authorities: [],
-        groups: [],
-      ));
-    });
-  }
-
-  void _removeUser(int index) {
-    setState(() {
-      _users.removeAt(index);
+      _currentStep = step;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Back arrow icon without the AppBar
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: Color(0xFF017278)),
-              onPressed: () => Navigator.of(context).pop(),
-              tooltip: 'Back',
-            ),
-            SizedBox(height: 8.0), // Spacing after the back arrow
-            Expanded(
+      backgroundColor: Colors.white,
+      body: Row(
+        children: [
+          // Sidebar for steps with connected dots
+          // Container(
+          //   width: 200,
+          //   color: Colors.grey[100],
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       Padding(
+          //         padding: const EdgeInsets.all(16.0),
+          //         child: Text(
+          //           'Add a user',
+          //           style: TextStyle(
+          //             fontSize: 20,
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //       ),
+          //       Divider(),
+          //       _buildStepIndicator('Basics', 0),
+          //       _buildStepIndicator('Product licenses', 1),
+          //       _buildStepIndicator('Optional settings', 2),
+          //       _buildStepIndicator('Finish', 3),
+          //     ],
+          //   ),
+          // ),
+
+          // Main form
+          Expanded(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
               child: Form(
                 key: _formKey,
-                child: ListView.builder(
-                  itemCount: _users.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        _buildUserForm(index),
-                        SizedBox(height: 16.0), // Space between user forms
-                      ],
-                    );
-                  },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title and description
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        'Set up the basics',
+                        style: TextStyle(
+                            fontSize: 28, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 24.0),
+                      child: Text(
+                        'To get started, fill out some basic information about who you’re adding as a user.',
+                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          // Form fields with padding, spacing, and white background
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildTextField(
+                                  label: 'First name',
+                                  initialValue: _users[0].firstname,
+                                  onSaved: (value) =>
+                                      _users[0].firstname = value!,
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                              Expanded(
+                                child: _buildTextField(
+                                  label: 'Last name',
+                                  initialValue: _users[0].lastname,
+                                  onSaved: (value) =>
+                                      _users[0].lastname = value!,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          _buildTextField(
+                            label: 'Display name',
+                            initialValue: _users[0].username,
+                            onSaved: (value) => _users[0].username = value!,
+                          ),
+                          SizedBox(height: 20),
+                          _buildTextField(
+                            label: 'Username',
+                            initialValue: _users[0].username,
+                            onSaved: (value) => _users[0].username = value!,
+                          ),
+                          SizedBox(height: 20),
+                          _buildTextField(
+                            label: 'Email',
+                            initialValue: _users[0].email,
+                            validator: (value) {
+                              if (!EmailValidator.validate(value ?? '')) {
+                                return 'Invalid email format';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) => _users[0].email = value!,
+                          ),
+                          SizedBox(height: 20),
+
+                          // Password field with visibility toggle
+                          TextFormField(
+                            initialValue: _users[0].password,
+                            obscureText: !_passwordVisible,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              labelStyle: TextStyle(fontSize: 18),
+                              border: OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.all(12),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _passwordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _passwordVisible = !_passwordVisible;
+                                  });
+                                },
+                              ),
+                            ),
+                            onSaved: (value) => _users[0].password = value!,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a password';
+                              }
+                              return null;
+                            },
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(height: 20),
+
+                          _buildTextField(
+                            label: 'Phone',
+                            initialValue: _users[0].phone,
+                            onSaved: (value) => _users[0].phone = value!,
+                          ),
+                          SizedBox(height: 20),
+
+                          // Enabled toggle switch
+                          SwitchListTile(
+                            title:
+                                Text('Enabled', style: TextStyle(fontSize: 18)),
+                            activeColor: Color(0xFF017278), // LMS color
+                            value: _users[0].enabled,
+                            onChanged: (value) {
+                              setState(() {
+                                _users[0].enabled = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(color: Colors.grey[300]),
+
+                    // Action buttons
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child:
+                                Text('Cancel', style: TextStyle(fontSize: 16)),
+                          ),
+                          ElevatedButton(
+                            onPressed: _submitForm,
+                            child: Text('Submit',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF017278),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: _addUser,
-            child: Icon(Icons.add),
-            backgroundColor: Color(0xFF017278), // LMS color
-            tooltip: 'Add Another User',
-          ),
-          SizedBox(height: 10),
-          FloatingActionButton(
-            onPressed: _submitForm,
-            child: Icon(Icons.save),
-            backgroundColor: Color(0xFF017278), // LMS color
-            tooltip: 'Submit Users',
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildUserForm(int index) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildTextField(
-              label: 'Username',
-              initialValue: _users[index].username,
-              validator: (value) {
-                if (value!.isEmpty) return 'Please enter a username';
-                if (_users.where((user) => user.username == value).length > 1) {
-                  return 'Username already exists';
-                }
-                return null;
-              },
-              onSaved: (value) => _users[index].username = value!,
-            ),
-            SizedBox(height: 12.0), // Space between form fields
-            _buildTextField(
-              label: 'Password',
-              initialValue: _users[index].password,
-              obscureText: true,
-              validator: (value) {
-                if (value!.isEmpty) return 'Please enter a password';
-                return null;
-              },
-              onSaved: (value) => _users[index].password = value!,
-            ),
-            SizedBox(height: 12.0), // Space between form fields
-            _buildTextField(
-              label: 'Email',
-              initialValue: _users[index].email,
-              validator: (value) {
-                if (value!.isEmpty) return 'Please enter an email';
-                if (!EmailValidator.validate(value))
-                  return 'Invalid email format';
-                if (_users.where((user) => user.email == value).length > 1) {
-                  return 'Email already exists';
-                }
-                return null;
-              },
-              onSaved: (value) => _users[index].email = value!,
-            ),
-            SizedBox(height: 12.0), // Space between form fields
-            _buildTextField(
-              label: 'First Name',
-              initialValue: _users[index].firstname,
-              validator: (value) {
-                if (value!.isEmpty) return 'Please enter a first name';
-                return null;
-              },
-              onSaved: (value) => _users[index].firstname = value!,
-            ),
-            SizedBox(height: 12.0), // Space between form fields
-            _buildTextField(
-              label: 'Last Name',
-              initialValue: _users[index].lastname,
-              validator: (value) {
-                if (value!.isEmpty) return 'Please enter a last name';
-                return null;
-              },
-              onSaved: (value) => _users[index].lastname = value!,
-            ),
-            SizedBox(height: 12.0), // Space between form fields
-            _buildTextField(
-              label: 'Phone',
-              initialValue: _users[index].phone,
-              validator: (value) {
-                if (value!.isEmpty) return 'Please enter a phone number';
-                return null;
-              },
-              onSaved: (value) => _users[index].phone = value!,
-            ),
-            SizedBox(height: 12.0), // Space between form fields
-            SwitchListTile(
-              title: Text('Enabled'),
-              activeColor: Color(0xFF017278), // LMS color
-              value: _users[index].enabled,
-              onChanged: (value) {
-                setState(() {
-                  _users[index].enabled = value;
-                });
-              },
-            ),
-            SizedBox(height: 12.0), // Space between Switch and delete button
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  if (_users.length > 1) {
-                    _removeUser(index);
-                  } else {
-                    showSnackBar(
-                        context, 'At least one user is required', Colors.red);
-                  }
-                },
-                tooltip: 'Remove User',
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -277,21 +265,55 @@ class _UserFormState extends State<UserForm> {
   Widget _buildTextField({
     required String label,
     required String? initialValue,
-    required FormFieldValidator<String>? validator,
     required FormFieldSetter<String>? onSaved,
-    bool obscureText = false,
+    FormFieldValidator<String>? validator,
   }) {
     return TextFormField(
       initialValue: initialValue,
-      obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: TextStyle(fontSize: 18),
         border: OutlineInputBorder(),
         filled: true,
-        fillColor: Colors.grey[100],
+        fillColor: Colors.white,
+        contentPadding: EdgeInsets.all(12),
       ),
-      validator: validator,
+      style: TextStyle(fontSize: 18),
       onSaved: onSaved,
+      validator: validator,
+    );
+  }
+
+  Widget _buildStepIndicator(String step, int index) {
+    bool isActive = _currentStep == index;
+    return GestureDetector(
+      onTap: () => _onStepTapped(index),
+      child: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 12),
+            height: 12,
+            width: 12,
+            decoration: BoxDecoration(
+              color: isActive ? Color(0xFF017278) : Colors.grey,
+              shape: BoxShape.circle,
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                step,
+                style: TextStyle(
+                  color: isActive ? Color(0xFF017278) : Colors.grey,
+                  fontSize: 16,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
