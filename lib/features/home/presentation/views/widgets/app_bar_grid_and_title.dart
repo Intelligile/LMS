@@ -12,7 +12,7 @@ class AppBarGridIconAndTitle extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () {
-            Scaffold.of(context).openDrawer();
+            //Scaffold.of(context).openDrawer();
           },
           icon: const Icon(
             Icons.apps,

@@ -211,8 +211,9 @@ void main() {
           create: (_) => ThemeProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => DrawerStateProvider(),
-        )
+          create: (_) => ExpansionTileDrawerProvider(),
+        ),
+        ChangeNotifierProvider(create: (_) => OpenedAndClosedDrawerProvider()),
       ],
       child: MyApp(router: router),
     ),

@@ -15,12 +15,14 @@ class InActiveDrawerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(item.icon),
-      title: Text(
-        item.title,
-        style: TextStyle(
-          fontSize: getResponsiveFontSize(context, baseFontSize: 14),
-        ),
-      ),
+      title: item.title != null
+          ? Text(
+              item.title!,
+              style: TextStyle(
+                fontSize: getResponsiveFontSize(context, baseFontSize: 14),
+              ),
+            )
+          : null,
     );
   }
 }
@@ -40,13 +42,15 @@ class ActiveDrawerItem extends StatelessWidget {
         item.icon,
         color: kPrimaryColor,
       ),
-      title: Text(
-        item.title,
-        style: TextStyle(
-          color: kPrimaryColor,
-          fontSize: getResponsiveFontSize(context, baseFontSize: 14),
-        ),
-      ),
+      title: item.title != null
+          ? Text(
+              item.title!,
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontSize: getResponsiveFontSize(context, baseFontSize: 14),
+              ),
+            )
+          : null,
     );
   }
 }

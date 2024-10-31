@@ -19,16 +19,18 @@ class DrawerMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final drawerStateProvider = Provider.of<DrawerStateProvider>(context);
-    final isExpanded = drawerStateProvider.isExpanded(item.title);
+    final drawerStateProvider =
+        Provider.of<ExpansionTileDrawerProvider>(context);
+    final isExpanded = drawerStateProvider.isExpanded(item.title ?? '');
 
     return ExpansionTile(
       initiallyExpanded: isExpanded,
       onExpansionChanged: (value) {
-        drawerStateProvider.toggleExpansion(item.title);
+        drawerStateProvider.toggleExpansion(item.title ?? '');
       },
       leading: Icon(item.icon),
-      title: Text(item.title, style: const TextStyle(color: Colors.black)),
+      title:
+          Text(item.title ?? '', style: const TextStyle(color: Colors.black)),
       iconColor: Colors.black,
       collapsedIconColor: Colors.black,
       children: item.children.asMap().entries.map(
