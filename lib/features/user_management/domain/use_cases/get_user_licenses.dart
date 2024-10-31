@@ -1,6 +1,5 @@
 import 'package:lms/features/user_management/data/repositories/user_repository.dart';
 import 'package:lms/features/user_management/domain/entities/license.dart';
-import 'package:lms/features/user_management/domain/repositories/user_repository.dart';
 
 class GetUserLicenses {
   final UserRepositoryManagementImpl repositoryManagementImpl;

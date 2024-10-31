@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/get_responsive_font_size.dart';
 import 'package:lms/core/utils/app_router.dart';
+import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/features/license_renewal/presentation/model/license_model.dart';
 
 class LicenseRenewalBody extends StatelessWidget {
@@ -50,70 +51,96 @@ class LicenseRenewalBody extends StatelessWidget {
       ),
     ];
 
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      child: DataTable(
-        columns: [
-          buildDataColumn(context, columnName: 'License Name'),
-          buildDataColumn(context, columnName: 'License Key'),
-          buildDataColumn(context, columnName: 'Purchase Date'),
-          buildDataColumn(context, columnName: 'Expiration Date'),
-          buildDataColumn(context, columnName: 'Status'),
-          buildDataColumn(context, columnName: 'License Type'),
-          buildDataColumn(context, columnName: 'Cost'),
-          buildDataColumn(context, columnName: 'Renewal Cost'),
-          buildDataColumn(context, columnName: 'Activation Date'),
-          buildDataColumn(context, columnName: 'Auto-Renewal Status'),
-          buildDataColumn(context, columnName: 'Renew'),
-        ],
-        rows: licenses.map((license) {
-          return DataRow(cells: [
-            buildDataCell(dataCell: license.licenseName),
-            buildDataCell(dataCell: license.licenseKey),
-            buildDataCell(dataCell: license.purchaseDate.toLocal().toString()),
-            buildDataCell(
-                dataCell: license.expirationDate.toLocal().toString()),
-            buildContainerDataCell(license),
-            buildDataCell(dataCell: license.licenseType),
-            buildDataCell(dataCell: '\$${license.cost.toStringAsFixed(2)}'),
-            buildDataCell(
-                dataCell: '\$${license.renewalCost.toStringAsFixed(2)}'),
-            buildDataCell(
-                dataCell:
-                    license.activationDate?.toLocal().toString() ?? 'N/A'),
-            DataCell(
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: license.autoRenewalStatus ? Colors.green : Colors.red,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                      Text(license.autoRenewalStatus ? 'Enabled' : 'Disabled'),
-                ),
-              ),
-            ),
-            DataCell(
-              GestureDetector(
-                onTap: () {
-                  GoRouter.of(context).push(AppRouter.kPaymentView);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.blue,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: CustomBreadcrumb(
+            items: const ['Home', 'Manage purchased proudcts'],
+            onTap: (index) {
+              // Add navigation logic based on index
+              if (index == 0) {
+                GoRouter.of(context).go(AppRouter.kHomeView);
+              } else if (index == 1) {
+                // Navigate to Active Users
+              }
+            },
+          ),
+        ),
+        const SizedBox(height: 16), // Add spacing between breadcrumb and table
+        Expanded(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: DataTable(
+              columns: [
+                buildDataColumn(context, columnName: 'License Name'),
+                buildDataColumn(context, columnName: 'License Key'),
+                buildDataColumn(context, columnName: 'Purchase Date'),
+                buildDataColumn(context, columnName: 'Expiration Date'),
+                buildDataColumn(context, columnName: 'Status'),
+                buildDataColumn(context, columnName: 'License Type'),
+                buildDataColumn(context, columnName: 'Cost'),
+                buildDataColumn(context, columnName: 'Renewal Cost'),
+                buildDataColumn(context, columnName: 'Activation Date'),
+                buildDataColumn(context, columnName: 'Auto-Renewal Status'),
+                buildDataColumn(context, columnName: 'Renew'),
+              ],
+              rows: licenses.map((license) {
+                return DataRow(cells: [
+                  buildDataCell(dataCell: license.licenseName),
+                  buildDataCell(dataCell: license.licenseKey),
+                  buildDataCell(
+                      dataCell: license.purchaseDate.toLocal().toString()),
+                  buildDataCell(
+                      dataCell: license.expirationDate.toLocal().toString()),
+                  buildContainerDataCell(license),
+                  buildDataCell(dataCell: license.licenseType),
+                  buildDataCell(
+                      dataCell: '\$${license.cost.toStringAsFixed(2)}'),
+                  buildDataCell(
+                      dataCell: '\$${license.renewalCost.toStringAsFixed(2)}'),
+                  buildDataCell(
+                      dataCell: license.activationDate?.toLocal().toString() ??
+                          'N/A'),
+                  DataCell(
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: license.autoRenewalStatus
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                            license.autoRenewalStatus ? 'Enabled' : 'Disabled'),
+                      ),
+                    ),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Renew'),
+                  DataCell(
+                    GestureDetector(
+                      onTap: () {
+                        GoRouter.of(context).push(AppRouter.kPaymentView);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.blue,
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Renew'),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                ]);
+              }).toList(),
             ),
-          ]);
-        }).toList(),
-      ),
+          ),
+        ),
+      ],
     );
   }
 

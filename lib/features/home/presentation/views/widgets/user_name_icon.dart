@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserNameIcon extends StatelessWidget {
   final String username;
 
-  UserNameIcon({required this.username});
+  const UserNameIcon({super.key, required this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class UserNameIcon extends StatelessWidget {
 
   void _showPopupMenu(BuildContext context) {
     final RenderBox overlay =
-        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+        Overlay.of(context).context.findRenderObject() as RenderBox;
 
     showMenu(
       context: context,

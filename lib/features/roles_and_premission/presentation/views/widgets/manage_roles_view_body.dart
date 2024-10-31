@@ -8,7 +8,7 @@ import 'package:lms/features/roles_and_premission/presentation/manager/authoriy_
 import 'package:lms/features/roles_and_premission/presentation/views/roles_and_permission_dashboard_view.dart';
 
 class ManageRolesViewBody extends StatelessWidget {
-  ManageRolesViewBody({super.key});
+  const ManageRolesViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {

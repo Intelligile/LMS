@@ -46,7 +46,7 @@ class _AddNewRoleViewBodyState extends State<AddNewRoleViewBody> {
             controller: _roleController,
             decoration: InputDecoration(
               labelText: 'Role Name',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.add),
                 onPressed: _addRole,

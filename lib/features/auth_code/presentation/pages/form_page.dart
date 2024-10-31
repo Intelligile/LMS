@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_button.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/auth_code/presentation/view_model/authorization_code_view_model.dart';
@@ -42,6 +45,20 @@ class FormPageBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: CustomBreadcrumb(
+                  items: const ['Home', 'Generate authorization code'],
+                  onTap: (index) {
+                    // Add navigation logic based on index
+                    if (index == 0) {
+                      GoRouter.of(context).go(AppRouter.kHomeView);
+                    } else if (index == 1) {
+                      // Navigate to Active Users
+                    }
+                  },
+                ),
+              ),
               const SizedBox(height: 30),
               const Text(
                 "Generate Authorization Code",

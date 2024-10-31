@@ -6,7 +6,7 @@ import 'package:lms/features/user_groups/data/models/group_model.dart';
 class GroupCard extends StatelessWidget {
   final GroupModel group;
 
-  const GroupCard({Key? key, required this.group}) : super(key: key);
+  const GroupCard({super.key, required this.group});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class GroupCard extends StatelessWidget {
               const EdgeInsets.all(16.0), // Add padding inside the ListTile
           title: Text(
             group.name,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16), // Style for group name
           ),

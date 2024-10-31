@@ -10,19 +10,19 @@ class PaymentSummaryPage extends StatelessWidget {
   final String? authCode;
 
   const PaymentSummaryPage({
-    Key? key,
+    super.key,
     required this.paymentMethod,
     this.cardNumber,
     this.expiryDate,
     this.cvv,
     this.authCode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment Summary'),
+        title: const Text('Payment Summary'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -31,7 +31,7 @@ class PaymentSummaryPage extends StatelessWidget {
           children: [
             Text(
               'Payment Method: $paymentMethod',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             if (paymentMethod == 'Credit Card') ...[
               Text('Card Number: $cardNumber'),
@@ -40,14 +40,14 @@ class PaymentSummaryPage extends StatelessWidget {
             ] else if (paymentMethod == 'Authorization Code') ...[
               Text('Authorization Code: $authCode'),
             ],
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // Implement the action to confirm the payment and clear the cart
                 Provider.of<CartProvider>(context, listen: false).clearCart();
                 Navigator.popUntil(context, (route) => route.isFirst);
               },
-              child: Text('Confirm Payment'),
+              child: const Text('Confirm Payment'),
             ),
           ],
         ),

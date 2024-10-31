@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/product_region_management/data/models/product_model.dart';
 import 'package:lms/features/product_region_management/presentation/manager/product_cubit/product_cubit.dart';
@@ -103,10 +106,25 @@ class ProductListPageBody extends StatelessWidget {
       },
       builder: (context, state) {
         return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: CustomBreadcrumb(
+                items: const ['Home', 'Purshase proudct'],
+                onTap: (index) {
+                  // Add navigation logic based on index
+                  if (index == 0) {
+                    GoRouter.of(context).go(AppRouter.kHomeView);
+                  } else if (index == 1) {
+                    // Navigate to Active Users
+                  }
+                },
+              ),
+            ),
             const Expanded(child: SizedBox()),
             Expanded(
-              flex: 3,
+              flex: 7,
               child: Column(
                 children: [
                   const SizedBox(
@@ -130,7 +148,7 @@ class ProductListPageBody extends StatelessWidget {
                 ],
               ),
             ),
-            const Expanded(child: SizedBox()),
+            const Expanded(flex: 3, child: SizedBox()),
           ],
         );
       },

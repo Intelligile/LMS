@@ -9,7 +9,7 @@ import 'user_card.dart';
 class UserListPage extends StatefulWidget {
   final Function(UserModel) onEditUser;
 
-  UserListPage({required this.onEditUser});
+  const UserListPage({super.key, required this.onEditUser});
 
   @override
   _UserListPageState createState() => _UserListPageState();
@@ -58,7 +58,7 @@ class _UserListPageState extends State<UserListPage> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : ListView.builder(
             itemCount: _users.length,
             itemBuilder: (context, index) {

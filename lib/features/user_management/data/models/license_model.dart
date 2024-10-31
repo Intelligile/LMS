@@ -2,14 +2,10 @@ import 'package:lms/features/user_management/domain/entities/license.dart';
 
 class LicenseModel extends License {
   LicenseModel({
-    required String deviceName,
-    required String serverCode,
-    required DateTime endDate,
-  }) : super(
-          deviceName: deviceName,
-          serverCode: serverCode,
-          endDate: endDate,
-        );
+    required super.deviceName,
+    required super.serverCode,
+    required super.endDate,
+  });
 
   factory LicenseModel.fromJson(Map<String, dynamic> json) {
     return LicenseModel(

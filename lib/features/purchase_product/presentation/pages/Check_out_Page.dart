@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:lms/features/purchase_product/application/providers/cart_provider.dart';
 import 'package:lms/features/purchase_product/presentation/pages/Payment_Summary_Page.dart';
+import 'package:provider/provider.dart';
 
 class CheckoutPage extends StatelessWidget {
+  const CheckoutPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    final lmsPrimaryColor = Color(0xFF017278); // LMS color
+    const lmsPrimaryColor = Color(0xFF017278); // LMS color
 
     return Scaffold(
       appBar: AppBar(
@@ -20,8 +22,8 @@ class CheckoutPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             child: Text(
               'Summary of Purchase',
               style: TextStyle(
@@ -47,12 +49,12 @@ class CheckoutPage extends StatelessWidget {
                     child: ListTile(
                       title: Text(
                         cartItem.product.name,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text('Quantity: ${cartItem.quantity}'),
                       trailing: Text(
                         '\$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           color: lmsPrimaryColor,
                           fontSize: 16,
@@ -71,7 +73,7 @@ class CheckoutPage extends StatelessWidget {
               children: [
                 Text(
                   'Total: \$${cartProvider.totalAmount.toStringAsFixed(2)}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: lmsPrimaryColor,
@@ -103,7 +105,7 @@ class CheckoutPage extends StatelessWidget {
   }
 
   void _showPaymentMethodDialog(BuildContext context, Color primaryColor) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     String paymentMethod = '';
     String cardNumber = '';
     String expiryDate = '';
@@ -125,7 +127,7 @@ class CheckoutPage extends StatelessWidget {
                 style: TextStyle(color: primaryColor),
               ),
               content: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -199,7 +201,7 @@ class CheckoutPage extends StatelessWidget {
                     backgroundColor: primaryColor,
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (formKey.currentState!.validate()) {
                       Navigator.of(context).pop();
                       _showConfirmationPage(
                         context,

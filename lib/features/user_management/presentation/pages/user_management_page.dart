@@ -1,8 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/api.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
@@ -193,6 +196,18 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                CustomBreadcrumb(
+                  items: const ['Home', 'Active users'],
+                  onTap: (index) {
+                    // Add navigation logic based on index
+                    if (index == 0) {
+                      GoRouter.of(context).go(AppRouter.kHomeView);
+                    } else if (index == 1) {
+                      // Navigate to Active Users
+                    }
+                  },
+                ),
+
                 // "Active Users" title with modified font
                 const SizedBox(
                   height: 30,

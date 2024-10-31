@@ -8,7 +8,8 @@ class UserForm extends StatefulWidget {
   final bool isEditing;
   final Function(List<UserModel>) onSubmit;
 
-  UserForm({
+  const UserForm({
+    super.key,
     required this.users,
     required this.isEditing,
     required this.onSubmit,
@@ -101,8 +102,8 @@ class _UserFormState extends State<UserForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Title and description
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 16.0),
                       child: Text(
                         'Set up the basics',
                         style: TextStyle(
@@ -131,7 +132,7 @@ class _UserFormState extends State<UserForm> {
                                       _users[0].firstname = value!,
                                 ),
                               ),
-                              SizedBox(width: 16),
+                              const SizedBox(width: 16),
                               Expanded(
                                 child: _buildTextField(
                                   label: 'Last name',
@@ -142,19 +143,19 @@ class _UserFormState extends State<UserForm> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           _buildTextField(
                             label: 'Display name',
                             initialValue: _users[0].username,
                             onSaved: (value) => _users[0].username = value!,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           _buildTextField(
                             label: 'Username',
                             initialValue: _users[0].username,
                             onSaved: (value) => _users[0].username = value!,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           _buildTextField(
                             label: 'Email',
                             initialValue: _users[0].email,
@@ -166,7 +167,7 @@ class _UserFormState extends State<UserForm> {
                             },
                             onSaved: (value) => _users[0].email = value!,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           // Password field with visibility toggle
                           TextFormField(
@@ -174,11 +175,11 @@ class _UserFormState extends State<UserForm> {
                             obscureText: !_passwordVisible,
                             decoration: InputDecoration(
                               labelText: 'Password',
-                              labelStyle: TextStyle(fontSize: 18),
-                              border: OutlineInputBorder(),
+                              labelStyle: const TextStyle(fontSize: 18),
+                              border: const OutlineInputBorder(),
                               filled: true,
                               fillColor: Colors.white,
-                              contentPadding: EdgeInsets.all(12),
+                              contentPadding: const EdgeInsets.all(12),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _passwordVisible
@@ -199,22 +200,22 @@ class _UserFormState extends State<UserForm> {
                               }
                               return null;
                             },
-                            style: TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 18),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           _buildTextField(
                             label: 'Phone',
                             initialValue: _users[0].phone,
                             onSaved: (value) => _users[0].phone = value!,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           // Enabled toggle switch
                           SwitchListTile(
-                            title:
-                                Text('Enabled', style: TextStyle(fontSize: 18)),
-                            activeColor: Color(0xFF017278), // LMS color
+                            title: const Text('Enabled',
+                                style: TextStyle(fontSize: 18)),
+                            activeColor: const Color(0xFF017278), // LMS color
                             value: _users[0].enabled,
                             onChanged: (value) {
                               setState(() {
@@ -235,19 +236,19 @@ class _UserFormState extends State<UserForm> {
                         children: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child:
-                                Text('Cancel', style: TextStyle(fontSize: 16)),
+                            child: const Text('Cancel',
+                                style: TextStyle(fontSize: 16)),
                           ),
                           ElevatedButton(
                             onPressed: _submitForm,
-                            child: Text('Submit',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white)),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF017278),
-                              padding: EdgeInsets.symmetric(
+                              backgroundColor: const Color(0xFF017278),
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 24, vertical: 12),
                             ),
+                            child: const Text('Submit',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white)),
                           ),
                         ],
                       ),
@@ -272,13 +273,13 @@ class _UserFormState extends State<UserForm> {
       initialValue: initialValue,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(fontSize: 18),
-        border: OutlineInputBorder(),
+        labelStyle: const TextStyle(fontSize: 18),
+        border: const OutlineInputBorder(),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: EdgeInsets.all(12),
+        contentPadding: const EdgeInsets.all(12),
       ),
-      style: TextStyle(fontSize: 18),
+      style: const TextStyle(fontSize: 18),
       onSaved: onSaved,
       validator: validator,
     );
@@ -291,11 +292,11 @@ class _UserFormState extends State<UserForm> {
       child: Row(
         children: [
           Container(
-            margin: EdgeInsets.symmetric(vertical: 12),
+            margin: const EdgeInsets.symmetric(vertical: 12),
             height: 12,
             width: 12,
             decoration: BoxDecoration(
-              color: isActive ? Color(0xFF017278) : Colors.grey,
+              color: isActive ? const Color(0xFF017278) : Colors.grey,
               shape: BoxShape.circle,
             ),
           ),
@@ -305,7 +306,7 @@ class _UserFormState extends State<UserForm> {
               child: Text(
                 step,
                 style: TextStyle(
-                  color: isActive ? Color(0xFF017278) : Colors.grey,
+                  color: isActive ? const Color(0xFF017278) : Colors.grey,
                   fontSize: 16,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
                 ),

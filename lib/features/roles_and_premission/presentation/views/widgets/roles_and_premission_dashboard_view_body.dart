@@ -1,7 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
+import 'package:lms/core/utils/app_router.dart';
+import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/features/roles_and_premission/data/models/user_dto.dart';
 import 'package:lms/features/roles_and_premission/presentation/manager/user_cubit/user_dto_cubit.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/roles_and_permission_dashboard_view.dart';
@@ -41,6 +44,20 @@ class _RolesAndPermissionDashboardViewBodyState
         builder: (context, state) {
           return Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: CustomBreadcrumb(
+                  items: const ['Home', 'Roles & Permissions'],
+                  onTap: (index) {
+                    // Add navigation logic based on index
+                    if (index == 0) {
+                      GoRouter.of(context).go(AppRouter.kHomeView);
+                    } else if (index == 1) {
+                      // Navigate to Active Users
+                    }
+                  },
+                ),
+              ),
               // Filters Row
               const UsersTableFilteringRow(),
               // Data Row

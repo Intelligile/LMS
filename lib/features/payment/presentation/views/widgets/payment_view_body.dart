@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/utils/styles.dart';
+import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_button.dart';
 import 'package:lms/core/widgets/custom_text_field.dart';
 
@@ -10,10 +13,25 @@ class PaymentViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: CustomBreadcrumb(
+            items: const ['Home', 'Payment'],
+            onTap: (index) {
+              // Add navigation logic based on index
+              if (index == 0) {
+                GoRouter.of(context).go(AppRouter.kHomeView);
+              } else if (index == 1) {
+                // Navigate to Active Users
+              }
+            },
+          ),
+        ),
         const Expanded(child: SizedBox()),
         Expanded(
-          flex: 2,
+          flex: 4,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Card(
@@ -76,7 +94,7 @@ class PaymentViewBody extends StatelessWidget {
             ),
           ),
         ),
-        const Expanded(child: SizedBox()),
+        const Expanded(flex: 2, child: SizedBox()),
       ],
     );
   }

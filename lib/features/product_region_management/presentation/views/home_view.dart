@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/product_region_management/data/models/product_model.dart';
 import 'package:lms/features/product_region_management/data/models/region_model.dart';
@@ -116,9 +117,20 @@ class _ProductManagementViewState extends State<ProductManagementView> {
           },
           builder: (context, productState) {
             return Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(left: 12.0, right: 12),
               child: Column(
                 children: [
+                  CustomBreadcrumb(
+                    items: const ['Home', 'Product management'],
+                    onTap: (index) {
+                      // Add navigation logic based on index
+                      if (index == 0) {
+                        GoRouter.of(context).go(AppRouter.kHomeView);
+                      } else if (index == 1) {
+                        // Navigate to Active Users
+                      }
+                    },
+                  ),
                   _buildRegionDropdown(),
                   const SizedBox(height: 20),
                   _buildProductHeader(),

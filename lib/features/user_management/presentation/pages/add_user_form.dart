@@ -1,13 +1,13 @@
+import 'package:email_validator/email_validator.dart'; // If you haven't added it yet, add this package to validate emails.
 import 'package:flutter/material.dart';
+import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/features/user_management/data/models/user_model.dart';
 import 'package:lms/features/user_management/domain/use_cases/add_user.dart';
-import 'package:lms/core/functions/show_snack_bar.dart';
-import 'package:email_validator/email_validator.dart'; // If you haven't added it yet, add this package to validate emails.
 
 class AddUsersForm extends StatefulWidget {
   final AddUser addUsersUseCase; // Inject the use case
 
-  AddUsersForm({required this.addUsersUseCase});
+  const AddUsersForm({super.key, required this.addUsersUseCase});
 
   @override
   _AddUsersFormState createState() => _AddUsersFormState();
@@ -15,7 +15,7 @@ class AddUsersForm extends StatefulWidget {
 
 class _AddUsersFormState extends State<AddUsersForm> {
   final _formKey = GlobalKey<FormState>();
-  List<UserModel> _users = [];
+  final List<UserModel> _users = [];
 
   @override
   void initState() {
@@ -72,8 +72,8 @@ class _AddUsersFormState extends State<AddUsersForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF017278), // LMS color
-        title: Text('Add Users', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF017278), // LMS color
+        title: const Text('Add Users', style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -91,17 +91,17 @@ class _AddUsersFormState extends State<AddUsersForm> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            backgroundColor: Color(0xFF017278), // LMS color
+            backgroundColor: const Color(0xFF017278), // LMS color
             onPressed: _addUser,
-            child: Icon(Icons.add),
             tooltip: 'Add Another User',
+            child: const Icon(Icons.add),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           FloatingActionButton(
-            backgroundColor: Color(0xFF017278), // LMS color
+            backgroundColor: const Color(0xFF017278), // LMS color
             onPressed: _submitForm,
-            child: Icon(Icons.save),
             tooltip: 'Submit Users',
+            child: const Icon(Icons.save),
           ),
         ],
       ),
@@ -110,7 +110,7 @@ class _AddUsersFormState extends State<AddUsersForm> {
 
   Widget _buildUserForm(int index) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -180,8 +180,8 @@ class _AddUsersFormState extends State<AddUsersForm> {
               },
             ),
             SwitchListTile(
-              activeColor: Color(0xFF017278), // LMS color
-              title: Text('Enabled'),
+              activeColor: const Color(0xFF017278), // LMS color
+              title: const Text('Enabled'),
               value: _users[index].enabled,
               onChanged: (value) {
                 setState(() {
@@ -209,11 +209,11 @@ class _AddUsersFormState extends State<AddUsersForm> {
         obscureText: obscureText,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: Color(0xFF017278)), // LMS color
-          focusedBorder: OutlineInputBorder(
+          labelStyle: const TextStyle(color: Color(0xFF017278)), // LMS color
+          focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xFF017278)), // LMS color
           ),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         validator: validator,
         onSaved: onSaved,

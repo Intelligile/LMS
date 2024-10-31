@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
-import 'package:lms/features/home/presentation/views/widgets/custom_app_bar.dart';
 import 'package:lms/features/home/presentation/views/widgets/home_view_body.dart';
 
 class HomeView extends StatelessWidget {

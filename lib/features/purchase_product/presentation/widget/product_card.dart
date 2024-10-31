@@ -9,9 +9,9 @@ class ProductCard extends StatefulWidget {
   final RegionProductModel product;
 
   const ProductCard({
-    Key? key,
+    super.key,
     required this.product,
-  }) : super(key: key);
+  });
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -38,8 +38,8 @@ class _ProductCardState extends State<ProductCard> {
               onPressed: () {
                 Navigator.of(context).pop();
                 // Navigate to the cart page after adding the product
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => CartPage()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const CartPage()));
               },
               style: TextButton.styleFrom(
                 foregroundColor:

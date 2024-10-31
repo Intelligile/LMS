@@ -23,7 +23,7 @@ class UserGroupRepositoryImpl implements UserGroupRepository {
   Future<Either<Failure, void>> removeUserFromGroup(UserGroup userGroup) async {
     try {
       await apiService.removeUserFromGroup(userGroup.userId, userGroup.groupId);
-      return Right(null);
+      return const Right(null);
     } catch (e) {
       return Left(ServerFailure("User Not removed from this group $e"));
     }

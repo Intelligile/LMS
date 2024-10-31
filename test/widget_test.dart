@@ -10,7 +10,7 @@ GoRouter createTestRouter() {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => Scaffold(
+        builder: (context, state) => const Scaffold(
           body: Center(child: Text('Home Page')),
         ),
       ),
