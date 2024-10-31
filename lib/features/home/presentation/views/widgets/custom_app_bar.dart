@@ -24,10 +24,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     return Container(
       color: kAppBarColor,
-      // Padding to avoid overflow
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const AppBarGridIconAndTitle(),
           const Expanded(child: SizedBox()),

@@ -37,7 +37,7 @@ class CustomScaffold extends StatelessWidget {
                 child: const CustomDrawer(),
               ),
               Expanded(
-                flex: drawerOpen ? 8 : 12,
+                flex: drawerOpen ? 8 : 16,
                 child: body,
               ),
             ],

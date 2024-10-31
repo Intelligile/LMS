@@ -10,14 +10,12 @@ class AppBarGridIconAndTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        IconButton(
-          onPressed: () {
-            //Scaffold.of(context).openDrawer();
-          },
-          icon: const Icon(
-            Icons.apps,
-            color: Colors.white,
-          ),
+        const SizedBox(
+          width: 10,
+        ),
+        const Icon(
+          Icons.apps,
+          color: Colors.white,
         ),
         Text(
           'License Management System',

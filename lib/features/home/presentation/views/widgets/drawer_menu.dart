@@ -24,6 +24,7 @@ class DrawerMenu extends StatelessWidget {
     final isExpanded = drawerStateProvider.isExpanded(item.title ?? '');
 
     return ExpansionTile(
+      tilePadding: const EdgeInsets.only(right: 4, left: 8),
       initiallyExpanded: isExpanded,
       onExpansionChanged: (value) {
         drawerStateProvider.toggleExpansion(item.title ?? '');

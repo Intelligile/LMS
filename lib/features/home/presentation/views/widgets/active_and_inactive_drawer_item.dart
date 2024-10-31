@@ -14,6 +14,7 @@ class InActiveDrawerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: const EdgeInsets.only(left: 10),
       leading: Icon(item.icon),
       title: item.title != null
           ? Text(
@@ -38,6 +39,7 @@ class ActiveDrawerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: const EdgeInsets.only(left: 10),
       leading: Icon(
         item.icon,
         color: kPrimaryColor,

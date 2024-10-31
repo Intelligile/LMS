@@ -24,53 +24,62 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
         builder: (context, drawerStateProvider, child) {
       bool drawerOpen = drawerStateProvider.isDrawerOpen;
       List<dynamic> drawerItems = getDrawerItems(drawerOpen);
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          IconButton(onPressed: widget.onPressed, icon: const Icon(Icons.menu)),
-          const SizedBox(height: 30),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: drawerItems.length,
-              itemBuilder: (context, index) {
-                final item = drawerItems[index];
-                if (item is ListTileItemModel) {
-                  return GestureDetector(
-                    onTap: () {
-                      if (selectedIndex != index) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16, top: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: widget.onPressed,
+              child: const Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Icon(Icons.menu),
+              ),
+            ),
+            const SizedBox(height: 15),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: drawerItems.length,
+                itemBuilder: (context, index) {
+                  final item = drawerItems[index];
+                  if (item is ListTileItemModel) {
+                    return GestureDetector(
+                      onTap: () {
+                        if (selectedIndex != index) {
+                          setState(() {
+                            selectedIndex = index;
+                            selectedChildIndex = 0;
+                          });
+                          if (item.path != null) {
+                            GoRouter.of(context).go(item.path!);
+                          }
+                        }
+                      },
+                      child: DrawerItem(
+                        item: item,
+                        isSelected: selectedIndex == index,
+                      ),
+                    );
+                  } else if (item is ExpansionListTileItemModel) {
+                    return DrawerMenu(
+                      item: item,
+                      selectedChildIndex:
+                          selectedIndex == index ? selectedChildIndex : -1,
+                      onChildTap: (childIndex) {
                         setState(() {
                           selectedIndex = index;
-                          selectedChildIndex = 0;
+                          selectedChildIndex = childIndex;
                         });
-                        if (item.path != null) {
-                          GoRouter.of(context).go(item.path!);
-                        }
-                      }
-                    },
-                    child: DrawerItem(
-                      item: item,
-                      isSelected: selectedIndex == index,
-                    ),
-                  );
-                } else if (item is ExpansionListTileItemModel) {
-                  return DrawerMenu(
-                    item: item,
-                    selectedChildIndex:
-                        selectedIndex == index ? selectedChildIndex : -1,
-                    onChildTap: (childIndex) {
-                      setState(() {
-                        selectedIndex = index;
-                        selectedChildIndex = childIndex;
-                      });
-                    },
-                  );
-                }
-                return const SizedBox.shrink();
-              },
+                      },
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     });
   }
@@ -90,55 +99,64 @@ class _CustomCollapsedDrawerState extends State<CustomCollapsedDrawer> {
         builder: (context, drawerStateProvider, child) {
       bool drawerOpen = drawerStateProvider.isDrawerOpen;
       List<dynamic> drawerItems = getDrawerItems(drawerOpen);
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          IconButton(onPressed: widget.onPressed, icon: const Icon(Icons.menu)),
-          const SizedBox(
-            height: 30,
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: drawerItems.length,
-              itemBuilder: (context, index) {
-                final item = drawerItems[index];
-                if (item is ListTileItemModel) {
-                  return GestureDetector(
-                    onTap: () {
-                      if (selectedIndex != index) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16, top: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: widget.onPressed,
+              child: const Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Icon(Icons.menu),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: drawerItems.length,
+                itemBuilder: (context, index) {
+                  final item = drawerItems[index];
+                  if (item is ListTileItemModel) {
+                    return GestureDetector(
+                      onTap: () {
+                        if (selectedIndex != index) {
+                          setState(() {
+                            selectedIndex = index;
+                            selectedChildIndex = 0;
+                          });
+                          if (item.path != null) {
+                            GoRouter.of(context).go(item.path!);
+                          }
+                        }
+                      },
+                      child: DrawerItem(
+                        item: item,
+                        isSelected: selectedIndex == index,
+                      ),
+                    );
+                  } else if (item is ExpansionListTileItemModel) {
+                    return DrawerMenu(
+                      item: item,
+                      selectedChildIndex:
+                          selectedIndex == index ? selectedChildIndex : -1,
+                      onChildTap: (childIndex) {
                         setState(() {
                           selectedIndex = index;
-                          selectedChildIndex = 0;
+                          selectedChildIndex = childIndex;
                         });
-                        if (item.path != null) {
-                          GoRouter.of(context).go(item.path!);
-                        }
-                      }
-                    },
-                    child: DrawerItem(
-                      item: item,
-                      isSelected: selectedIndex == index,
-                    ),
-                  );
-                } else if (item is ExpansionListTileItemModel) {
-                  return DrawerMenu(
-                    item: item,
-                    selectedChildIndex:
-                        selectedIndex == index ? selectedChildIndex : -1,
-                    onChildTap: (childIndex) {
-                      setState(() {
-                        selectedIndex = index;
-                        selectedChildIndex = childIndex;
-                      });
-                    },
-                  );
-                }
-                return const SizedBox.shrink();
-              },
+                      },
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     });
   }
