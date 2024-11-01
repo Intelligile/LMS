@@ -1,6 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:lms/core/utils/api.dart';
+import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/payment/presentation/views/widgets/payment_view_body.dart';
 import 'package:lms/features/product_region_management/data/models/product_model.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
+import 'package:lms/features/user_management/data/models/user_model.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final RegionProductModel product;
@@ -15,13 +23,92 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final TextEditingController _licenseCountController = TextEditingController();
   final TextEditingController _authorizationCodeController =
       TextEditingController();
-
+  late UserManagementRemoteDataSource _userRemoteDataSource;
   bool _isButtonPressed = false;
+  @override
+  void initState() {
+    super.initState();
+    Dio dio = Dio(BaseOptions(baseUrl: 'http://localhost:8082'));
+    Api api = Api(dio);
+    _userRemoteDataSource = UserManagementRemoteDataSource(api);
+  }
+
+  // Function to check authorization code
+  Future<bool> _checkAuthorizationCode(String code) async {
+    // Replace this mock logic with actual API call if available
+    return true;
+  }
+
+  Future<void> _createOrder() async {
+    final url = Uri.parse('http://localhost:8082/api/billing/create-order');
+
+    try {
+      // Fetch users
+      final users = await _userRemoteDataSource.getUsers();
+
+      // Attempt to find the user whose username matches `usernamePublic`
+      UserModel matchedUser;
+      try {
+        matchedUser =
+            users.firstWhere((user) => user.username == usernamePublic);
+      } catch (e) {
+        // No matching user found
+        showSnackBar(
+            "User with username '$usernamePublic' not found.", Colors.red);
+        return;
+      }
+
+      final userId = matchedUser.id; // Extract the user ID
+
+      // Prepare the order data with or without authorization code
+      final orderData = {
+        "userId": userId,
+        "items": [
+          {
+            "productId": widget.product.id,
+            "quantity": int.parse(_licenseCountController.text),
+            "price": widget.product.price,
+          }
+        ],
+        "totalAmount":
+            widget.product.price * int.parse(_licenseCountController.text),
+      };
+
+      // If an authorization code is provided, include it in the request data
+      final authCode = _authorizationCodeController.text;
+      if (authCode.isNotEmpty) {
+        orderData["authorizationCode"] = authCode;
+      } else {
+        // Include credit card information if authorization code is not provided
+        orderData["billing"] = {
+          "creditCardNumber": "4111111111111111",
+          "expiryDate": "12/25",
+          "cvv": "123",
+          "cardholderName": "John Doe",
+        };
+      }
+
+      // Send the order request
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(orderData),
+      );
+
+      if (response.statusCode == 200) {
+        showSnackBar("Invoice generated successfully!", Colors.green);
+      } else {
+        showSnackBar("Failed to create order.", Colors.red);
+      }
+    } catch (e) {
+      showSnackBar("An error occurred: $e", Colors.red);
+    }
+  }
 
   void _openPaymentFormFromRight(BuildContext context) {
     Navigator.of(context).push(
       PageRouteBuilder(
-        opaque: false, // Allows background to remain visible
+        opaque: false,
         pageBuilder: (context, animation, secondaryAnimation) =>
             SlideTransition(
           position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
@@ -29,8 +116,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           child: Align(
             alignment: Alignment.centerRight,
             child: Container(
-              width: MediaQuery.of(context).size.width *
-                  0.6, // 60% width of screen
+              width: MediaQuery.of(context).size.width * 0.6,
               height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -56,6 +142,33 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
         ),
         transitionDuration: const Duration(milliseconds: 400),
+      ),
+    );
+  }
+
+  Future<void> _handleCheckout() async {
+    final authCode = _authorizationCodeController.text;
+
+    if (authCode.isNotEmpty) {
+      final isAuthorized = await _checkAuthorizationCode(authCode);
+
+      if (isAuthorized) {
+        await _createOrder();
+      } else {
+        showSnackBar(
+            "Authorization code not found or you have no authorization.",
+            Colors.red);
+      }
+    } else {
+      _openPaymentFormFromRight(context);
+    }
+  }
+
+  void showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
       ),
     );
   }
@@ -198,35 +311,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTapDown: (_) => setState(() => _isButtonPressed = true),
-          onTapUp: (_) => setState(() => _isButtonPressed = false),
-          onTapCancel: () => setState(() => _isButtonPressed = false),
-          onTap: () => _openPaymentFormFromRight(context),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 100),
-            transform: Matrix4.identity()..scale(_isButtonPressed ? 0.98 : 1.0),
-            decoration: BoxDecoration(
-              color: const Color(0xFF017278),
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            alignment: Alignment.center,
-            child: const Text(
-              'Checkout with Credit Card',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
         TextField(
           controller: _authorizationCodeController,
           decoration: InputDecoration(
@@ -243,6 +327,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.grey.shade300),
             ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        ElevatedButton(
+          onPressed: _handleCheckout,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF017278),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+          ),
+          child: const Text(
+            'Checkout',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ],
