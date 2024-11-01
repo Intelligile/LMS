@@ -22,7 +22,6 @@ class CustomBreadcrumb extends StatelessWidget {
                   items[index],
                   style: const TextStyle(
                     fontSize: 18,
-                    color: Color.fromARGB(255, 71, 71, 74),
                   ),
                 ),
               ),
@@ -31,7 +30,6 @@ class CustomBreadcrumb extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 4.0),
                   child: Icon(
                     FontAwesomeIcons.greaterThan,
-                    color: Color.fromARGB(255, 123, 123, 138),
                     size: 14,
                   ),
                 ),

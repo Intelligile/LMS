@@ -42,7 +42,7 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
               Expanded(
                 flex: 2,
                 child: Card(
-                  color: Colors.white,
+                  // color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Form(
@@ -125,14 +125,13 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
                                               width: 20,
                                               height: 20,
                                               child: CircularProgressIndicator(
-                                                color: Colors.white,
                                                 strokeWidth: 2,
                                               ),
                                             )
                                           : const Text(
                                               'Next',
                                               style: TextStyle(
-                                                color: Colors.white,
+                                                // color: Colors.white,
                                                 fontSize: 14,
                                               ),
                                             ),

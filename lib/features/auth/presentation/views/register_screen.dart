@@ -15,7 +15,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffdce1e3),
+      // backgroundColor: const Color(0xffdce1e3),
       body: BlocProvider(
         create: (context) => RegistrationCubit(
           RegisterUseCase(

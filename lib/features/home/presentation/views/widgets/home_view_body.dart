@@ -115,11 +115,17 @@ class _HomeViewBodyState extends State<HomeViewBody>
             const SizedBox(
               height: 20,
             ),
-            CustomTabBar(tabController: _tabController),
-            SizedBox(
-              height: 400, // Add a fixed height for the TabBarView
-              child: CustomTabBarView(tabController: _tabController),
+            Row(
+              children: [
+                Expanded(
+                    flex: 2,
+                    child: CustomTabBar(tabController: _tabController)),
+                const Expanded(child: SizedBox()),
+              ],
             ),
+            AspectRatio(
+                aspectRatio: 3,
+                child: CustomTabBarView(tabController: _tabController)),
           ],
         ),
       ),

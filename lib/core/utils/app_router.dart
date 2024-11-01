@@ -95,7 +95,7 @@ class AppRouter {
         ),
         GoRoute(
           path: kManageRolesView,
-          builder: (context, state) => ManageRolesView(),
+          builder: (context, state) => const ManageRolesView(),
         ),
         GoRoute(
           path: kHomeView,
@@ -119,7 +119,7 @@ class AppRouter {
         ),
         GoRoute(
           path: kResetPassword,
-          builder: (context, state) => ResetPasswordForm(),
+          builder: (context, state) => const ResetPasswordForm(),
         ),
         GoRoute(
           path: kUserManagement,

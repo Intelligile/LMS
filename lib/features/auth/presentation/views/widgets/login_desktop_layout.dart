@@ -32,7 +32,7 @@ class _LoginDesktopLayoutState extends State<LoginDesktopLayout> {
             Expanded(
               flex: 2,
               child: Card(
-                color: Colors.white,
+                // color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Column(

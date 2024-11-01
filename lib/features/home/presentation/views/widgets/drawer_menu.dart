@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lms/core/utils/theme_provider.dart';
 import 'package:lms/features/home/data/models/expansion_tile_model.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_item.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_state.dart';
@@ -21,7 +22,9 @@ class DrawerMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final drawerStateProvider =
         Provider.of<ExpansionTileDrawerProvider>(context);
+
     final isExpanded = drawerStateProvider.isExpanded(item.title ?? '');
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return ExpansionTile(
       tilePadding: const EdgeInsets.only(right: 4, left: 8),
@@ -30,10 +33,13 @@ class DrawerMenu extends StatelessWidget {
         drawerStateProvider.toggleExpansion(item.title ?? '');
       },
       leading: Icon(item.icon),
-      title:
-          Text(item.title ?? '', style: const TextStyle(color: Colors.black)),
-      iconColor: Colors.black,
-      collapsedIconColor: Colors.black,
+      title: Text(item.title ?? ''),
+      iconColor: themeProvider.themeMode == ThemeMode.light
+          ? Colors.black
+          : Colors.white,
+      collapsedIconColor: themeProvider.themeMode == ThemeMode.light
+          ? Colors.black
+          : Colors.white,
       children: item.children.asMap().entries.map(
         (entry) {
           final index = entry.key;

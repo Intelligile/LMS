@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lms/constants.dart';
 import 'package:lms/core/functions/get_responsive_font_size.dart';
+import 'package:lms/core/utils/theme_provider.dart';
 import 'package:lms/features/home/data/models/list_tile_model.dart';
+import 'package:provider/provider.dart';
 
 class InActiveDrawerItem extends StatelessWidget {
   const InActiveDrawerItem({
@@ -13,9 +15,15 @@ class InActiveDrawerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 10),
-      leading: Icon(item.icon),
+      leading: Icon(
+        item.icon,
+        color: themeProvider.themeMode == ThemeMode.light
+            ? Colors.black
+            : Colors.white,
+      ),
       title: item.title != null
           ? Text(
               item.title!,

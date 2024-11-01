@@ -29,7 +29,7 @@ class CustomScaffold extends StatelessWidget {
               username: usernamePublic,
             ),
           ),
-          backgroundColor: backgroudColor ?? Colors.white,
+          // backgroundColor: backgroudColor ?? Colors.white,
           body: Row(
             children: [
               Expanded(

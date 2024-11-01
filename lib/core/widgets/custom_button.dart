@@ -21,7 +21,7 @@ class CustomButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Text(
             buttonName,
-            style: const TextStyle(color: Colors.white),
+            //style: const TextStyle(color: Colors.white),
           ),
         ),
       ),
@@ -61,7 +61,7 @@ Widget buildAnimatedButton({
                   child: Text(
                     label,
                     style: const TextStyle(
-                      color: Colors.white,
+                      //color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),

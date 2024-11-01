@@ -89,14 +89,13 @@ class _SignInFormState extends State<SignInForm> {
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
-                                  color: Colors.white,
                                   strokeWidth: 2,
                                 ),
                               )
                             : const Text(
                                 'Next',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  // color: Colors.white,
                                   fontSize: 14,
                                 ),
                               ),
