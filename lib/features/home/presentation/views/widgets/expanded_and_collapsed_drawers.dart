@@ -182,6 +182,8 @@ List<dynamic> getDrawerItems(bool drawerOpen) {
             icon: Icons.manage_accounts,
             title: drawerOpen ? 'Manage Users' : null,
             path: AppRouter.kUserManagement, // Set path
+            padding: const EdgeInsets.only(left: 26.0),
+            iconSize: 20.0, // Set the desired icon size here
           ),
         ],
       ),
@@ -194,6 +196,8 @@ List<dynamic> getDrawerItems(bool drawerOpen) {
           icon: Icons.group,
           title: drawerOpen ? 'Show Groups' : null,
           path: AppRouter.kTeamManagement, // Set path
+          padding: const EdgeInsets.only(left: 26.0),
+          iconSize: 20.0, // Set the desired icon size here
         ),
       ],
     ),
@@ -206,6 +210,8 @@ List<dynamic> getDrawerItems(bool drawerOpen) {
           icon: FontAwesomeIcons.solidCreditCard,
           title: drawerOpen ? 'View Payments' : null,
           path: AppRouter.kPaymentView, // Set path
+          padding: const EdgeInsets.only(left: 26.0),
+          iconSize: 20.0, // Set the desired icon size here
         ),
       ],
     ),
@@ -228,11 +234,15 @@ List<dynamic> getDrawerItems(bool drawerOpen) {
           icon: Icons.shopping_cart,
           title: drawerOpen ? 'Purchase Product' : null,
           path: AppRouter.kProductList, // Set path
+          padding: const EdgeInsets.only(left: 26.0),
+          iconSize: 20.0, // Set the desired icon size here
         ),
         ListTileItemModel(
           icon: Icons.manage_accounts,
           title: drawerOpen ? 'Manage Purchased Products' : null,
           path: AppRouter.kLicenseRenewalView, // Set path
+          padding: const EdgeInsets.only(left: 26.0),
+          iconSize: 20.0, // Set the desired icon size here
         ),
       ],
     ),

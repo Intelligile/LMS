@@ -29,7 +29,10 @@ class DrawerMenu extends StatelessWidget {
       onExpansionChanged: (value) {
         drawerStateProvider.toggleExpansion(item.title ?? '');
       },
-      leading: Icon(item.icon),
+      leading: Icon(
+        item.icon,
+        size: 24, // Set your desired icon size here
+      ),
       title:
           Text(item.title ?? '', style: const TextStyle(color: Colors.black)),
       iconColor: Colors.black,

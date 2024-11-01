@@ -13,18 +13,23 @@ class InActiveDrawerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.only(left: 10),
-      leading: Icon(item.icon),
-      title: item.title != null
-          ? Text(
-              item.title!,
-              style: TextStyle(
-                fontSize: getResponsiveFontSize(context, baseFontSize: 14),
-              ),
-            )
-          : null,
-    );
+    return Padding(
+        padding: item.padding,
+        child: ListTile(
+          contentPadding: const EdgeInsets.only(left: 10),
+          leading: Icon(
+            item.icon,
+            size: item.iconSize,
+          ),
+          title: item.title != null
+              ? Text(
+                  item.title!,
+                  style: TextStyle(
+                    fontSize: getResponsiveFontSize(context, baseFontSize: 14),
+                  ),
+                )
+              : null,
+        ));
   }
 }
 
