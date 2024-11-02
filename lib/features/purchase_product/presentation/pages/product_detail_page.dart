@@ -39,28 +39,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return true;
   }
 
-  Future<void> _createOrder() async {
+  Future<void> _createOrder(Map<String, dynamic>? billingData) async {
     final url = Uri.parse('http://localhost:8082/api/billing/create-order');
 
     try {
-      // Fetch users
       final users = await _userRemoteDataSource.getUsers();
+      final matchedUser =
+          users.firstWhere((user) => user.username == usernamePublic);
+      final userId = matchedUser.id;
 
-      // Attempt to find the user whose username matches `usernamePublic`
-      UserModel matchedUser;
-      try {
-        matchedUser =
-            users.firstWhere((user) => user.username == usernamePublic);
-      } catch (e) {
-        // No matching user found
-        showSnackBar(
-            "User with username '$usernamePublic' not found.", Colors.red);
-        return;
-      }
-
-      final userId = matchedUser.id; // Extract the user ID
-
-      // Prepare the order data with or without authorization code
       final orderData = {
         "userId": userId,
         "items": [
@@ -74,21 +61,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             widget.product.price * int.parse(_licenseCountController.text),
       };
 
-      // If an authorization code is provided, include it in the request data
-      final authCode = _authorizationCodeController.text;
-      if (authCode.isNotEmpty) {
-        orderData["authorizationCode"] = authCode;
+      if (_authorizationCodeController.text.isNotEmpty) {
+        orderData["authorizationCode"] = _authorizationCodeController.text;
+      } else if (billingData != null) {
+        orderData["billing"] = billingData;
       } else {
-        // Include credit card information if authorization code is not provided
-        orderData["billing"] = {
-          "creditCardNumber": "4111111111111111",
-          "expiryDate": "12/25",
-          "cvv": "123",
-          "cardholderName": "John Doe",
-        };
+        showSnackBar("Payment information required.", Colors.red);
+        return;
       }
 
-      // Send the order request
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -105,8 +86,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
   }
 
-  void _openPaymentFormFromRight(BuildContext context) {
-    Navigator.of(context).push(
+  void _openPaymentFormFromRight(BuildContext context) async {
+    await Navigator.of(context).push(
       PageRouteBuilder(
         opaque: false,
         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -132,10 +113,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   bottomLeft: Radius.circular(20),
                 ),
               ),
-              child: const Scaffold(
+              child: Scaffold(
                 body: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: PaymentViewBody(),
+                  padding: const EdgeInsets.all(16.0),
+                  child: PaymentViewBody(
+                    // Use an anonymous function to call _createOrder
+                    onBillingDataSubmitted: (billingData) async {
+                      await _createOrder(billingData);
+                    },
+                  ),
                 ),
               ),
             ),
@@ -151,13 +137,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     if (authCode.isNotEmpty) {
       final isAuthorized = await _checkAuthorizationCode(authCode);
-
       if (isAuthorized) {
-        await _createOrder();
+        await _createOrder(null); // No billing data needed if authorized
       } else {
-        showSnackBar(
-            "Authorization code not found or you have no authorization.",
-            Colors.red);
+        showSnackBar("Invalid authorization code.", Colors.red);
       }
     } else {
       _openPaymentFormFromRight(context);
@@ -330,15 +313,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
         ),
         const SizedBox(height: 12),
-        ElevatedButton(
-          onPressed: _handleCheckout,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF017278),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: const Text(
-            'Checkout',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        SizedBox(
+          width: double.infinity, // Make button take full width
+          child: ElevatedButton(
+            onPressed: _handleCheckout,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF017278),
+              padding: const EdgeInsets.symmetric(
+                  vertical: 20), // Increase vertical padding for height
+              minimumSize: const Size.fromHeight(60), // Set a minimum height
+            ),
+            child: const Text(
+              'Checkout',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18), // Increase font size
+            ),
           ),
         ),
       ],
