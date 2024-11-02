@@ -28,8 +28,7 @@ ThemeData getDarkTheme() {
         foregroundColor: WidgetStateProperty.all(kPrimaryColor),
       ),
     ),
-    iconButtonTheme: IconButtonThemeData(
-        style: ButtonStyle(iconColor: WidgetStateProperty.all(Colors.white))),
+
     // TextField styles
     inputDecorationTheme: const InputDecorationTheme(
       labelStyle: TextStyle(color: Colors.white),
@@ -44,7 +43,7 @@ ThemeData getDarkTheme() {
 
     // Progress indicators
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: Colors.white,
+      color: kPrimaryColor,
     ),
 
     // ListTile styles
@@ -81,8 +80,7 @@ ThemeData getLightTheme() {
     iconTheme: const IconThemeData(color: Colors.black),
     textSelectionTheme:
         const TextSelectionThemeData(selectionColor: kPrimaryColor),
-    iconButtonTheme: IconButtonThemeData(
-        style: ButtonStyle(iconColor: WidgetStateProperty.all(Colors.black))),
+
     // Button styles
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
@@ -116,7 +114,7 @@ ThemeData getLightTheme() {
 
     // Progress indicators
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: Colors.white,
+      color: kPrimaryColor,
     ),
 
     // ListTile styles

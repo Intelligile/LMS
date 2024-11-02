@@ -125,6 +125,7 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
                                               width: 20,
                                               height: 20,
                                               child: CircularProgressIndicator(
+                                                color: Colors.white,
                                                 strokeWidth: 2,
                                               ),
                                             )
