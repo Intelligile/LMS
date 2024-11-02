@@ -12,7 +12,7 @@ class PaymentView extends StatelessWidget {
         body: AdaptiveLayout(
       mobileLayout: (context) => const SizedBox(),
       tabletLayout: (context) => const SizedBox(),
-      desktopLayout: (context) => const PaymentViewBody(),
+      desktopLayout: (context) => const SizedBox(),
     ));
   }
 }
