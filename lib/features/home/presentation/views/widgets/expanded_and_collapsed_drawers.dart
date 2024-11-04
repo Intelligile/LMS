@@ -50,9 +50,8 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
                     final item = drawerItems[index];
                     return MouseRegion(
                       onEnter: (_) => setState(() => hoveredIndex = index),
-                      onExit: (_) => setState(() => hoveredIndex = null),
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 100),
+                        duration: const Duration(milliseconds: 0),
                         curve: Curves.easeInOut,
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 8),
@@ -161,9 +160,8 @@ class _CustomCollapsedDrawerState extends State<CustomCollapsedDrawer> {
                     final item = drawerItems[index];
                     return MouseRegion(
                       onEnter: (_) => setState(() => hoveredIndex = index),
-                      onExit: (_) => setState(() => hoveredIndex = null),
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 100),
+                        duration: const Duration(milliseconds: 0),
                         curve: Curves.easeInOut,
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 8),
