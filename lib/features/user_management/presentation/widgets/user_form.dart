@@ -21,9 +21,11 @@ class UserForm extends StatefulWidget {
 
 class _UserFormState extends State<UserForm> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _passwordController = TextEditingController();
   List<UserModel> _users = [];
   int _currentStep = 0;
   bool _passwordVisible = false;
+  String _initialPassword = '';
 
   @override
   void initState() {
@@ -43,12 +45,31 @@ class _UserFormState extends State<UserForm> {
         authorities: [],
         groups: [],
       ));
+    } else {
+      // Store initial encoded password
+      _initialPassword = _users[0].password;
+      _passwordController.text = _initialPassword; // Display the password
     }
+  }
+
+  bool _isPasswordEncoded(String password) {
+    // Check if the password matches the pattern of an encoded BCrypt hash
+    return password.startsWith(r'$2a$') && password.length == 60;
   }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
+      // Check if the password in the controller is already encoded
+      if (!_isPasswordEncoded(_passwordController.text)) {
+        // Update password only if it’s not already encoded
+        _users[0].password = _passwordController.text;
+      } else {
+        // Keep the original encoded password
+        _users[0].password = _initialPassword;
+      }
+
       widget.onSubmit(_users);
     }
   }
@@ -65,33 +86,6 @@ class _UserFormState extends State<UserForm> {
       backgroundColor: Colors.white,
       body: Row(
         children: [
-          // Sidebar for steps with connected dots
-          // Container(
-          //   width: 200,
-          //   color: Colors.grey[100],
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       Padding(
-          //         padding: const EdgeInsets.all(16.0),
-          //         child: Text(
-          //           'Add a user',
-          //           style: TextStyle(
-          //             fontSize: 20,
-          //             fontWeight: FontWeight.bold,
-          //           ),
-          //         ),
-          //       ),
-          //       Divider(),
-          //       _buildStepIndicator('Basics', 0),
-          //       _buildStepIndicator('Product licenses', 1),
-          //       _buildStepIndicator('Optional settings', 2),
-          //       _buildStepIndicator('Finish', 3),
-          //     ],
-          //   ),
-          // ),
-
-          // Main form
           Expanded(
             child: Padding(
               padding:
@@ -101,7 +95,6 @@ class _UserFormState extends State<UserForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title and description
                     const Padding(
                       padding: EdgeInsets.only(bottom: 16.0),
                       child: Text(
@@ -117,11 +110,9 @@ class _UserFormState extends State<UserForm> {
                         style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                       ),
                     ),
-
                     Expanded(
                       child: ListView(
                         children: [
-                          // Form fields with padding, spacing, and white background
                           Row(
                             children: [
                               Expanded(
@@ -171,7 +162,7 @@ class _UserFormState extends State<UserForm> {
 
                           // Password field with visibility toggle
                           TextFormField(
-                            initialValue: _users[0].password,
+                            controller: _passwordController,
                             obscureText: !_passwordVisible,
                             decoration: InputDecoration(
                               labelText: 'Password',
@@ -193,7 +184,6 @@ class _UserFormState extends State<UserForm> {
                                 },
                               ),
                             ),
-                            onSaved: (value) => _users[0].password = value!,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a password';
@@ -215,7 +205,7 @@ class _UserFormState extends State<UserForm> {
                           SwitchListTile(
                             title: const Text('Enabled',
                                 style: TextStyle(fontSize: 18)),
-                            activeColor: const Color(0xFF017278), // LMS color
+                            activeColor: const Color(0xFF017278),
                             value: _users[0].enabled,
                             onChanged: (value) {
                               setState(() {
@@ -227,8 +217,6 @@ class _UserFormState extends State<UserForm> {
                       ),
                     ),
                     Divider(color: Colors.grey[300]),
-
-                    // Action buttons
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Row(
@@ -283,39 +271,6 @@ class _UserFormState extends State<UserForm> {
       style: const TextStyle(fontSize: 18),
       onSaved: onSaved,
       validator: validator,
-    );
-  }
-
-  Widget _buildStepIndicator(String step, int index) {
-    bool isActive = _currentStep == index;
-    return GestureDetector(
-      onTap: () => _onStepTapped(index),
-      child: Row(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            height: 12,
-            width: 12,
-            decoration: BoxDecoration(
-              color: isActive ? const Color(0xFF017278) : Colors.grey,
-              shape: BoxShape.circle,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Text(
-                step,
-                style: TextStyle(
-                  color: isActive ? const Color(0xFF017278) : Colors.grey,
-                  fontSize: 16,
-                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

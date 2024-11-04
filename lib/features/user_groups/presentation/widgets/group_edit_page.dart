@@ -20,7 +20,10 @@ class GroupEditPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: GroupForm(
           group: group,
-          api: api, // Pass the api to the form
+          api: api,
+          onSave: () {
+            Navigator.of(context).pop(); // Close the drawer on save
+          }, // Pass the api to the form
         ),
       ),
     );

@@ -131,7 +131,12 @@ class AppRouter {
         ),
         GoRoute(
           path: kAddGroup,
-          builder: (context, state) => GroupForm(api: apiService),
+          builder: (context, state) => GroupForm(
+            api: apiService,
+            onSave: () {
+              Navigator.of(context).pop(); // Close the drawer on save
+            },
+          ),
         ),
         GoRoute(
           path: kGroupList,

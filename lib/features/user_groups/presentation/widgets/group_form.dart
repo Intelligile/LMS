@@ -10,8 +10,10 @@ import 'package:lms/features/user_management/data/models/user_model.dart';
 class GroupForm extends StatefulWidget {
   final GroupModel? group;
   final ApiService api;
+  final VoidCallback onSave; // Add this callback
 
-  const GroupForm({super.key, this.group, required this.api});
+  const GroupForm(
+      {super.key, this.group, required this.api, required this.onSave});
 
   @override
   _GroupFormState createState() => _GroupFormState();
@@ -222,7 +224,8 @@ class _GroupFormState extends State<GroupForm> {
           showSnackBar(context, 'Group updated successfully', Colors.green);
         }
 
-        GoRouter.of(context).go(AppRouter.kGroupList);
+        // Notify parent widget of save completion
+        widget.onSave(); // Call the onSave callback here
       } catch (e) {
         print("ERROR SAVING GROUP $e");
         ScaffoldMessenger.of(context).showSnackBar(
