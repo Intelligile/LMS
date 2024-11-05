@@ -18,15 +18,17 @@ class AuthRepositoryImpl extends AuthRepository {
     String password = '',
   }) async {
     try {
+      // Await the result from loginUser in authRemoteDataSource
       await authRemoteDataSource.loginUser(
           password: password, username: username);
-      return right(unit); // Return Unit from dartz
+
+      return right(unit); // Return Unit from dartz if successful
     } catch (e) {
       print("Error in loginUser: $e"); // Logging the error
       if (e is DioException) {
         return left(ServerFailure.fromDioError(e));
       }
-      return left(ServerFailure(e.toString()));
+      return left(ServerFailure(e.toString())); // Return the error message
     }
   }
 

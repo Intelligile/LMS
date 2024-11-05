@@ -143,14 +143,17 @@ class Api {
         _dio.options.headers['Authorization'] = 'Bearer $token';
       }
 
-      // Make the POST request
+      // Make the POST request with customized validateStatus
       final response = await _dio.post(
         "$baseUrl$endPoint",
         data: body,
         options: Options(
           headers: {
-            'Content-Type':
-                'application/json', // Ensure the content type is set
+            'Content-Type': 'application/json',
+          },
+          // Allow handling of specific status codes without throwing exceptions
+          validateStatus: (status) {
+            return status! < 500; // Accept status codes below 500 as valid
           },
         ),
       );
@@ -167,13 +170,18 @@ class Api {
       if (response.statusCode == 200) {
         print('Users assigned successfully');
         return response.data; // Return the data if successful
+      } else if (response.statusCode == 403) {
+        // Print and return the specific message from the response
+        print(response.data['message']);
+        return response.data['message']; // Return only the message
+      } else if (response.statusCode == 401) {
+        return response.data['message'];
       } else {
         print('Failed to assign users: ${response.statusCode}');
         return response.data; // Return the error data or message
       }
     } catch (e) {
       print('Error making POST request: $e');
-      // Handle and rethrow or return error as needed
       throw Exception('Error making POST request: $e');
     }
   }

@@ -26,7 +26,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   AuthRemoteDataSourceImpl(this.context, {required this.api});
 
   @override
-  Future<void> loginUser({
+  Future<Map<String, dynamic>> loginUser({
     String username = '',
     String password = '',
   }) async {
@@ -37,17 +37,31 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
         "password": password,
       },
     );
-    userRole = result['roles'];
 
-    print(userRole);
-    // Save the JWT token using SharedPreferences
-    jwtToken = result['jwtToken'];
-    usernamePublic = result['username'];
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('jwtToken', result['jwtToken']);
+    // Check if the result is a String, which indicates an error message
+    if (result is String) {
+      print("Login error: $result"); // Log the error message
+      throw result; // Throw the error message as an exception
+    }
 
-    SharedPreferences usernamePrefs = await SharedPreferences.getInstance();
-    await usernamePrefs.setString('usernamePublic', result['username']);
+    // Continue with normal processing if result is a Map
+    if (result.containsKey('roles') && result['roles'] is String) {
+      userRole = result['roles'];
+      print(userRole);
+
+      // Save the JWT token using SharedPreferences
+      jwtToken = result['jwtToken'];
+      usernamePublic = result['username'];
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('jwtToken', result['jwtToken']);
+      await prefs.setString('usernamePublic', result['username']);
+
+      return result; // Return the result for success handling
+    } else {
+      // Handle unexpected response format
+      throw Exception('Unexpected response format');
+    }
   }
 
   @override
