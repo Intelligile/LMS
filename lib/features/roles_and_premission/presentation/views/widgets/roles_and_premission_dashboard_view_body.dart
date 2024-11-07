@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/app_router.dart';
@@ -8,6 +9,7 @@ import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/features/roles_and_premission/data/models/user_dto.dart';
 import 'package:lms/features/roles_and_premission/presentation/manager/user_cubit/user_dto_cubit.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/roles_and_permission_dashboard_view.dart';
+import 'package:lms/features/roles_and_premission/presentation/views/widgets/actions_container.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/pop_up_menu_actions_button.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/users_table_filtering_row.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/users_table_header.dart';
@@ -44,19 +46,54 @@ class _RolesAndPermissionDashboardViewBodyState
         builder: (context, state) {
           return Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: CustomBreadcrumb(
-                  items: const ['Home', 'Roles & Permissions'],
-                  onTap: (index) {
-                    // Add navigation logic based on index
-                    if (index == 0) {
-                      GoRouter.of(context).go(AppRouter.kHomeView);
-                    } else if (index == 1) {
-                      // Navigate to Active Users
-                    }
-                  },
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomBreadcrumb(
+                    items: const ['Home', 'Roles & Permissions'],
+                    onTap: (index) {
+                      // Add navigation logic based on index
+                      if (index == 0) {
+                        GoRouter.of(context).go(AppRouter.kHomeView);
+                      } else if (index == 1) {
+                        // Navigate to Active Users
+                      }
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            GoRouter.of(context)
+                                .push(AppRouter.kManageRolesView);
+                          },
+                          child: const ActionsContainer(
+                              containerBgColor: Colors.white,
+                              txtColor: Colors.blue,
+                              containerIcon: Icon(
+                                Icons.settings,
+                                color: Colors.blue,
+                              ),
+                              containerText: 'Manage roles'),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: ActionsContainer(
+                              containerIcon: Icon(
+                                FontAwesomeIcons.plus,
+                                size: 22,
+                                color: Colors.white,
+                              ),
+                              containerText: 'Invite people',
+                              containerBgColor: Colors.blue,
+                              txtColor: Colors.white),
+                        )
+                      ],
+                    ),
+                  )
+                ],
               ),
               // Filters Row
               const UsersTableFilteringRow(),

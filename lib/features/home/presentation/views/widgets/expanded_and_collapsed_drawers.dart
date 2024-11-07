@@ -9,7 +9,6 @@ import 'package:lms/features/home/presentation/views/widgets/drawer_item.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_menu.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_state.dart';
 import 'package:provider/provider.dart';
-import 'hover_extensions.dart'; // Import hover extensions
 
 class CustomExpandedDrawer extends StatefulWidget {
   const CustomExpandedDrawer({super.key, required this.onPressed});
@@ -30,14 +29,14 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
         List<dynamic> drawerItems = getDrawerItems(drawerOpen);
 
         return Padding(
-          padding: const EdgeInsets.only(left: 16, top: 12),
+          padding: const EdgeInsets.only(left: 6, top: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
                 onTap: widget.onPressed,
                 child: const Padding(
-                  padding: EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(left: 20),
                   child: Icon(Icons.menu),
                 ),
               ),
@@ -140,14 +139,14 @@ class _CustomCollapsedDrawerState extends State<CustomCollapsedDrawer> {
         List<dynamic> drawerItems = getDrawerItems(drawerOpen);
 
         return Padding(
-          padding: const EdgeInsets.only(left: 16, top: 12),
+          padding: const EdgeInsets.only(left: 6, top: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
                 onTap: widget.onPressed,
                 child: const Padding(
-                  padding: EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(left: 20),
                   child: Icon(Icons.menu),
                 ),
               ),
