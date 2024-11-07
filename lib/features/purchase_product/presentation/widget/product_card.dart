@@ -19,7 +19,6 @@ class ProductCard extends StatelessWidget {
       shadowColor: Colors.black26,
       child: SizedBox(
         width: 140, // Fixed width for a compact, rectangular design
-        height: 20, // Fixed height to match width
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -31,7 +30,7 @@ class ProductCard extends StatelessWidget {
               ),
               child: Image.network(
                 product.imageUrl,
-                height: 300,
+                height: 300, // Adjusted height for a compact layout
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
@@ -43,12 +42,16 @@ class ProductCard extends StatelessWidget {
                 children: [
                   Text(
                     product.name,
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: TextStyle(
+                      fontSize: product.name.length > 15
+                          ? 12
+                          : 14, // Dynamic font size
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF017278), // LMS color
+                      color: const Color(0xFF017278), // LMS color
                     ),
                     textAlign: TextAlign.center,
+                    overflow:
+                        TextOverflow.ellipsis, // Adds ellipsis for overflow
                   ),
                   const SizedBox(height: 4),
                   Text(

@@ -224,7 +224,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
               const SizedBox(height: 4),
               Text(
-                '\$${widget.product.price.toStringAsFixed(2)} per license',
+                '\$${widget.product.price.toStringAsFixed(2)} / license',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey.shade700,

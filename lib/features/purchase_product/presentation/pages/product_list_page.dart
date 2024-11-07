@@ -50,36 +50,37 @@ class ProductListPageBody extends StatelessWidget {
           child: ConstrainedBox(
             constraints:
                 const BoxConstraints(maxWidth: 600), // Limits grid width
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24.0),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics:
-                    const NeverScrollableScrollPhysics(), // Prevents inner scroll in grid
-                itemCount: products.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Two columns in the grid
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 0.8, // More compact aspect ratio
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  // Removed NeverScrollableScrollPhysics to enable scrolling
+                  itemCount: products.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // Two columns in the grid
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.8, // More compact aspect ratio
+                  ),
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProductDetailPage(product: product),
+                          ),
+                        );
+                      },
+                      child: ProductCard(
+                        product: product,
+                      ),
+                    );
+                  },
                 ),
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetailPage(product: product),
-                        ),
-                      );
-                    },
-                    child: ProductCard(
-                      product: product,
-                    ),
-                  );
-                },
               ),
             ),
           ),
