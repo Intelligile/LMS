@@ -48,6 +48,10 @@ dependencies:
   email_validator: ^2.0.0
   connectivity_plus: ^6.0.5
   flutter_breadcrumb: ^1.0.1
+  carousel_slider: ^4.0.0
+  flutter_secure_storage: ^9.2.2
+  jwt_decode: ^0.3.0
+
 
 dev_dependencies:
   flutter_test:

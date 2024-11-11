@@ -1,87 +1,81 @@
-class LicenseModel {
-  String licenseName;
-  String licenseKey;
-  DateTime purchaseDate;
-  DateTime expirationDate;
-  String status;
-  String productName;
-  String userName;
-  int usageLimit;
-  DateTime? renewalDate;
-  String licenseType;
-  String licenseTerms;
-  String supportLevel;
-  double cost;
-  double renewalCost;
-  DateTime? activationDate;
-  String notes;
-  bool autoRenewalStatus;
+class FeatureModel {
+  int? id;
+  String? key;
+  DateTime? keyExpiryDate;
 
-  LicenseModel({
-    required this.licenseName,
-    required this.licenseKey,
-    required this.purchaseDate,
-    required this.expirationDate,
-    required this.status,
-    required this.productName,
-    required this.userName,
-    required this.usageLimit,
-    this.renewalDate,
-    required this.licenseType,
-    required this.licenseTerms,
-    required this.supportLevel,
-    required this.cost,
-    required this.renewalCost,
-    this.activationDate,
-    required this.notes,
-    required this.autoRenewalStatus,
+  FeatureModel({
+    this.id,
+    this.key,
+    this.keyExpiryDate,
   });
 
-  factory LicenseModel.fromJson(Map<String, dynamic> json) {
-    return LicenseModel(
-      licenseName: json['licenseName'],
-      licenseKey: json['licenseKey'],
-      purchaseDate: DateTime.parse(json['purchaseDate']),
-      expirationDate: DateTime.parse(json['expirationDate']),
-      status: json['status'],
-      productName: json['productName'],
-      userName: json['userName'],
-      usageLimit: json['usageLimit'],
-      renewalDate: json['renewalDate'] != null
-          ? DateTime.parse(json['renewalDate'])
+  factory FeatureModel.fromJson(Map<String, dynamic> json) {
+    return FeatureModel(
+      id: json['id'],
+      key: json['key'],
+      keyExpiryDate: json['keyExpiryDate'] != null
+          ? DateTime.parse(json['keyExpiryDate'])
           : null,
-      licenseType: json['licenseType'],
-      licenseTerms: json['licenseTerms'],
-      supportLevel: json['supportLevel'],
-      cost: json['cost'].toDouble(),
-      renewalCost: json['renewalCost'].toDouble(),
-      activationDate: json['activationDate'] != null
-          ? DateTime.parse(json['activationDate'])
-          : null,
-      notes: json['notes'],
-      autoRenewalStatus: json['autoRenewalStatus'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'licenseName': licenseName,
+      'id': id,
+      'key': key,
+      'keyExpiryDate': keyExpiryDate?.toIso8601String(),
+    };
+  }
+}
+
+class LicenseModel {
+  int? id;
+  int? userId;
+  String? deviceName;
+  DateTime? endDate;
+  String? serverCode;
+  String? licenseKey;
+  List<FeatureModel>? features;
+  bool? valid;
+
+  LicenseModel({
+    this.id,
+    this.userId,
+    this.deviceName,
+    this.endDate,
+    this.serverCode,
+    this.licenseKey,
+    this.features,
+    this.valid,
+  });
+
+  factory LicenseModel.fromJson(Map<String, dynamic> json) {
+    return LicenseModel(
+      id: json['id'],
+      userId: json['userId'],
+      deviceName: json['deviceName'],
+      endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
+      serverCode: json['serverCode'],
+      licenseKey: json['licenseKey'],
+      features: json['features'] != null
+          ? (json['features'] as List)
+              .map((feature) => FeatureModel.fromJson(feature))
+              .toList()
+          : [],
+      valid: json['valid'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'deviceName': deviceName,
+      'endDate': endDate?.toIso8601String(),
+      'serverCode': serverCode,
       'licenseKey': licenseKey,
-      'purchaseDate': purchaseDate.toIso8601String(),
-      'expirationDate': expirationDate.toIso8601String(),
-      'status': status,
-      'productName': productName,
-      'userName': userName,
-      'usageLimit': usageLimit,
-      'renewalDate': renewalDate?.toIso8601String(),
-      'licenseType': licenseType,
-      'licenseTerms': licenseTerms,
-      'supportLevel': supportLevel,
-      'cost': cost,
-      'renewalCost': renewalCost,
-      'activationDate': activationDate?.toIso8601String(),
-      'notes': notes,
-      'autoRenewalStatus': autoRenewalStatus,
+      'features': features?.map((feature) => feature.toJson()).toList(),
+      'valid': valid,
     };
   }
 }

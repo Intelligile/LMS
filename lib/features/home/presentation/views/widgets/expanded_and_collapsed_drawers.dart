@@ -320,6 +320,11 @@ List<dynamic> getDrawerItems(bool drawerOpen) {
       path: AppRouter.kLicensorListAuthCodes,
     ),
     ListTileItemModel(
+      icon: Icons.account_tree_outlined,
+      title: drawerOpen ? 'DMZ Management' : null,
+      path: AppRouter.kDMZManagement,
+    ),
+    ListTileItemModel(
       icon: FontAwesomeIcons.wrench,
       title: drawerOpen ? 'Setup' : null,
     ),

@@ -61,7 +61,7 @@ class ProductListPageBody extends StatelessWidget {
                     crossAxisCount: 2, // Two columns in the grid
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
-                    childAspectRatio: 0.8, // More compact aspect ratio
+                    childAspectRatio: 1.9, // More compact aspect ratio
                   ),
                   itemBuilder: (context, index) {
                     final product = products[index];

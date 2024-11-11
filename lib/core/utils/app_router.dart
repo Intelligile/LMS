@@ -7,6 +7,7 @@ import 'package:lms/features/auth/presentation/views/signin_screen.dart';
 import 'package:lms/features/auth/presentation/views/widgets/reset_password_form.dart';
 import 'package:lms/features/auth_code/presentation/pages/form_page.dart';
 import 'package:lms/features/auth_code/presentation/pages/list_auth_codes.dart';
+import 'package:lms/features/dmz_management/presentation/pages/dmz_management_page.dart';
 import 'package:lms/features/home/presentation/views/home_view.dart';
 import 'package:lms/features/license_renewal/presentation/views/license_renewal.dart';
 import 'package:lms/features/payment/presentation/views/payment_view.dart';
@@ -56,9 +57,9 @@ class AppRouter {
     required this.apiService,
   });
 
-  GoRouter createRouter() {
+  GoRouter createRouter({required String initialPath}) {
     return GoRouter(
-      initialLocation: kSignIn,
+      initialLocation: initialPath,
       errorPageBuilder: (context, state) => MaterialPage(child: Container()),
       routes: [
         GoRoute(
@@ -251,6 +252,12 @@ class AppRouter {
             );
           },
         ),
+        GoRoute(
+          path: kDMZManagement,
+          builder: (context, state) {
+            return DMZManagementPage();
+          },
+        ),
       ],
     );
   }
@@ -278,6 +285,7 @@ class AppRouter {
   static const kGroupDetails = '/group_details';
   static const kUserProfile = '/user-profile';
   static const kAddUsers = '/add-users';
+  static const kDMZManagement = '/fmz-management';
 
   static Future<String?> _getUsernameFromSharedPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

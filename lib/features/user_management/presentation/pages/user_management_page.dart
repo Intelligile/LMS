@@ -160,7 +160,7 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
                 const SizedBox(
                     width:
                         16), // Increase spacing between checkbox and username
-                Text(user.username,
+                Text('${user.firstname} ${user.lastname}',
                     style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
@@ -216,7 +216,7 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
                   'Active Users',
                   style: TextStyle(
                     fontSize: 28, // Increased font size
-                    fontFamily: 'Roboto', // Change to preferred font family
+                    fontFamily: 'Avenir', // Change to preferred font family
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),

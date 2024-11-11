@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/utils/theme_provider.dart';
@@ -87,9 +88,12 @@ class UserNameIcon extends StatelessWidget {
   }
 
   void _performLogout(BuildContext context) async {
-    // Handle logout by clearing user session (e.g., shared preferences)
+    // Clear data from both flutter_secure_storage and SharedPreferences
+    const secureStorage = FlutterSecureStorage();
+    await secureStorage.deleteAll(); // Clear all secure storage data
+
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear(); // Clear all saved data (like session or token)
+    await prefs.clear(); // Clear all shared preferences data
 
     // Navigate to the login page or another appropriate page
     GoRouter.of(context).go(AppRouter.kSignIn);

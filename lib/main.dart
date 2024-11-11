@@ -8,6 +8,8 @@ import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/utils/theme.dart';
 import 'package:lms/core/utils/theme_provider.dart';
+import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/auth_code/data/repositories/authorization_code_repository_impl.dart';
 import 'package:lms/features/auth_code/domain/repositories/authorization_code_repository.dart';
 import 'package:lms/features/auth_code/presentation/view_model/authorization_code_view_model.dart';
@@ -48,38 +50,59 @@ import 'package:lms/features/user_groups/presentation/state/group_bloc.dart';
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
 import 'package:lms/features/user_management/domain/use_cases/add_user.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/user_management/data/repositories/user_repository.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   setUpServiceLocator();
   Bloc.observer = SimpleBlocObserver();
-  final UserManagementRemoteDataSource userRemoteDataSourceImpl;
-  final userRepository = UserRepositoryManagementImpl(
-      remoteDataSource: UserManagementRemoteDataSource(
-          Api(Dio()))); // Provide actual initialization
-  final apiService =
-      ApiService(api: Api(Dio())); // Provide actual initialization
+  const secureStorage = FlutterSecureStorage();
 
-  // Create the AppRouter instance
+  // Retrieve the token and related information
+  final storedToken = await secureStorage.read(key: 'jwtToken');
+  final storedUsername = await secureStorage.read(key: 'usernamePublic');
+  final storedRoles = await secureStorage.read(key: 'userRole');
+  final tokenExpiration = await secureStorage.read(key: 'tokenExpiration');
+  print("TOKEN EXPIRATION $tokenExpiration");
+  // Check token expiration
+  bool isTokenValid = false;
+  if (storedToken != null && tokenExpiration != null) {
+    final expirationDate =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(tokenExpiration) * 1000);
+    isTokenValid = DateTime.now().isBefore(expirationDate);
+  }
+  usernamePublic = storedUsername ?? '';
+  userRole = storedRoles ?? '';
+  // Define the initial path based on token validity
+  final initialPath = isTokenValid ? '/homeView' : '/';
+
+  // Initialize dependencies
+  final userRepository = UserRepositoryManagementImpl(
+    remoteDataSource: UserManagementRemoteDataSource(Api(Dio())),
+  );
+
+  final apiService = ApiService(api: Api(Dio()));
   final appRouter =
       AppRouter(userRepository: userRepository, apiService: apiService);
 
-  // Create the GoRouter instance using the method
-  final router = appRouter.createRouter();
+  // Create the router
+  final router = appRouter.createRouter(initialPath: initialPath);
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => ThemeProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ExpansionTileDrawerProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ExpansionTileDrawerProvider()),
         ChangeNotifierProvider(create: (_) => OpenedAndClosedDrawerProvider()),
       ],
-      child: MyApp(router: router),
+      child: MyApp(
+        router: router,
+        initialUsername: storedUsername, // Pass username to the app
+      ),
     ),
   );
 }
@@ -87,7 +110,7 @@ void main() {
 class MyApp extends StatelessWidget {
   final GoRouter router;
 
-  const MyApp({super.key, required this.router});
+  const MyApp({super.key, required this.router, String? initialUsername});
 
   @override
   Widget build(BuildContext context) {
