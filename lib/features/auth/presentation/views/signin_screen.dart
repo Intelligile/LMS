@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
 import 'package:lms/features/auth/presentation/views/widgets/login_desktop_layout.dart';
+import 'package:lms/features/auth/presentation/views/widgets/mobile_signin_form.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -16,7 +17,7 @@ class _SignInState extends State<SignIn> {
     return Scaffold(
       // backgroundColor: const Color(0xffdce1e3),
       body: AdaptiveLayout(
-        mobileLayout: (context) => const SizedBox(),
+        mobileLayout: (context) => const LoginMobileLayout(),
         tabletLayout: (context) => const SizedBox(),
         notebookLayout: (context) => const SizedBox(),
         desktopLayout: (context) => const LoginDesktopLayout(),
