@@ -26,6 +26,7 @@ class _GroupListPageState extends State<GroupListPage> {
       body: AdaptiveLayout(
         mobileLayout: (context) => const SizedBox(),
         tabletLayout: (context) => const SizedBox(),
+        notebookLayout: (context) => const SizedBox(),
         desktopLayout: (context) => const GroupListPageBody(),
       ),
     );

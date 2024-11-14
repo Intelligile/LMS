@@ -195,6 +195,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       body: AdaptiveLayout(
         mobileLayout: (context) => _buildMobileLayout(),
         tabletLayout: (context) => _buildTabletLayout(),
+        notebookLayout: (context) => _buildNotebookLayout(),
         desktopLayout: (context) => _buildDesktopLayout(),
       ),
     );
@@ -237,7 +238,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,7 +262,52 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 Expanded(
                   flex: 2,
                   child:
-                      _buildImageGrid(widget.product.name, crossAxisCount: 2),
+                      _buildImageGrid(widget.product.name, crossAxisCount: 1),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotebookLayout() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildProductHeader(),
+                        const SizedBox(height: 20),
+                        _buildProductInfo(),
+                        const SizedBox(height: 30),
+                        _buildSectionTitle('Number of Licenses'),
+                        const SizedBox(height: 15),
+                        _buildLicenseCountInput(),
+                        const SizedBox(height: 30),
+                        _buildSectionTitle('Checkout Options'),
+                        const SizedBox(height: 15),
+                        _buildCheckoutOptions(),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 24),
+                Expanded(
+                  flex: 3,
+                  child:
+                      _buildImageGrid(widget.product.name, crossAxisCount: 3),
                 ),
               ],
             ),
@@ -301,7 +347,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           const SizedBox(width: 24),
           Expanded(
             flex: 3,
-            child: _buildImageGrid(widget.product.name, crossAxisCount: 3),
+            child: _buildImageGrid(widget.product.name, crossAxisCount: 4),
           ),
         ],
       ),
@@ -360,31 +406,37 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     List<String> imageUrls =
         matchedCategory != null ? productImages[matchedCategory] ?? [] : [];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: imageUrls.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 1,
-      ),
-      itemBuilder: (context, index) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth:
-                crossAxisCount == 1 ? double.infinity : 200, // Adjust max width
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
-              imageUrls[index],
-              fit: BoxFit.contain,
+    return Padding(
+      padding:
+          const EdgeInsets.all(0), // Remove any padding around the GridView
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: imageUrls.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: 3, // Reduce to further minimize vertical gap
+          crossAxisSpacing: 3, // Reduce horizontal gap if needed
+          childAspectRatio: 2,
+        ),
+        itemBuilder: (context, index) {
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 350,
+                maxHeight: 350,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  imageUrls[index],
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
