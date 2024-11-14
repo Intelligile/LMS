@@ -24,6 +24,11 @@ class SignInForm extends StatefulWidget {
 class _SignInFormState extends State<SignInForm> {
   final _formKey = GlobalKey<FormState>();
 
+  bool isDMZAccount(String username) {
+    // Check if the username is in the DMZ unique ID format
+    return username.contains('-'); // Adjust condition based on your format
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignInCubit, SignInState>(
@@ -31,6 +36,10 @@ class _SignInFormState extends State<SignInForm> {
         if (state is SignInSuccess) {
           showSnackBar(context, 'Sign-in successful', Colors.green);
           GoRouter.of(context).push(AppRouter.kHomeView);
+        } else if (state is SignInDMZUser) {
+          showSnackBar(context, 'DMZ sign-in successful', Colors.green);
+          GoRouter.of(context).push(AppRouter
+              .kDMZSetupDownlaod); // Navigate to DMZ setup download page
         } else if (state is SignInFailure) {
           showSnackBar(context, state.error, Colors.red);
         }
@@ -41,13 +50,15 @@ class _SignInFormState extends State<SignInForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             buildAuthTextField(
-                controller: widget.usernameController,
-                label: 'Username or Email'),
+              controller: widget.usernameController,
+              label: 'Username or Unique ID',
+            ),
             const SizedBox(height: 16),
             buildAuthTextField(
-                controller: widget.passwordController,
-                label: 'Password',
-                obscureText: true),
+              controller: widget.passwordController,
+              label: 'Password',
+              obscureText: true,
+            ),
             const SizedBox(height: 16),
             const SignInAlternative(),
             TextButton(
@@ -74,14 +85,22 @@ class _SignInFormState extends State<SignInForm> {
                       return ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            context.read<SignInCubit>().signIn(
-                                  username: widget.usernameController.text,
-                                  password: widget.passwordController.text,
-                                );
+                            final isDMZ =
+                                isDMZAccount(widget.usernameController.text);
+                            if (isDMZ) {
+                              context.read<SignInCubit>().dmzSignIn(
+                                    uniqueId: widget.usernameController.text,
+                                    password: widget.passwordController.text,
+                                  );
+                            } else {
+                              context.read<SignInCubit>().signIn(
+                                    username: widget.usernameController.text,
+                                    password: widget.passwordController.text,
+                                  );
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          //  backgroundColor: Colors.blue,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: state is SignInLoading
@@ -96,7 +115,6 @@ class _SignInFormState extends State<SignInForm> {
                             : const Text(
                                 'Next',
                                 style: TextStyle(
-                                  // color: Colors.white,
                                   fontSize: 14,
                                 ),
                               ),

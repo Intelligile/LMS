@@ -21,7 +21,7 @@ class DMZForm extends StatefulWidget {
 class _DMZFormState extends State<DMZForm> {
   final _formKey = GlobalKey<FormState>();
   List<DMZModel> _dmzAccounts = [];
-  int _currentStep = 0;
+  bool _passwordVisible = false; // To control password visibility
 
   @override
   void initState() {
@@ -34,12 +34,12 @@ class _DMZFormState extends State<DMZForm> {
         uniqueId: _generateUniqueId(),
         dmzOrganization: '',
         dmzCountry: '',
+        password: '', // Initialize password field
       ));
     }
   }
 
   String _generateUniqueId() {
-    // Generate a unique ID for each DMZ account (e.g., based on timestamp)
     return DateTime.now().millisecondsSinceEpoch.toString();
   }
 
@@ -48,12 +48,6 @@ class _DMZFormState extends State<DMZForm> {
       _formKey.currentState!.save();
       widget.onSubmit(_dmzAccounts);
     }
-  }
-
-  void _onStepTapped(int step) {
-    setState(() {
-      _currentStep = step;
-    });
   }
 
   @override
@@ -123,6 +117,21 @@ class _DMZFormState extends State<DMZForm> {
                               color: Colors.grey,
                             ),
                           ),
+                          const SizedBox(height: 20),
+
+                          // Password field with visibility toggle
+                          _buildPasswordField(
+                            label: 'Password',
+                            initialValue: _dmzAccounts[0].password,
+                            onSaved: (value) =>
+                                _dmzAccounts[0].password = value ?? '',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a password';
+                              }
+                              return null;
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -134,9 +143,11 @@ class _DMZFormState extends State<DMZForm> {
                         children: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Cancel',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black)),
+                            child: const Text(
+                              'Cancel',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
+                            ),
                           ),
                           ElevatedButton(
                             onPressed: _submitForm,
@@ -145,9 +156,11 @@ class _DMZFormState extends State<DMZForm> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 24, vertical: 12),
                             ),
-                            child: const Text('Submit',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white)),
+                            child: const Text(
+                              'Submit',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
+                            ),
                           ),
                         ],
                       ),
@@ -159,6 +172,39 @@ class _DMZFormState extends State<DMZForm> {
           ),
         ],
       ),
+    );
+  }
+
+// Password field with visibility toggle
+  Widget _buildPasswordField({
+    required String label,
+    required String? initialValue,
+    required FormFieldSetter<String>? onSaved,
+    required FormFieldValidator<String>? validator,
+  }) {
+    return TextFormField(
+      initialValue: initialValue,
+      obscureText: !_passwordVisible,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(fontSize: 18),
+        border: const OutlineInputBorder(),
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.all(12),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _passwordVisible ? Icons.visibility : Icons.visibility_off,
+          ),
+          onPressed: () {
+            setState(() {
+              _passwordVisible = !_passwordVisible;
+            });
+          },
+        ),
+      ),
+      onSaved: onSaved,
+      validator: validator,
     );
   }
 

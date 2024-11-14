@@ -18,6 +18,12 @@ class SignInSuccess extends SignInState {
   SignInSuccess(this.unit);
 }
 
+// Add this class for DMZ user sign-in state
+class SignInDMZUser extends SignInState {
+  final dynamic user; // Replace dynamic with your user model type if available
+  SignInDMZUser(this.user);
+}
+
 class SignInFailure extends SignInState {
   final String error;
 

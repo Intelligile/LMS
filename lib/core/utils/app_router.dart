@@ -8,6 +8,7 @@ import 'package:lms/features/auth/presentation/views/widgets/reset_password_form
 import 'package:lms/features/auth_code/presentation/pages/form_page.dart';
 import 'package:lms/features/auth_code/presentation/pages/list_auth_codes.dart';
 import 'package:lms/features/dmz_management/presentation/pages/dmz_management_page.dart';
+import 'package:lms/features/dmz_management/presentation/pages/dmz_setup.dart';
 import 'package:lms/features/home/presentation/views/home_view.dart';
 import 'package:lms/features/license_renewal/presentation/views/license_renewal.dart';
 import 'package:lms/features/payment/presentation/views/payment_view.dart';
@@ -258,6 +259,12 @@ class AppRouter {
             return DMZManagementPage();
           },
         ),
+        GoRoute(
+          path: kDMZSetupDownlaod,
+          builder: (context, state) {
+            return DMZSetupDownloadPage();
+          },
+        ),
       ],
     );
   }
@@ -285,7 +292,8 @@ class AppRouter {
   static const kGroupDetails = '/group_details';
   static const kUserProfile = '/user-profile';
   static const kAddUsers = '/add-users';
-  static const kDMZManagement = '/fmz-management';
+  static const kDMZManagement = '/dmz-management';
+  static const kDMZSetupDownlaod = '/dmz-setup-download';
 
   static Future<String?> _getUsernameFromSharedPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lms/core/utils/api.dart';
+import 'package:lms/core/utils/assets.dart';
+import 'package:lms/core/widgets/adaptive_layout_widget.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/payment/presentation/views/widgets/payment_view_body.dart';
 import 'package:lms/features/product_region_management/data/models/product_model.dart';
@@ -182,29 +184,107 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
           "Product Details",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: SingleChildScrollView(
-            // Wrap Column with SingleChildScrollView
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      body: AdaptiveLayout(
+        mobileLayout: (context) => _buildMobileLayout(),
+        tabletLayout: (context) => _buildTabletLayout(),
+        desktopLayout: (context) => _buildDesktopLayout(),
+      ),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildProductHeader(),
+            const SizedBox(height: 20),
+            _buildProductInfo(),
+            const SizedBox(height: 30),
+            _buildSectionTitle('Number of Licenses'),
+            const SizedBox(height: 15),
+            _buildLicenseCountInput(),
+            const SizedBox(height: 30),
+            _buildSectionTitle('Checkout Options'),
+            const SizedBox(height: 15),
+            _buildCheckoutOptions(),
+            const SizedBox(height: 30),
+            _buildImageGrid(widget.product.name, crossAxisCount: 1),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabletLayout() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildProductHeader(),
+                        const SizedBox(height: 20),
+                        _buildProductInfo(),
+                        const SizedBox(height: 30),
+                        _buildSectionTitle('Number of Licenses'),
+                        const SizedBox(height: 15),
+                        _buildLicenseCountInput(),
+                        const SizedBox(height: 30),
+                        _buildSectionTitle('Checkout Options'),
+                        const SizedBox(height: 15),
+                        _buildCheckoutOptions(),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 24),
+                Expanded(
+                  flex: 2,
+                  child:
+                      _buildImageGrid(widget.product.name, crossAxisCount: 2),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 1,
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildImageCarousel(), // Updated to remove parameter
-                  const SizedBox(height: 20),
                   _buildProductHeader(),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
                   _buildProductInfo(),
                   const SizedBox(height: 30),
                   _buildSectionTitle('Number of Licenses'),
@@ -218,42 +298,93 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
             ),
           ),
-        ),
+          const SizedBox(width: 24),
+          Expanded(
+            flex: 3,
+            child: _buildImageGrid(widget.product.name, crossAxisCount: 3),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildImageCarousel() {
-    List<String> imageUrls = [
-      'https://images.unsplash.com/photo-1676907820153-2b61de2b9daf?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // Strategic Planning and Vision
-      'https://images.unsplash.com/photo-1717501220725-83f151c447e7?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // Team Collaboration and Innovation
-      'https://images.unsplash.com/photo-1676911809746-85d90edbbe4a?q=80&w=1949&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // Data-Driven Decision Making
-      'https://plus.unsplash.com/premium_photo-1695752728004-6846d17d5a09?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // Customer Satisfaction and Quality Service
-    ];
+  Widget _buildImageGrid(String productName, {int crossAxisCount = 3}) {
+    final Map<String, List<String>> productImages = {
+      'Operation Engineering': [
+        AssetsData.oeProcessFlow,
+        AssetsData.oeActiveClient,
+        AssetsData.oeActivity2,
+        AssetsData.oeActivity,
+        AssetsData.oeJourney,
+      ],
+      'Governance and Risk': [
+        AssetsData.grcCapabilityHeatMap,
+        AssetsData.grcRiskMethodology,
+        AssetsData.grcProjectRiskMapDemo,
+        AssetsData.grcPolicy,
+        AssetsData.grcRiskActionPlanDemo,
+      ],
+      'Digital Transformation': [
+        AssetsData.itdtMidrangeServerDescription,
+        AssetsData.itdtPrinciple,
+        AssetsData.itdtRiskMapDemo,
+        AssetsData.iteaSoftware,
+      ],
+      'Enterprise Architecture': [
+        AssetsData.iteaNetwork,
+        AssetsData.iteaSoftware,
+        AssetsData.iteaDataCenter,
+      ],
+      'Human Capital': [
+        AssetsData.hcCompetencyExample,
+        AssetsData.hcCompetencyFramework,
+        AssetsData.hcHierarchy,
+      ],
+      'Strategy': [
+        AssetsData.stStrategyMap2,
+        AssetsData.stStrategy,
+        AssetsData.stStrategyMap3,
+        AssetsData.stGoalsAnalysis,
+        AssetsData.stSwot,
+      ],
+    };
 
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 250.0,
-        enlargeCenterPage: true,
-        enableInfiniteScroll: true,
-        autoPlay: true,
-        autoPlayInterval: const Duration(seconds: 3),
-        aspectRatio: 16 / 9,
+    String? matchedCategory;
+    for (String category in productImages.keys) {
+      if (productName.contains(category)) {
+        matchedCategory = category;
+        break;
+      }
+    }
+
+    List<String> imageUrls =
+        matchedCategory != null ? productImages[matchedCategory] ?? [] : [];
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: imageUrls.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 1,
       ),
-      items: imageUrls.map((imageUrl) {
-        return Builder(
-          builder: (BuildContext context) {
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-              ),
-            );
-          },
+      itemBuilder: (context, index) {
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth:
+                crossAxisCount == 1 ? double.infinity : 200, // Adjust max width
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              imageUrls[index],
+              fit: BoxFit.contain,
+            ),
+          ),
         );
-      }).toList(),
+      },
     );
   }
 

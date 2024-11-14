@@ -13,6 +13,7 @@ class DMZManagementRemoteDataSource {
         "uniqueId": dmz.uniqueId,
         "dmzOrganization": dmz.dmzOrganization,
         "dmzCountry": dmz.dmzCountry,
+        "password": dmz.password,
       };
     }).toList();
 
@@ -38,6 +39,7 @@ class DMZManagementRemoteDataSource {
           "uniqueId": dmz.uniqueId,
           "dmzOrganization": dmz.dmzOrganization,
           "dmzCountry": dmz.dmzCountry,
+          "password": dmz.password
         },
         token: token,
       );

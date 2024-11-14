@@ -7,6 +7,7 @@ class LoginUseCase {
 
   LoginUseCase(this.authRepository);
 
+  // Regular login use case
   Future<Either<Failure, Unit>> call({
     required String un,
     required String pw,
@@ -14,6 +15,17 @@ class LoginUseCase {
     return await authRepository.loginUser(
       username: un,
       password: pw,
+    );
+  }
+
+  // DMZ login use case
+  Future<Either<Failure, Unit>> dmzLogin({
+    required String uniqueId,
+    required String password,
+  }) async {
+    return await authRepository.dmzLogin(
+      uniqueId: uniqueId,
+      password: password,
     );
   }
 }

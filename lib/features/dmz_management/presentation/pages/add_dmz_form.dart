@@ -28,11 +28,11 @@ class _AddDMZFormState extends State<AddDMZForm> {
       uniqueId: _generateUniqueId(),
       dmzOrganization: '',
       dmzCountry: '',
+      password: '', // Initialize password field
     ));
   }
 
   String _generateUniqueId() {
-    // Generate a unique ID for each DMZ account
     return DateTime.now().millisecondsSinceEpoch.toString();
   }
 
@@ -113,6 +113,14 @@ class _AddDMZFormState extends State<AddDMZForm> {
               validator: (value) =>
                   value!.isEmpty ? 'Please enter a country' : null,
             ),
+            _buildInputField(
+              label: 'Password',
+              initialValue: _dmzAccounts[index].password,
+              onSaved: (value) => _dmzAccounts[index].password = value!,
+              validator: (value) =>
+                  value!.isEmpty ? 'Please enter a password' : null,
+              obscureText: true,
+            ),
             Text(
               'Unique ID: ${_dmzAccounts[index].uniqueId}',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -128,11 +136,13 @@ class _AddDMZFormState extends State<AddDMZForm> {
     required String initialValue,
     required Function(String?) onSaved,
     required String? Function(String?) validator,
+    bool obscureText = false,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         initialValue: initialValue,
+        obscureText: obscureText,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: const TextStyle(color: Color(0xFF017278)), // LMS color

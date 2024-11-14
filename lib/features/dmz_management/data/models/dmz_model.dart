@@ -3,12 +3,14 @@ class DMZModel {
   late String uniqueId;
   late String dmzOrganization;
   late String dmzCountry;
+  late String password; // New password field
 
   DMZModel({
     required this.dmzId,
     required this.uniqueId,
     required this.dmzOrganization,
     required this.dmzCountry,
+    required this.password, // Initialize password
   });
 
   // Factory constructor to create DMZModel from JSON
@@ -18,6 +20,7 @@ class DMZModel {
       uniqueId: json['uniqueId'] ?? '',
       dmzOrganization: json['dmzOrganization'] ?? '',
       dmzCountry: json['dmzCountry'] ?? '',
+      password: json['password'] ?? '', // Parse password
     );
   }
 
@@ -28,6 +31,7 @@ class DMZModel {
       'uniqueId': uniqueId,
       'dmzOrganization': dmzOrganization,
       'dmzCountry': dmzCountry,
+      'password': password, // Add password to JSON
     };
   }
 }

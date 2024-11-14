@@ -20,11 +20,35 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       // Await the result from loginUser in authRemoteDataSource
       await authRemoteDataSource.loginUser(
-          password: password, username: username);
+        password: password,
+        username: username,
+      );
 
       return right(unit); // Return Unit from dartz if successful
     } catch (e) {
       print("Error in loginUser: $e"); // Logging the error
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString())); // Return the error message
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> dmzLogin({
+    required String uniqueId,
+    required String password,
+  }) async {
+    try {
+      // Await the result from dmzLogin in authRemoteDataSource
+      await authRemoteDataSource.dmzLogin(
+        uniqueId: uniqueId,
+        password: password,
+      );
+
+      return right(unit); // Return Unit from dartz if successful
+    } catch (e) {
+      print("Error in dmzLogin: $e"); // Logging the error
       if (e is DioException) {
         return left(ServerFailure.fromDioError(e));
       }

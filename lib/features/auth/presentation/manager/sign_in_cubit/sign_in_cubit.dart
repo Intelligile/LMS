@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 part 'sign_in_state.dart';
 
 var userRole = '';
+var isDMZAccount = false;
 
 class SignInCubit extends Cubit<SignInState> {
   final LoginUseCase loginUseCase;
@@ -27,26 +28,50 @@ class SignInCubit extends Cubit<SignInState> {
       result.fold((failure) {
         emit(SignInFailure(failure.message));
       }, (user) async {
-        final storedToken = await _secureStorage.read(key: 'jwtToken');
-        final storedUsername = await _secureStorage.read(key: 'usernamePublic');
-
-        final storedRoles = await _secureStorage.read(key: 'userRole');
-        // Store username and user role in secure storage
+        // Store username and user role in secure storage for standard users
         await _secureStorage.write(
-            key: 'usernamePublic', value: storedUsername);
-        await _secureStorage.write(key: 'userRole', value: storedRoles);
+            key: 'jwtToken', value: await _secureStorage.read(key: 'jwtToken'));
         await _secureStorage.write(
-            key: 'jwtToken', value: storedToken); // Store jwtToken if needed
+            key: 'usernamePublic',
+            value: await _secureStorage.read(key: 'usernamePublic'));
+        await _secureStorage.write(
+            key: 'userRole', value: await _secureStorage.read(key: 'userRole'));
 
-        // Retrieve the stored values for debug or further processing
-        final usernamePublic = await _secureStorage.read(key: 'usernamePublic');
         userRole = await _secureStorage.read(key: 'userRole') ?? '';
-
         emit(SignInSuccess(user));
       });
     } catch (e) {
       emit(SignInFailure("An unexpected error occurred"));
-      print("Sign-in error: $e"); // Log the error for debugging
+      print("Sign-in error: $e");
+    }
+  }
+
+  Future<void> dmzSignIn({
+    required String uniqueId,
+    required String password,
+  }) async {
+    emit(SignInLoading());
+    try {
+      var result =
+          await loginUseCase.dmzLogin(uniqueId: uniqueId, password: password);
+
+      result.fold((failure) {
+        emit(SignInFailure(failure.message));
+      }, (user) async {
+        // Store DMZ-specific login details in secure storage
+        await _secureStorage.write(
+            key: 'jwtToken', value: await _secureStorage.read(key: 'jwtToken'));
+        await _secureStorage.write(
+            key: 'usernamePublic',
+            value: 'DMZ'); // Flagging as DMZ user for this key
+        await _secureStorage.write(key: 'isDMZAccount', value: 'true');
+
+        isDMZAccount = true;
+        emit(SignInDMZUser(user));
+      });
+    } catch (e) {
+      emit(SignInFailure("An unexpected error occurred"));
+      print("DMZ sign-in error: $e");
     }
   }
 }
