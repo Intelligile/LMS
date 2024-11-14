@@ -8,6 +8,7 @@ import 'package:lms/features/auth/data/repositories/auth_repositroy_impl.dart';
 import 'package:lms/features/auth/domain/use_case/register_use_case.dart';
 import 'package:lms/features/auth/presentation/manager/registration_cubit/registration_cubit.dart';
 import 'package:lms/features/auth/presentation/views/widgets/desktop_register_form.dart';
+import 'package:lms/features/auth/presentation/views/widgets/mobile_register_form.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -29,7 +30,7 @@ class RegisterScreen extends StatelessWidget {
           ),
         ),
         child: AdaptiveLayout(
-          mobileLayout: (context) => const SizedBox(),
+          mobileLayout: (context) => const MobileRegisterForm(),
           tabletLayout: (context) => const SizedBox(),
           notebookLayout: (context) => const SizedBox(),
           desktopLayout: (context) => const DesktopRegisterForm(),
