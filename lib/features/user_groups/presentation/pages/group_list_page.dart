@@ -26,7 +26,6 @@ class _GroupListPageState extends State<GroupListPage> {
       body: AdaptiveLayout(
         mobileLayout: (context) => const SizedBox(),
         tabletLayout: (context) => const SizedBox(),
-        notebookLayout: (context) => const SizedBox(),
         desktopLayout: (context) => const GroupListPageBody(),
       ),
     );
@@ -120,8 +119,9 @@ class _GroupListPageBodyState extends State<GroupListPageBody> {
                 CustomBreadcrumb(
                   items: const ['Home', 'Groups'],
                   onTap: (index) {
-                    if (index == 0)
+                    if (index == 0) {
                       GoRouter.of(context).go(AppRouter.kHomeView);
+                    }
                   },
                 ),
                 const SizedBox(height: 30),
@@ -222,7 +222,7 @@ class _GroupListPageBodyState extends State<GroupListPageBody> {
                                       group: group),
                                   child: Text(
                                     group.name,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: kPrimaryColor,
                                       decoration: TextDecoration.underline,
                                     ),
@@ -233,7 +233,7 @@ class _GroupListPageBodyState extends State<GroupListPageBody> {
                                   Text(group.description ?? 'No description')),
                               DataCell(
                                 IconButton(
-                                  icon: Icon(Icons.delete_outline,
+                                  icon: const Icon(Icons.delete_outline,
                                       color: kPrimaryColor),
                                   onPressed: () async {
                                     try {

@@ -74,7 +74,6 @@ class _ProductManagementViewState extends State<ProductManagementView> {
       body: AdaptiveLayout(
         mobileLayout: (context) => const SizedBox(),
         tabletLayout: (context) => const SizedBox(),
-        notebookLayout: (context) => const SizedBox(),
         desktopLayout: (context) => _buildBody(filteredProducts),
       ),
       floatingActionButton: FloatingActionButton(

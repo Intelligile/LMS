@@ -23,7 +23,6 @@ class _ProductListPageState extends State<ProductListPage> {
       body: AdaptiveLayout(
         mobileLayout: (context) => const SizedBox(),
         tabletLayout: (context) => const SizedBox(),
-        notebookLayout: (context) => const SizedBox(),
         desktopLayout: (context) => const ProductListPageBody(),
       ),
     );

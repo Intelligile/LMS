@@ -37,3 +37,35 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 }
+
+class CustomMobileAppBar extends StatefulWidget {
+  final String username;
+
+  const CustomMobileAppBar({
+    super.key,
+    required this.username, // Add this parameter
+  });
+
+  @override
+  State<CustomMobileAppBar> createState() => _CustomMobileAppBarState();
+}
+
+class _CustomMobileAppBarState extends State<CustomMobileAppBar> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: kAppBarColor,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const AppBarGridIconAndTitle(),
+          const Expanded(child: ResponsiveTextField()),
+          UserOptionsIcons(
+            username: widget.username, // Pass the username here
+          ),
+        ],
+      ),
+    );
+  }
+}

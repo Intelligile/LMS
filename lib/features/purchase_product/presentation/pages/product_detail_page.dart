@@ -195,7 +195,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       body: AdaptiveLayout(
         mobileLayout: (context) => _buildMobileLayout(),
         tabletLayout: (context) => _buildTabletLayout(),
-        notebookLayout: (context) => _buildNotebookLayout(),
         desktopLayout: (context) => _buildDesktopLayout(),
       ),
     );

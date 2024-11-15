@@ -32,7 +32,6 @@ class RegisterScreen extends StatelessWidget {
         child: AdaptiveLayout(
           mobileLayout: (context) => const MobileRegisterForm(),
           tabletLayout: (context) => const SizedBox(),
-          notebookLayout: (context) => const SizedBox(),
           desktopLayout: (context) => const DesktopRegisterForm(),
         ),
       ),

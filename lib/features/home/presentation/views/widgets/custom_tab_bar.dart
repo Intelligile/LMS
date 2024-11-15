@@ -17,8 +17,9 @@ class CustomTabBar extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return TabBar(
+      tabAlignment: TabAlignment.start,
       controller: _tabController,
-      // labelColor: Colors.black,
+      isScrollable: true, // Add this
       indicatorColor: kPrimaryColor,
       labelColor: themeProvider.themeMode == ThemeMode.light
           ? Colors.black
@@ -30,9 +31,7 @@ class CustomTabBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(FontAwesomeIcons.user),
-              SizedBox(
-                width: 10,
-              ),
+              SizedBox(width: 10),
               Text('Users'),
             ],
           ),
@@ -41,9 +40,7 @@ class CustomTabBar extends StatelessWidget {
           child: Row(
             children: [
               Icon(FontAwesomeIcons.peopleGroup),
-              SizedBox(
-                width: 10,
-              ),
+              SizedBox(width: 10),
               Text('Teams'),
             ],
           ),
@@ -52,9 +49,7 @@ class CustomTabBar extends StatelessWidget {
           child: Row(
             children: [
               Icon(FontAwesomeIcons.creditCard),
-              SizedBox(
-                width: 5,
-              ),
+              SizedBox(width: 5),
               Text('Subscription'),
             ],
           ),
@@ -63,9 +58,7 @@ class CustomTabBar extends StatelessWidget {
           child: Row(
             children: [
               Icon(FontAwesomeIcons.bookOpen),
-              SizedBox(
-                width: 10,
-              ),
+              SizedBox(width: 10),
               Text('Learn'),
             ],
           ),

@@ -138,67 +138,70 @@ class _CustomCollapsedDrawerState extends State<CustomCollapsedDrawer> {
         bool drawerOpen = drawerStateProvider.isDrawerOpen;
         List<dynamic> drawerItems = getDrawerItems(drawerOpen);
 
-        return Padding(
-          padding: const EdgeInsets.only(left: 6, top: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: widget.onPressed,
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Icon(Icons.menu),
+        return SizedBox(
+          width: 200,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 6, top: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: widget.onPressed,
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Icon(Icons.menu),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: drawerItems.length,
-                  itemBuilder: (context, index) {
-                    final item = drawerItems[index];
-                    return MouseRegion(
-                      onEnter: (_) => setState(() => hoveredIndex = index),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 0),
-                        curve: Curves.easeInOut,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 8),
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                          color: hoveredIndex == index
-                              ? Colors.grey[200]
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: hoveredIndex == index
-                              ? [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.3),
-                                    blurRadius: 4,
-                                    offset: const Offset(2, 2),
-                                  ),
-                                ]
-                              : [],
+                const SizedBox(height: 15),
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: drawerItems.length,
+                    itemBuilder: (context, index) {
+                      final item = drawerItems[index];
+                      return MouseRegion(
+                        onEnter: (_) => setState(() => hoveredIndex = index),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 0),
+                          curve: Curves.easeInOut,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          decoration: BoxDecoration(
+                            color: hoveredIndex == index
+                                ? Colors.grey[200]
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: hoveredIndex == index
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      blurRadius: 4,
+                                      offset: const Offset(2, 2),
+                                    ),
+                                  ]
+                                : [],
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedIndex = index;
+                                selectedChildIndex = 0;
+                              });
+                              if (item is ListTileItemModel &&
+                                  item.path != null) {
+                                GoRouter.of(context).go(item.path!);
+                              }
+                            },
+                            child: _buildDrawerContent(item, index, drawerOpen),
+                          ),
                         ),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedIndex = index;
-                              selectedChildIndex = 0;
-                            });
-                            if (item is ListTileItemModel &&
-                                item.path != null) {
-                              GoRouter.of(context).go(item.path!);
-                            }
-                          },
-                          child: _buildDrawerContent(item, index, drawerOpen),
-                        ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

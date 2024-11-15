@@ -8,19 +8,19 @@ import 'package:lms/features/home/presentation/views/widgets/custom_card_contain
 import 'package:lms/features/home/presentation/views/widgets/custom_tab_bar.dart';
 import 'package:lms/features/home/presentation/views/widgets/custom_tab_bar_view.dart';
 
-class HomeViewBody extends StatefulWidget {
+class DesktopHomeViewBody extends StatefulWidget {
   final String username; // Add this parameter
 
-  const HomeViewBody({
+  const DesktopHomeViewBody({
     super.key,
     required this.username, // Add this required parameter
   });
 
   @override
-  _HomeViewBodyState createState() => _HomeViewBodyState();
+  _DesktopHomeViewBodyState createState() => _DesktopHomeViewBodyState();
 }
 
-class _HomeViewBodyState extends State<HomeViewBody>
+class _DesktopHomeViewBodyState extends State<DesktopHomeViewBody>
     with SingleTickerProviderStateMixin {
   //bool _drawerOpen = false;
   late TabController _tabController;

@@ -17,10 +17,17 @@ class AppBarGridIconAndTitle extends StatelessWidget {
           Icons.apps,
           color: Colors.white,
         ),
-        Text(
-          'License Management System',
-          style: Styles.textStyle20.copyWith(color: Colors.white, fontSize: 18),
-        ),
+        MediaQuery.sizeOf(context).width > 600
+            ? Text(
+                'License Management System',
+                style: Styles.textStyle20
+                    .copyWith(color: Colors.white, fontSize: 18),
+              )
+            : Text(
+                'LMS',
+                style: Styles.textStyle20
+                    .copyWith(color: Colors.white, fontSize: 18),
+              ),
       ],
     );
   }

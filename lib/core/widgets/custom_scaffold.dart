@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/home/presentation/views/widgets/custom_app_bar.dart';
@@ -22,22 +24,31 @@ class CustomScaffold extends StatelessWidget {
     return Consumer<OpenedAndClosedDrawerProvider>(
       builder: (context, drawerStateProvider, child) {
         bool drawerOpen = drawerStateProvider.isDrawerOpen;
+        double width = MediaQuery.sizeOf(context).width;
+
+        //calculate drawer width based on screen size and state
+        double drawerWidth = drawerOpen
+            ? math.max(width * 0.25, 75.0)
+            : math.max(width * 0.01, 75.0);
+
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size(double.infinity, 60),
-            child: CustomAppBar(
-              username: usernamePublic,
-            ),
+            child: width > 600
+                ? CustomAppBar(
+                    username: usernamePublic,
+                  )
+                : CustomMobileAppBar(username: usernamePublic),
           ),
-          // backgroundColor: backgroudColor ?? Colors.white,
           body: Row(
             children: [
+              MediaQuery.sizeOf(context).width > 600
+                  ? SizedBox(
+                      width: drawerWidth,
+                      child: const CustomDrawer(),
+                    )
+                  : const SizedBox(),
               Expanded(
-                flex: drawerOpen ? 2 : 1,
-                child: const CustomDrawer(),
-              ),
-              Expanded(
-                flex: drawerOpen ? 8 : 16,
                 child: body,
               ),
             ],

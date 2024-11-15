@@ -15,19 +15,14 @@ class UserNameIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     bool isDark = themeProvider.themeMode == ThemeMode.dark ? true : false;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    // Calculate the size of the container as a percentage of the screen size
-    double containerSize = screenWidth * 0.04; // 4% of the screen width
-
     return GestureDetector(
       onTap: () {
         // Show popup menu when the circle is tapped
         _showPopupMenu(context, isDark, themeProvider);
       },
       child: Container(
-        width: containerSize,
-        height: containerSize,
+        height: 50,
+        width: 50,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(width: 2, color: Colors.white),
