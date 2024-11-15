@@ -24,7 +24,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
   Widget build(BuildContext context) {
     return CustomScaffold(
         body: AdaptiveLayout(
-      mobileLayout: (context) => const SizedBox(),
+      mobileLayout: (context) => const UserManagementPageBody(),
       tabletLayout: (context) => const SizedBox(),
       desktopLayout: (context) => const UserManagementPageBody(),
     ));
@@ -227,114 +227,182 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
                     thickness: 1), // Light grey divider
 
                 // Action buttons with additional options
-                Row(
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () =>
-                          _openUserFormFromRight(context, isEditing: false),
-                      icon: const Icon(Icons.add, color: Colors.white),
-                      label: const Text('Add a user',
-                          style: TextStyle(color: Colors.white)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () =>
+                            _openUserFormFromRight(context, isEditing: false),
+                        icon: const Icon(Icons.add, color: Colors.white),
+                        label: const Text(
+                          'Add a user',
+                          style: TextStyle(color: Colors.white),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      onPressed: () {}, // Placeholder for add group action
-                      icon: const Icon(Icons.group_add, color: Colors.black),
-                      label: const Text('Add group',
-                          style: TextStyle(color: Colors.black)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      onPressed: _fetchUsers, // Refresh action
-                      icon: const Icon(Icons.refresh, color: Colors.black),
-                      label: const Text('Refresh',
-                          style: TextStyle(color: Colors.black)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: () {}, // Placeholder for add group action
+                        icon: const Icon(Icons.group_add, color: Colors.black),
+                        label: const Text(
+                          'Add group',
+                          style: TextStyle(color: Colors.black),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      onPressed:
-                          () {}, // Placeholder for export to Excel action
-                      icon:
-                          const Icon(Icons.file_download, color: Colors.black),
-                      label: const Text('Export to Excel',
-                          style: TextStyle(color: Colors.black)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: _fetchUsers, // Refresh action
+                        icon: const Icon(Icons.refresh, color: Colors.black),
+                        label: const Text(
+                          'Refresh',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed:
+                            () {}, // Placeholder for export to Excel action
+                        icon: const Icon(Icons.file_download,
+                            color: Colors.black),
+                        label: const Text(
+                          'Export to Excel',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Divider(
                     color: Colors.grey[300],
                     thickness: 1), // Light grey divider
-
-                // User table
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          minWidth: MediaQuery.of(context).size.width),
-                      child: DataTable(
-                        dividerThickness: 1,
-                        columnSpacing: 24.0,
-                        columns: const [
-                          DataColumn(
-                              label: Text('Display Name',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Username',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Licenses',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Actions',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
-                        ],
-                        rows: _users
-                            .map((user) => _buildUserListDataRow(user))
-                            .toList(),
+                MediaQuery.sizeOf(context).width > 600
+                    ? Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minWidth: MediaQuery.of(context).size.width,
+                            ),
+                            child: DataTable(
+                              dividerThickness: 1,
+                              columnSpacing: 24.0,
+                              columns: const [
+                                DataColumn(
+                                    label: Text('Display Name',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Username',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Licenses',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Actions',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold))),
+                              ],
+                              rows: _users
+                                  .map((user) => _buildUserListDataRow(user))
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                      )
+                    : // Mobile layout with ListView
+                    Expanded(
+                        child: ListView.builder(
+                          itemCount: _users.length,
+                          itemBuilder: (context, index) {
+                            final user = _users[index];
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      user.username,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text('Username: ${user.username}'),
+                                    const SizedBox(height: 4),
+                                    Text('Licenses: ${user.phone}'),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () => _editUser(user),
+                                          child: const Text(
+                                            'Edit',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => _deleteUser(user),
+                                          child: const Text(
+                                            'Delete',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               ],
             ),
           );
   }
+
+  _editUser(UserModel user) {}
+
+  _deleteUser(UserModel user) {}
 }
