@@ -40,10 +40,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
 class CustomMobileAppBar extends StatefulWidget {
   final String username;
-
+  final IconButton button;
   const CustomMobileAppBar({
     super.key,
-    required this.username, // Add this parameter
+    required this.username,
+    required this.button, // Add this parameter
   });
 
   @override
@@ -55,11 +56,13 @@ class _CustomMobileAppBarState extends State<CustomMobileAppBar> {
   Widget build(BuildContext context) {
     return Container(
       color: kAppBarColor,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.only(right: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const AppBarGridIconAndTitle(),
+          MobileAppBarGridIconAndTitle(
+            button: widget.button,
+          ),
           const Expanded(child: ResponsiveTextField()),
           UserOptionsIcons(
             username: widget.username, // Pass the username here

@@ -17,17 +17,33 @@ class AppBarGridIconAndTitle extends StatelessWidget {
           Icons.apps,
           color: Colors.white,
         ),
-        MediaQuery.sizeOf(context).width > 600
-            ? Text(
-                'License Management System',
-                style: Styles.textStyle20
-                    .copyWith(color: Colors.white, fontSize: 18),
-              )
-            : Text(
-                'LMS',
-                style: Styles.textStyle20
-                    .copyWith(color: Colors.white, fontSize: 18),
-              ),
+        Text(
+          'License Management System',
+          style: Styles.textStyle20.copyWith(color: Colors.white, fontSize: 18),
+        )
+      ],
+    );
+  }
+}
+
+class MobileAppBarGridIconAndTitle extends StatelessWidget {
+  const MobileAppBarGridIconAndTitle({
+    super.key,
+    required this.button,
+  });
+  final IconButton button;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const SizedBox(
+          width: 10,
+        ),
+        button,
+        Text(
+          'LMS',
+          style: Styles.textStyle20.copyWith(color: Colors.white, fontSize: 18),
+        ),
       ],
     );
   }

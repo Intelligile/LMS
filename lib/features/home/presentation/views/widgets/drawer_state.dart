@@ -12,7 +12,7 @@ class ExpansionTileDrawerProvider extends ChangeNotifier {
 }
 
 class OpenedAndClosedDrawerProvider extends ChangeNotifier {
-  bool _isDrawerOpen = false;
+  bool _isDrawerOpen = true;
 
   bool get isDrawerOpen => _isDrawerOpen;
 
