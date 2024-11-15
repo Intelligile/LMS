@@ -24,7 +24,7 @@ class _GroupListPageState extends State<GroupListPage> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       body: AdaptiveLayout(
-        mobileLayout: (context) => const SizedBox(),
+        mobileLayout: (context) => const GroupListPageBody(),
         tabletLayout: (context) => const SizedBox(),
         desktopLayout: (context) => const GroupListPageBody(),
       ),
@@ -140,45 +140,48 @@ class _GroupListPageBodyState extends State<GroupListPageBody> {
                 Divider(color: Colors.grey[300], thickness: 1),
 
                 // Action buttons
-                Row(
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () => _openGroupFormDrawer(context),
-                      icon: const Icon(Icons.add, color: Colors.white),
-                      label: const Text('Add Group',
-                          style: TextStyle(color: Colors.white)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kPrimaryColor,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () => _openGroupFormDrawer(context),
+                        icon: const Icon(Icons.add, color: Colors.white),
+                        label: const Text('Add Group',
+                            style: TextStyle(color: Colors.white)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimaryColor,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      onPressed: _fetchGroups,
-                      icon: const Icon(Icons.refresh, color: Colors.black),
-                      label: const Text('Refresh',
-                          style: TextStyle(color: Colors.black)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: _fetchGroups,
+                        icon: const Icon(Icons.refresh, color: Colors.black),
+                        label: const Text('Refresh',
+                            style: TextStyle(color: Colors.black)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      onPressed: () {},
-                      icon:
-                          const Icon(Icons.file_download, color: Colors.black),
-                      label: const Text('Export to Excel',
-                          style: TextStyle(color: Colors.black)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.file_download,
+                            color: Colors.black),
+                        label: const Text('Export to Excel',
+                            style: TextStyle(color: Colors.black)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: 16),

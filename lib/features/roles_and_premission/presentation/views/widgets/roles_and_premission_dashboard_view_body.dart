@@ -49,52 +49,92 @@ class _RolesAndPermissionDashboardViewBodyState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomBreadcrumb(
-                    items: const ['Home', 'Roles & Permissions'],
-                    onTap: (index) {
-                      // Add navigation logic based on index
-                      if (index == 0) {
-                        GoRouter.of(context).go(AppRouter.kHomeView);
-                      } else if (index == 1) {
-                        // Navigate to Active Users
-                      }
-                    },
-                  ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            GoRouter.of(context)
-                                .push(AppRouter.kManageRolesView);
-                          },
-                          child: const ActionsContainer(
-                              containerBgColor: Colors.white,
-                              txtColor: Colors.blue,
-                              containerIcon: Icon(
-                                Icons.settings,
-                                color: Colors.blue,
-                              ),
-                              containerText: 'Manage roles'),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: ActionsContainer(
-                              containerIcon: Icon(
-                                FontAwesomeIcons.plus,
-                                size: 22,
-                                color: Colors.white,
-                              ),
-                              containerText: 'Invite people',
-                              containerBgColor: Colors.blue,
-                              txtColor: Colors.white),
-                        )
-                      ],
+                    padding: const EdgeInsets.only(left: 12),
+                    child: CustomBreadcrumb(
+                      items: const ['Home', 'Roles & Permissions'],
+                      onTap: (index) {
+                        // Add navigation logic based on index
+                        if (index == 0) {
+                          GoRouter.of(context).go(AppRouter.kHomeView);
+                        } else if (index == 1) {
+                          // Navigate to Active Users
+                        }
+                      },
                     ),
-                  )
+                  ),
+                  MediaQuery.sizeOf(context).width > 600
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  GoRouter.of(context)
+                                      .push(AppRouter.kManageRolesView);
+                                },
+                                child: const ActionsContainer(
+                                    containerBgColor: Colors.white,
+                                    txtColor: Colors.blue,
+                                    containerIcon: Icon(
+                                      Icons.settings,
+                                      color: Colors.blue,
+                                    ),
+                                    containerText: 'Manage roles'),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
+                                child: ActionsContainer(
+                                    containerIcon: Icon(
+                                      FontAwesomeIcons.plus,
+                                      size: 22,
+                                      color: Colors.white,
+                                    ),
+                                    containerText: 'Invite people',
+                                    containerBgColor: Colors.blue,
+                                    txtColor: Colors.white),
+                              )
+                            ],
+                          ),
+                        )
+                      : const SizedBox()
                 ],
               ),
+              MediaQuery.sizeOf(context).width < 600
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              GoRouter.of(context)
+                                  .push(AppRouter.kManageRolesView);
+                            },
+                            child: const ActionsContainer(
+                                containerBgColor: Colors.white,
+                                txtColor: Colors.blue,
+                                containerIcon: Icon(
+                                  Icons.settings,
+                                  color: Colors.blue,
+                                ),
+                                containerText: 'Manage roles'),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: ActionsContainer(
+                                containerIcon: Icon(
+                                  FontAwesomeIcons.plus,
+                                  size: 22,
+                                  color: Colors.white,
+                                ),
+                                containerText: 'Invite people',
+                                containerBgColor: Colors.blue,
+                                txtColor: Colors.white),
+                          )
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
               // Filters Row
               const UsersTableFilteringRow(),
               // Data Row
@@ -180,12 +220,21 @@ class _RolesAndPermissionDashboardViewBodyState
           radius: 20,
         ),
         const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(userName, style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text(email),
-          ],
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                userName,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                email,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ],
     );

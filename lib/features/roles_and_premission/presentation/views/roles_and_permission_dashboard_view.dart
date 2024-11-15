@@ -18,7 +18,7 @@ class RolesAndPermissionDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       body: AdaptiveLayout(
-        mobileLayout: (context) => const SizedBox(),
+        mobileLayout: (context) => const RolesAndPermissionDashboardViewBody(),
         tabletLayout: (context) => const SizedBox(),
         desktopLayout: (context) => const RolesAndPermissionDashboardViewBody(),
       ),

@@ -12,20 +12,34 @@ class UsersTableFilteringRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Row(
-            children: [
-              CustomDropDownButton(label: 'Show', value: 'All'),
-              SizedBox(width: 16),
-              CustomDropDownButton(label: 'Role', value: 'All'),
-              SizedBox(width: 16),
-              CustomSearchBar(),
-            ],
+          const Expanded(
+            flex: 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: CustomDropDownButton(label: 'Show', value: 'All')),
+                FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: CustomDropDownButton(label: 'Role', value: 'All')),
+                Expanded(child: CustomSearchBar()),
+              ],
+            ),
           ),
-          TextButton(
-            onPressed: () {},
-            child: const Text('Clear Filters'),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: TextButton(
+                onPressed: () {},
+                child: const Text(
+                  'Clear Filters',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ),
           ),
         ],
       ),
