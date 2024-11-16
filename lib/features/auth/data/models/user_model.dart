@@ -1,4 +1,3 @@
-// lib/models/user.dart
 class User {
   final int id;
   final String username;
@@ -22,12 +21,14 @@ class User {
     this.authorityIDs = const [1],
   });
 
+  /// Converts the `User` object to a JSON-friendly map.
   Map<String, dynamic> toJson() {
     return {
+      "id": id,
       "username": username,
       "password": password,
-      "firstname": firstName,
-      "lastname": lastName,
+      "firstname": firstName, // camelCase for compatibility with backend
+      "lastname": lastName, // camelCase for compatibility with backend
       "phone": phone,
       "email": email,
       "enabled": enabled,
@@ -35,44 +36,48 @@ class User {
     };
   }
 
+  /// Creates a `User` object from a JSON map.
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      username: json['username'],
-      password: json['password'],
-      firstName: json['firstname'],
-      lastName: json['lastname'],
-      phone: json['phone'],
-      email: json['email'],
-      enabled: json['enabled'],
-      authorityIDs: List<dynamic>.from(json['authorityIDs']),
+      id: json['id'] ?? 0, // Defaults to 0 if `id` is null
+      username: json['username'] ?? '',
+      password: json['password'] ?? '',
+      firstName: json['firstname'] ?? '', // Map camelCase from backend
+      lastName: json['lastname'] ?? '', // Map camelCase from backend
+      phone: json['phone'] ?? '',
+      email: json['email'] ?? '',
+      enabled: json['enabled'] ?? true,
+      authorityIDs: List<dynamic>.from(json['authorityIDs'] ?? []),
     );
   }
-  // Convert a User object to a map
+
+  /// Converts a `User` object to a map for storage or database operations.
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'firstName': firstName,
-      'lastName': lastName,
       'username': username,
       'password': password,
+      'firstName': firstName,
+      'lastName': lastName,
       'phone': phone,
       'email': email,
-      'enabled': true,
-      "authorityIDs": [1],
+      'enabled': enabled,
+      'authorityIDs': authorityIDs,
     };
   }
 
-  // Create a User object from a map
+  /// Creates a `User` object from a map.
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'],
-      firstName: map['firstName'],
-      lastName: map['lastName'],
-      username: map['username'],
-      password: map['password'],
-      phone: map['phone'],
-      email: map['email'],
+      id: map['id'] ?? 0,
+      username: map['username'] ?? '',
+      password: map['password'] ?? '',
+      firstName: map['firstName'] ?? '',
+      lastName: map['lastName'] ?? '',
+      phone: map['phone'] ?? '',
+      email: map['email'] ?? '',
+      enabled: map['enabled'] ?? true,
+      authorityIDs: List<dynamic>.from(map['authorityIDs'] ?? []),
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 part 'sign_in_state.dart';
 
 var userRole = '';
+var organizationId = '';
 var isDMZAccount = false;
 
 class SignInCubit extends Cubit<SignInState> {
@@ -38,6 +39,7 @@ class SignInCubit extends Cubit<SignInState> {
             key: 'userRole', value: await _secureStorage.read(key: 'userRole'));
 
         userRole = await _secureStorage.read(key: 'userRole') ?? '';
+        organizationId = await _secureStorage.read(key: 'organizationId') ?? '';
         emit(SignInSuccess(user));
       });
     } catch (e) {

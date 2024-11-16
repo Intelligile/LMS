@@ -8,18 +8,23 @@ String jwtToken = '';
 String usernamePublic = '';
 
 abstract class AuthRemoteDataSource {
-  Future<void> loginUser({String username, String password});
+  Future<Map<String, dynamic>> loginUser(
+      {required String username, required String password});
   Future<Map<String, dynamic>> dmzLogin(
-      {required String uniqueId,
-      required String password}); // Update return type
+      {required String uniqueId, required String password});
   Future<void> registerUser({
-    int id,
-    String firstName,
-    String lastName,
-    String username,
-    String password,
-    String phone,
-    String email,
+    required int id,
+    required String firstName,
+    required String lastName,
+    required String username,
+    required String password,
+    required String phone,
+    required String email,
+    String? organizationName,
+    String? organizationCountry,
+    String? organizationAddress,
+    String? organizationContactEmail,
+    String? organizationContactPhone,
   });
 }
 
@@ -31,8 +36,8 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
 
   @override
   Future<Map<String, dynamic>> loginUser({
-    String username = '',
-    String password = '',
+    required String username,
+    required String password,
   }) async {
     var result = await api.post(
       endPoint: "api/auth/signin",
@@ -49,6 +54,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
 
     if (result is Map<String, dynamic> &&
         result.containsKey('roles') &&
+        result.containsKey('organizationId') &&
         result.containsKey('jwtToken') &&
         result.containsKey('username')) {
       userRole = result['roles'];
@@ -61,6 +67,10 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       await _secureStorage.write(
           key: 'usernamePublic', value: result['username']);
       await _secureStorage.write(key: 'userRole', value: result['roles']);
+
+      // Ensure organizationId is converted to String
+      await _secureStorage.write(
+          key: 'organizationId', value: result['organizationId'].toString());
 
       if (result.containsKey('exp')) {
         await _secureStorage.write(
@@ -92,19 +102,13 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       throw Exception("DMZ Login failed: $result");
     }
 
-    // Only check for 'token' since 'username' is not included
     if (result is Map<String, dynamic> && result.containsKey('token')) {
       jwtToken = result['token'];
 
-      // Store the token and DMZ-related info in secure storage
       await _secureStorage.write(key: 'jwtToken', value: result['token']);
-      await _secureStorage.write(
-          key: 'usernamePublic',
-          value: "DMZ"); // Save as "DMZ" for DMZ accounts
-      await _secureStorage.write(
-          key: 'isDMZAccount', value: 'true'); // Flag this as DMZ
+      await _secureStorage.write(key: 'usernamePublic', value: "DMZ");
+      await _secureStorage.write(key: 'isDMZAccount', value: 'true');
 
-      // Optionally store token expiration if available
       if (result.containsKey('exp')) {
         await _secureStorage.write(
             key: 'tokenExpiration', value: result['exp'].toString());
@@ -117,29 +121,46 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   }
 
   @override
+  @override
   Future<void> registerUser({
-    int id = 0,
-    String firstName = '',
-    String lastName = '',
-    String username = '',
-    String password = '',
-    String phone = '',
-    String email = '',
+    required int id,
+    required String firstName,
+    required String lastName,
+    required String username,
+    required String password,
+    required String phone,
+    required String email,
+    String? organizationName,
+    String? organizationCountry,
+    String? organizationAddress,
+    String? organizationContactEmail,
+    String? organizationContactPhone,
   }) async {
-    User user = User(
-      id: id,
-      firstName: firstName,
-      lastName: lastName,
-      username: username,
-      password: password,
-      phone: phone,
-      email: email,
-      enabled: true,
-      authorityIDs: [1],
-    );
+    // Construct the request body
+    final requestBody = {
+      "id": id,
+      "username": username,
+      "password": password,
+      "email": email,
+      "firstname": firstName,
+      "lastname": lastName,
+      "phone": phone,
+      "enabled": true,
+      "authorityIDs": [1], // Adjust as per requirements
+      "organizationName": organizationName ?? "",
+      "organizationCountry": organizationCountry ?? "",
+      "organizationAddress": organizationAddress ?? "",
+      "organizationContactEmail": organizationContactEmail ?? "",
+      "organizationContactPhone": organizationContactPhone ?? "",
+    };
+
+    // Log the request body for debugging
+    print("Register User Request Body: $requestBody");
+
+    // Send the request to the API
     await api.post(
       endPoint: "api/auth/signup",
-      body: [user.toMap()],
+      body: [requestBody], // Wrap in an array to match the JSON structure
     );
   }
 }

@@ -46,6 +46,7 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
 
   final Color primaryColor = const Color(0xFF017278); // LMS Primary Color
   final Color accentColor = Colors.white; // Accent color for text on buttons
+  String _organizationName = '';
 
   @override
   void initState() {
@@ -58,11 +59,16 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
 
   Future<void> _fetchUsers() async {
     try {
-      final users = await _userRemoteDataSource.getUsers();
+      final users = await _userRemoteDataSource.getOrganizationUsers();
       if (mounted) {
         setState(() {
           _users = users;
           _isLoading = false;
+
+          // Extract organization name from the first user
+          if (_users.isNotEmpty && _users[0].organization != null) {
+            _organizationName = _users[0].organization?.name ?? '';
+          }
         });
       }
     } catch (e) {

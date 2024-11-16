@@ -1,3 +1,4 @@
+import 'package:lms/features/organization_management/data/models/organization_model.dart';
 import 'package:lms/features/roles_and_premission/data/models/authority.dart';
 import 'package:lms/features/user_groups/data/models/group_model.dart';
 
@@ -12,6 +13,7 @@ class UserModel {
   late bool enabled;
   late List<Authority> authorities;
   final List<GroupModel> groups;
+  late OrganizationModel? organization; // New field for organization
 
   UserModel({
     required this.id,
@@ -24,11 +26,10 @@ class UserModel {
     this.enabled = true,
     required this.authorities,
     required this.groups,
+    this.organization,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    // print("Parsing JSON in UserModel.fromJson: $json");
-
     // Parsing authorities
     var authoritiesJson = json['authorities'];
     List<Authority> authorities = [];
@@ -59,6 +60,12 @@ class UserModel {
       print('Groups field is not a list: $groupsJson');
     }
 
+    // Parsing organization
+    OrganizationModel? organization;
+    if (json['organizatons'] is Map<String, dynamic>) {
+      organization = OrganizationModel.fromJson(json['organizatons']);
+    }
+
     return UserModel(
       id: json['id'] ?? 0,
       username: json['username'] ?? '',
@@ -70,6 +77,7 @@ class UserModel {
       enabled: json['enabled'] ?? true,
       authorities: authorities,
       groups: groups,
+      organization: organization,
     );
   }
 
@@ -86,6 +94,7 @@ class UserModel {
       'authorities':
           authorities.map((authority) => authority.toJson()).toList(),
       'groups': groups.map((group) => group.toJson()).toList(),
+      'organizatons': organization?.toJson(), // Convert organization to JSON
     };
   }
 }
