@@ -23,6 +23,13 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
 
+  // Organization fields
+  final _organizationNameController = TextEditingController();
+  final _organizationCountryController = TextEditingController();
+  final _organizationAddressController = TextEditingController();
+  final _organizationContactEmailController = TextEditingController();
+  final _organizationContactPhoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<RegistrationCubit, RegistrationState>(
@@ -42,7 +49,6 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
               Expanded(
                 flex: 2,
                 child: Card(
-                  // color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Form(
@@ -66,6 +72,8 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
                             ),
                           ),
                           const SizedBox(height: 24),
+
+                          // User Fields
                           buildAuthTextField(
                               controller: _usernameController,
                               label: 'Username'),
@@ -89,6 +97,38 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
                           buildAuthTextField(
                               controller: _emailController, label: 'Email'),
                           const SizedBox(height: 24),
+
+                          // Organization Fields
+                          const Text(
+                            'Organization Details',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          buildAuthTextField(
+                              controller: _organizationNameController,
+                              label: 'Organization Name'),
+                          const SizedBox(height: 16),
+                          buildAuthTextField(
+                              controller: _organizationCountryController,
+                              label: 'Country'),
+                          const SizedBox(height: 16),
+                          buildAuthTextField(
+                              controller: _organizationAddressController,
+                              label: 'Address'),
+                          const SizedBox(height: 16),
+                          buildAuthTextField(
+                              controller: _organizationContactEmailController,
+                              label: 'Contact Email'),
+                          const SizedBox(height: 16),
+                          buildAuthTextField(
+                              controller: _organizationContactPhoneController,
+                              label: 'Contact Phone'),
+                          const SizedBox(height: 24),
+
+                          // Submit Button
                           Row(
                             children: [
                               const Expanded(child: SizedBox()),
@@ -113,6 +153,21 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
                                                     _lastNameController.text,
                                                 phone: _phoneController.text,
                                                 email: _emailController.text,
+                                                organizationName:
+                                                    _organizationNameController
+                                                        .text,
+                                                organizationCountry:
+                                                    _organizationCountryController
+                                                        .text,
+                                                organizationAddress:
+                                                    _organizationAddressController
+                                                        .text,
+                                                organizationContactEmail:
+                                                    _organizationContactEmailController
+                                                        .text,
+                                                organizationContactPhone:
+                                                    _organizationContactPhoneController
+                                                        .text,
                                               );
                                         }
                                       },
@@ -132,7 +187,6 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
                                           : const Text(
                                               'Next',
                                               style: TextStyle(
-                                                // color: Colors.white,
                                                 fontSize: 14,
                                               ),
                                             ),
@@ -173,7 +227,10 @@ class RegisterAlternative extends StatelessWidget {
           onPressed: () {
             GoRouter.of(context).push(AppRouter.kSignIn);
           },
-          child: const Text("Sign in", style: TextStyle(color: kPrimaryColor)),
+          child: const Text(
+            "Sign in",
+            style: TextStyle(color: kPrimaryColor),
+          ),
         ),
       ],
     );

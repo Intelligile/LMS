@@ -45,6 +45,7 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
 
   final Color primaryColor = const Color(0xFF017278); // LMS Primary Color
   final Color accentColor = Colors.white; // Accent color for text on buttons
+  String _organizationName = '';
 
   @override
   void initState() {
@@ -57,11 +58,18 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
 
   Future<void> _fetchUsers() async {
     try {
-      final users = await _userRemoteDataSource.getUsers();
+      final users = await _userRemoteDataSource.getOrganizationUsers();
       if (mounted) {
         setState(() {
           _users = users;
           _isLoading = false;
+
+          // Safely extract organization name from the first user
+          if (_users.isNotEmpty && _users[0].organization != null) {
+            _organizationName = _users[0].organization?.name ?? '';
+          } else {
+            _organizationName = 'No organization';
+          }
         });
       }
     } catch (e) {
@@ -209,14 +217,15 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
                 ),
 
                 // "Active Users" title with modified font
-                const SizedBox(
-                  height: 30,
-                ),
-                const Text(
-                  'Active Users',
-                  style: TextStyle(
-                    fontSize: 28, // Increased font size
-                    fontFamily: 'Avenir', // Change to preferred font family
+                const SizedBox(height: 30),
+                // Display Organization Name
+                Text(
+                  _organizationName.isNotEmpty
+                      ? 'Active Users - $_organizationName'
+                      : 'Active Users',
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontFamily: 'Avenir',
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),

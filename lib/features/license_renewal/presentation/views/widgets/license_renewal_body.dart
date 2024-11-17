@@ -133,12 +133,12 @@ class _LicenseRenewalBodyState extends State<LicenseRenewalBody> {
                         dividerThickness: 1,
                         columnSpacing: 24.0,
                         columns: const [
+                          // DataColumn(
+                          //     label: Text('License Key',
+                          //         style:
+                          //             TextStyle(fontWeight: FontWeight.bold))),
                           DataColumn(
-                              label: Text('License Key',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Feature Key',
+                              label: Text('Product name',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold))),
                           DataColumn(
@@ -153,12 +153,12 @@ class _LicenseRenewalBodyState extends State<LicenseRenewalBody> {
                         rows: _licenses.expand((license) {
                           return license.features!.map((feature) {
                             return DataRow(cells: [
-                              buildDataCell(
-                                dataCell:
-                                    license.features!.indexOf(feature) == 0
-                                        ? license.licenseKey ?? 'N/A'
-                                        : '',
-                              ),
+                              // buildDataCell(
+                              //   dataCell:
+                              //       license.features!.indexOf(feature) == 0
+                              //           ? license.licenseKey ?? 'N/A'
+                              //           : '',
+                              // ),
                               buildDataCell(dataCell: feature.key ?? 'N/A'),
                               buildDataCell(
                                   dataCell: feature.keyExpiryDate

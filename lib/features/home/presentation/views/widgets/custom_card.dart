@@ -127,14 +127,40 @@ class _CustomCardState extends State<CustomCard> {
                       const FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Icon(
-                          FontAwesomeIcons.creditCard,
+                          Icons.shopping_bag,
                           color: kIconColor,
                         ),
                       ),
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          '  View your bill',
+                          'Purchase Product',
+                          style: TextStyle(
+                              fontSize: getResponsiveFontSize(context,
+                                  baseFontSize: 16)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 15),
+                InkWell(
+                  onTap: () {
+                    // Add action for viewing the bill
+                  },
+                  child: Row(
+                    children: [
+                      const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Icon(
+                          Icons.monetization_on_outlined,
+                          color: kIconColor,
+                        ),
+                      ),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '  Add Billing Account',
                           style: TextStyle(
                               fontSize: getResponsiveFontSize(context,
                                   baseFontSize: 16)),

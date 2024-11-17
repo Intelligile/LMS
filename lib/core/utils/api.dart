@@ -13,6 +13,7 @@ class Api {
     if (token != null) {
       _dio.options.headers['Authorization'] = 'Bearer $token';
     }
+    print("ENDPOINT:$endPoint");
     var response = await _dio.get("$baseUrl$endPoint");
     return response.data as List<dynamic>;
   }
@@ -168,7 +169,7 @@ class Api {
 
       // Check response status code and handle accordingly
       if (response.statusCode == 200) {
-        print('Users assigned successfully');
+        // print('Users assigned successfully');
         return response.data; // Return the data if successful
       } else if (response.statusCode == 403) {
         // Print and return the specific message from the response

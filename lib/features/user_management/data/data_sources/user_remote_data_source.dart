@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/user_management/data/models/license_model.dart';
 
 import '../models/user_model.dart';
@@ -84,6 +85,37 @@ class UserManagementRemoteDataSource {
   Future<List<UserModel>> getUsers() async {
     try {
       var response = await api.get(endPoint: "api/auth/users");
+
+      // Debugging: Print the response
+      print("Response: $response");
+
+      List<UserModel> users = [];
+
+      for (var item in response) {
+        if (item is Map<String, dynamic>) {
+          // Process only if the item is a valid user object
+          try {
+            UserModel user = UserModel.fromJson(item);
+            users.add(user);
+          } catch (e) {
+            print('Failed to parse user data: $e');
+          }
+        } else {
+          print('Invalid user data format: $item');
+        }
+      }
+
+      return users;
+    } catch (e) {
+      print("Failed to get users: $e");
+      return [];
+    }
+  }
+
+  Future<List<UserModel>> getOrganizationUsers() async {
+    try {
+      var response = await api.get(
+          endPoint: "api/organizations/$organizationId/users", token: jwtToken);
 
       // Debugging: Print the response
       print("Response: $response");

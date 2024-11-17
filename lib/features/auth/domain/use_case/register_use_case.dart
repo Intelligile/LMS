@@ -6,9 +6,11 @@ import 'package:lms/features/auth/domain/repositories/auth_repository.dart';
 
 class RegisterUseCase {
   final AuthRepository authRepository;
+
   RegisterUseCase({
     required this.authRepository,
   });
+
   Future<Either<Failure, Unit>> call({
     required String fn,
     required String ln,
@@ -16,6 +18,11 @@ class RegisterUseCase {
     required String un,
     required String phone,
     required String email,
+    required String organizationName,
+    required String organizationCountry,
+    required String organizationAddress,
+    required String organizationContactEmail,
+    required String organizationContactPhone,
   }) async {
     return await authRepository.registerUser(
       firstName: fn,
@@ -24,6 +31,11 @@ class RegisterUseCase {
       password: pw,
       phone: phone,
       email: email,
+      organizationName: organizationName,
+      organizationCountry: organizationCountry,
+      organizationAddress: organizationAddress,
+      organizationContactEmail: organizationContactEmail,
+      organizationContactPhone: organizationContactPhone,
     );
   }
 }

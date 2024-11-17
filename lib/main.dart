@@ -66,6 +66,7 @@ void main() async {
   final storedToken = await secureStorage.read(key: 'jwtToken');
   final storedUsername = await secureStorage.read(key: 'usernamePublic');
   final storedRoles = await secureStorage.read(key: 'userRole');
+  final storedOrganizationId = await secureStorage.read(key: 'organizationId');
   final tokenExpiration = await secureStorage.read(key: 'tokenExpiration');
   print("TOKEN EXPIRATION $tokenExpiration");
   // Check token expiration
@@ -77,6 +78,7 @@ void main() async {
   }
   usernamePublic = storedUsername ?? '';
   userRole = storedRoles ?? '';
+  organizationId = storedOrganizationId ?? '';
   // Define the initial path based on token validity
   final initialPath = isTokenValid ? '/homeView' : '/';
 
