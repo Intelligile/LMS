@@ -21,7 +21,7 @@ class AuthorizationCodePage extends StatelessWidget {
           ..fetchAllAuthorizationCodes(), // Initial fetch
         child: CustomScaffold(
             body: AdaptiveLayout(
-          mobileLayout: (context) => const SizedBox(),
+          mobileLayout: (context) => _AuthorizationCodeContent(),
           tabletLayout: (context) => const SizedBox(),
           desktopLayout: (context) => _AuthorizationCodeContent(),
         )));
