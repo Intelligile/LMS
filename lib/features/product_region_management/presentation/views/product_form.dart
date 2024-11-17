@@ -99,11 +99,17 @@ class _ProductFormState extends State<ProductForm> {
                     validator: (value) =>
                         FormValidators.validateString(value, 'Product Name'),
                   ),
+                  const SizedBox(
+                    height: 12,
+                  ),
                   _buildTextFormField(
                     controller: descriptionController,
                     label: 'Description',
                     validator: (value) =>
                         FormValidators.validateString(value, 'Description'),
+                  ),
+                  const SizedBox(
+                    height: 12,
                   ),
                   _buildTextFormField(
                     controller: priceController,
@@ -113,11 +119,17 @@ class _ProductFormState extends State<ProductForm> {
                     validator: (value) =>
                         FormValidators.validateDouble(value, 'Price'),
                   ),
+                  const SizedBox(
+                    height: 12,
+                  ),
                   _buildTextFormField(
                     controller: imageController,
                     label: 'Image URL',
                     validator: (value) =>
                         FormValidators.validateString(value, 'Image URL'),
+                  ),
+                  const SizedBox(
+                    height: 12,
                   ),
                   _buildRegionDropdown(),
                   if (_showRegionAttributes) ...[
@@ -143,6 +155,9 @@ class _ProductFormState extends State<ProductForm> {
                   ],
                   const SizedBox(height: 20),
                   _buildSubmitButton(state),
+                  const SizedBox(
+                    height: 12,
+                  ),
                   _buildViewProductsButton(),
                 ],
               ),

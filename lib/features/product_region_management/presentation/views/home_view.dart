@@ -72,7 +72,7 @@ class _ProductManagementViewState extends State<ProductManagementView> {
       //   actions: [ManageRegionButton(widget: widget)],
       // ),
       body: AdaptiveLayout(
-        mobileLayout: (context) => const SizedBox(),
+        mobileLayout: (context) => _buildBody(filteredProducts),
         tabletLayout: (context) => const SizedBox(),
         desktopLayout: (context) => _buildBody(filteredProducts),
       ),
