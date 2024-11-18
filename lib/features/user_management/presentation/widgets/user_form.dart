@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:lms/core/functions/show_snack_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:lms/features/user_management/data/models/user_model.dart';
 
 class UserForm extends StatefulWidget {

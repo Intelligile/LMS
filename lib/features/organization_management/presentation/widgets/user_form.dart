@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:lms/core/functions/show_snack_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:lms/features/user_management/data/models/user_model.dart';
 
 class UserForm extends StatefulWidget {
@@ -87,6 +86,7 @@ class _UserFormState extends State<UserForm> {
       body: Row(
         children: [
           Expanded(
+            flex: 4,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
@@ -247,6 +247,7 @@ class _UserFormState extends State<UserForm> {
               ),
             ),
           ),
+          const Expanded(child: SizedBox())
         ],
       ),
     );

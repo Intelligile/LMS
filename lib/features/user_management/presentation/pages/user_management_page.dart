@@ -96,7 +96,7 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
             alignment: Alignment.centerRight,
             child: Container(
               width: MediaQuery.of(context).size.width *
-                  0.6, // 60% width of screen
+                  0.9, // 60% width of screen
               height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: Colors.white,

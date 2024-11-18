@@ -85,7 +85,7 @@ class _DMZManagementPageBodyState extends State<DMZManagementPageBody> {
           child: Align(
             alignment: Alignment.centerRight,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.6,
+              width: MediaQuery.of(context).size.width * 0.9,
               height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: Colors.white,
