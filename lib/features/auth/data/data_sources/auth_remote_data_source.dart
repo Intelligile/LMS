@@ -57,6 +57,8 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
         result.containsKey('organizationId') &&
         result.containsKey('jwtToken') &&
         result.containsKey('username')) {
+      // Clear any existing session data
+      await _secureStorage.deleteAll();
       userRole = result['roles'];
       print("User role: $userRole");
 
@@ -69,8 +71,11 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       await _secureStorage.write(key: 'userRole', value: result['roles']);
 
       // Ensure organizationId is converted to String
-      await _secureStorage.write(
-          key: 'organizationId', value: result['organizationId'].toString());
+      if (result.containsKey('organizationId')) {
+        print("Storing OrganizationId: ${result['organizationId']}");
+        await _secureStorage.write(
+            key: 'organizationId', value: result['organizationId'].toString());
+      }
 
       if (result.containsKey('exp')) {
         await _secureStorage.write(

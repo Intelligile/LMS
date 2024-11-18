@@ -62,24 +62,40 @@ void main() async {
   Bloc.observer = SimpleBlocObserver();
   const secureStorage = FlutterSecureStorage();
 
-  // Retrieve the token and related information
+  // Retrieve stored data
   final storedToken = await secureStorage.read(key: 'jwtToken');
   final storedUsername = await secureStorage.read(key: 'usernamePublic');
   final storedRoles = await secureStorage.read(key: 'userRole');
   final storedOrganizationId = await secureStorage.read(key: 'organizationId');
+  print("Organization Id from storage: $storedOrganizationId");
+
+// Debug all storage
+  final allKeys = await secureStorage.readAll();
+  print("All SecureStorage contents: $allKeys");
+
   final tokenExpiration = await secureStorage.read(key: 'tokenExpiration');
   print("TOKEN EXPIRATION $tokenExpiration");
-  // Check token expiration
+
+  // Check token validity
   bool isTokenValid = false;
   if (storedToken != null && tokenExpiration != null) {
-    final expirationDate =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(tokenExpiration) * 1000);
-    isTokenValid = DateTime.now().isBefore(expirationDate);
+    try {
+      final expirationDate = DateTime.fromMillisecondsSinceEpoch(
+        int.parse(tokenExpiration) *
+            1000, // Ensure tokenExpiration is parsed as int
+      );
+      isTokenValid = DateTime.now().isBefore(expirationDate);
+    } catch (e) {
+      print("Error parsing token expiration: $e");
+      isTokenValid = false;
+    }
   }
+
   usernamePublic = storedUsername ?? '';
   userRole = storedRoles ?? '';
   organizationId = storedOrganizationId ?? '';
-  // Define the initial path based on token validity
+
+  // Set initial path based on token validity
   final initialPath = isTokenValid ? '/homeView' : '/';
 
   // Initialize dependencies
@@ -91,7 +107,7 @@ void main() async {
   final appRouter =
       AppRouter(userRepository: userRepository, apiService: apiService);
 
-  // Create the router
+  // Create router
   final router = appRouter.createRouter(initialPath: initialPath);
 
   runApp(
@@ -103,7 +119,6 @@ void main() async {
       ],
       child: MyApp(
         router: router,
-        initialUsername: storedUsername, // Pass username to the app
       ),
     ),
   );
