@@ -35,42 +35,44 @@ class CustomScaffold extends StatelessWidget {
             ? math.max(width * 0.25, 75.0)
             : math.max(width * 0.01, 75.0);
 
-        return Scaffold(
-          key: _scaffoldKey, // Assign the GlobalKey to Scaffold
-          appBar: PreferredSize(
-              preferredSize: const Size(double.infinity, 60),
-              child: width > 600
-                  ? CustomAppBar(username: usernamePublic)
-                  : CustomMobileAppBar(
-                      username: usernamePublic,
-                      button: IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.white),
-                        onPressed: () {
-                          _scaffoldKey.currentState?.openDrawer();
-                        },
-                      ))),
-          body: Row(
-            children: [
-              if (width > 600)
-                SizedBox(
-                  width: drawerWidth,
-                  child: const CustomDrawer(),
-                ),
-              Expanded(
-                child: body,
-              ),
-            ],
-          ),
-          floatingActionButton: floatingActionButton,
-          drawer: width < 600
-              ? Drawer(
-                  child: CustomExpandedDrawer(
-                    onPressed: () {
-                      _scaffoldKey.currentState?.closeDrawer();
-                    },
+        return SafeArea(
+          child: Scaffold(
+            key: _scaffoldKey, // Assign the GlobalKey to Scaffold
+            appBar: PreferredSize(
+                preferredSize: const Size(double.infinity, 60),
+                child: width > 600
+                    ? CustomAppBar(username: usernamePublic)
+                    : CustomMobileAppBar(
+                        username: usernamePublic,
+                        button: IconButton(
+                          icon: const Icon(Icons.menu, color: Colors.white),
+                          onPressed: () {
+                            _scaffoldKey.currentState?.openDrawer();
+                          },
+                        ))),
+            body: Row(
+              children: [
+                if (width > 600)
+                  SizedBox(
+                    width: drawerWidth,
+                    child: const CustomDrawer(),
                   ),
-                )
-              : null,
+                Expanded(
+                  child: body,
+                ),
+              ],
+            ),
+            floatingActionButton: floatingActionButton,
+            drawer: width < 600
+                ? Drawer(
+                    child: CustomExpandedDrawer(
+                      onPressed: () {
+                        _scaffoldKey.currentState?.closeDrawer();
+                      },
+                    ),
+                  )
+                : null,
+          ),
         );
       },
     );

@@ -11,7 +11,7 @@ class LicenseRenewal extends StatelessWidget {
     return CustomScaffold(
       body: SafeArea(
         child: AdaptiveLayout(
-          mobileLayout: (context) => const SizedBox(),
+          mobileLayout: (context) => const LicenseRenewalBody(),
           tabletLayout: (context) => const SizedBox(),
           desktopLayout: (context) => const LicenseRenewalBody(),
         ),

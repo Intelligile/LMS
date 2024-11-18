@@ -114,13 +114,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   bottomLeft: Radius.circular(20),
                 ),
               ),
-              child: Scaffold(
-                body: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: PaymentViewBody(
-                    onBillingDataSubmitted: (billingData) async {
-                      await _createOrder(billingData);
-                    },
+              child: SafeArea(
+                child: Scaffold(
+                  body: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: PaymentViewBody(
+                      onBillingDataSubmitted: (billingData) async {
+                        await _createOrder(billingData);
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -181,21 +183,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          "Product Details",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: AdaptiveLayout(
-        mobileLayout: (context) => _buildMobileLayout(),
-        tabletLayout: (context) => _buildTabletLayout(),
-        desktopLayout: (context) => _buildDesktopLayout(),
+        appBar: AppBar(
+          title: const Text(
+            "Product Details",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.black),
+        ),
+        body: AdaptiveLayout(
+          mobileLayout: (context) => _buildMobileLayout(),
+          tabletLayout: (context) => _buildTabletLayout(),
+          desktopLayout: (context) => _buildDesktopLayout(),
+        ),
       ),
     );
   }

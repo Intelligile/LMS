@@ -11,95 +11,97 @@ class CheckoutPage extends StatelessWidget {
     final cartProvider = Provider.of<CartProvider>(context);
     const lmsPrimaryColor = Color(0xFF017278); // LMS color
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: lmsPrimaryColor,
-        title: const Text(
-          'Checkout',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: lmsPrimaryColor,
+          title: const Text(
+            'Checkout',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Text(
-              'Summary of Purchase',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: lmsPrimaryColor,
+        body: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              child: Text(
+                'Summary of Purchase',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: lmsPrimaryColor,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: cartProvider.cartItems.length,
-              itemBuilder: (context, index) {
-                final cartItem = cartProvider.cartItems[index];
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    child: ListTile(
-                      title: Text(
-                        cartItem.product.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+            Expanded(
+              child: ListView.builder(
+                itemCount: cartProvider.cartItems.length,
+                itemBuilder: (context, index) {
+                  final cartItem = cartProvider.cartItems[index];
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      subtitle: Text('Quantity: ${cartItem.quantity}'),
-                      trailing: Text(
-                        '\$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: lmsPrimaryColor,
-                          fontSize: 16,
+                      elevation: 4,
+                      child: ListTile(
+                        title: Text(
+                          cartItem.product.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text('Quantity: ${cartItem.quantity}'),
+                        trailing: Text(
+                          '\$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: lmsPrimaryColor,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Total: \$${cartProvider.totalAmount.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: lmsPrimaryColor,
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: lmsPrimaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total: \$${cartProvider.totalAmount.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: lmsPrimaryColor,
                     ),
                   ),
-                  onPressed: () {
-                    _showPaymentMethodDialog(context, lmsPrimaryColor);
-                  },
-                  child: const Text(
-                    'Pay',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: lmsPrimaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      _showPaymentMethodDialog(context, lmsPrimaryColor);
+                    },
+                    child: const Text(
+                      'Pay',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

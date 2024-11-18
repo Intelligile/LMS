@@ -6,16 +6,18 @@ class ManageRolesView extends StatelessWidget {
   const ManageRolesView({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(110),
-        child: AppBar(
-          leading: const SizedBox(),
-          backgroundColor: const Color(0xfff0f4f7),
-          flexibleSpace: const ManageRolesAppBarBody(),
+    return SafeArea(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(110),
+          child: AppBar(
+            leading: const SizedBox(),
+            backgroundColor: const Color(0xfff0f4f7),
+            flexibleSpace: const ManageRolesAppBarBody(),
+          ),
         ),
+        body: const ManageRolesViewBody(),
       ),
-      body: const ManageRolesViewBody(),
     );
   }
 }

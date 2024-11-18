@@ -76,94 +76,96 @@ class _ProductFormState extends State<ProductForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Insert Product')),
-      body: BlocConsumer<ProductCubit, ProductState>(
-        listener: (context, state) {
-          if (state is AddProductFailureState) {
-            showSnackBar(context, state.errorMsg, Colors.red);
-          } else if (state is AddProductSuccessState) {
-            showSnackBar(context, 'Product added successfully', Colors.green);
-          }
-        },
-        builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                children: [
-                  _buildTextFormField(
-                    controller: nameController,
-                    label: 'Product Name',
-                    validator: (value) =>
-                        FormValidators.validateString(value, 'Product Name'),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  _buildTextFormField(
-                    controller: descriptionController,
-                    label: 'Description',
-                    validator: (value) =>
-                        FormValidators.validateString(value, 'Description'),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  _buildTextFormField(
-                    controller: priceController,
-                    label: 'Price',
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    validator: (value) =>
-                        FormValidators.validateDouble(value, 'Price'),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  _buildTextFormField(
-                    controller: imageController,
-                    label: 'Image URL',
-                    validator: (value) =>
-                        FormValidators.validateString(value, 'Image URL'),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  _buildRegionDropdown(),
-                  if (_showRegionAttributes) ...[
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Insert Product')),
+        body: BlocConsumer<ProductCubit, ProductState>(
+          listener: (context, state) {
+            if (state is AddProductFailureState) {
+              showSnackBar(context, state.errorMsg, Colors.red);
+            } else if (state is AddProductSuccessState) {
+              showSnackBar(context, 'Product added successfully', Colors.green);
+            }
+          },
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
                     _buildTextFormField(
-                      controller: countryController,
-                      label: 'Country',
+                      controller: nameController,
+                      label: 'Product Name',
                       validator: (value) =>
-                          FormValidators.validateString(value, 'Country'),
+                          FormValidators.validateString(value, 'Product Name'),
+                    ),
+                    const SizedBox(
+                      height: 12,
                     ),
                     _buildTextFormField(
-                      controller: regionNameController,
-                      label: 'Region Name',
+                      controller: descriptionController,
+                      label: 'Description',
                       validator: (value) =>
-                          FormValidators.validateString(value, 'Region Name'),
+                          FormValidators.validateString(value, 'Description'),
+                    ),
+                    const SizedBox(
+                      height: 12,
                     ),
                     _buildTextFormField(
-                      controller: zipCodeController,
-                      label: 'Zip Code',
-                      keyboardType: TextInputType.number,
+                      controller: priceController,
+                      label: 'Price',
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
                       validator: (value) =>
-                          FormValidators.validateInteger(value, 'Zip Code'),
+                          FormValidators.validateDouble(value, 'Price'),
                     ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    _buildTextFormField(
+                      controller: imageController,
+                      label: 'Image URL',
+                      validator: (value) =>
+                          FormValidators.validateString(value, 'Image URL'),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    _buildRegionDropdown(),
+                    if (_showRegionAttributes) ...[
+                      _buildTextFormField(
+                        controller: countryController,
+                        label: 'Country',
+                        validator: (value) =>
+                            FormValidators.validateString(value, 'Country'),
+                      ),
+                      _buildTextFormField(
+                        controller: regionNameController,
+                        label: 'Region Name',
+                        validator: (value) =>
+                            FormValidators.validateString(value, 'Region Name'),
+                      ),
+                      _buildTextFormField(
+                        controller: zipCodeController,
+                        label: 'Zip Code',
+                        keyboardType: TextInputType.number,
+                        validator: (value) =>
+                            FormValidators.validateInteger(value, 'Zip Code'),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    _buildSubmitButton(state),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    _buildViewProductsButton(),
                   ],
-                  const SizedBox(height: 20),
-                  _buildSubmitButton(state),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  _buildViewProductsButton(),
-                ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

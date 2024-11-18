@@ -112,34 +112,37 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
                   bottomLeft: Radius.circular(20),
                 ),
               ),
-              child: Scaffold(
-                body: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: UserForm(
-                    users: user != null ? [user] : [],
-                    isEditing: isEditing,
-                    onSubmit: (List<UserModel> updatedUsers) async {
-                      try {
-                        List<String> results = [];
-                        for (var user in updatedUsers) {
-                          if (user.id != 0) {
-                            String result = await _userRemoteDataSource
-                                .updateUser(user, jwtToken);
-                            results.add(result);
-                          } else {
-                            String result =
-                                await _userRemoteDataSource.addUsers([user]);
-                            results.add(result);
+              child: SafeArea(
+                child: Scaffold(
+                  body: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: UserForm(
+                      users: user != null ? [user] : [],
+                      isEditing: isEditing,
+                      onSubmit: (List<UserModel> updatedUsers) async {
+                        try {
+                          List<String> results = [];
+                          for (var user in updatedUsers) {
+                            if (user.id != 0) {
+                              String result = await _userRemoteDataSource
+                                  .updateUser(user, jwtToken);
+                              results.add(result);
+                            } else {
+                              String result =
+                                  await _userRemoteDataSource.addUsers([user]);
+                              results.add(result);
+                            }
                           }
+                          _fetchUsers();
+                          Navigator.of(context).pop();
+                          showSnackBar(
+                              context, results.join('\n'), Colors.green);
+                        } catch (e) {
+                          showSnackBar(context, 'Failed to update users: $e',
+                              Colors.red);
                         }
-                        _fetchUsers();
-                        Navigator.of(context).pop();
-                        showSnackBar(context, results.join('\n'), Colors.green);
-                      } catch (e) {
-                        showSnackBar(
-                            context, 'Failed to update users: $e', Colors.red);
-                      }
-                    },
+                      },
+                    ),
                   ),
                 ),
               ),

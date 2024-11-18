@@ -12,12 +12,14 @@ class ManageRegionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Manage region'),
-      ),
-      body: ManageRegionViewBody(
-        region: region,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Manage region'),
+        ),
+        body: ManageRegionViewBody(
+          region: region,
+        ),
       ),
     );
   }

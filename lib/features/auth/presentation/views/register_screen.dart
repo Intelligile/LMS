@@ -15,24 +15,26 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: const Color(0xffdce1e3),
-      body: BlocProvider(
-        create: (context) => RegistrationCubit(
-          RegisterUseCase(
-            authRepository: AuthRepositoryImpl(
-              authRemoteDataSource: AuthRemoteDataSourceImpl(
-                  api: Api(
-                    Dio(),
-                  ),
-                  context),
+    return SafeArea(
+      child: Scaffold(
+        // backgroundColor: const Color(0xffdce1e3),
+        body: BlocProvider(
+          create: (context) => RegistrationCubit(
+            RegisterUseCase(
+              authRepository: AuthRepositoryImpl(
+                authRemoteDataSource: AuthRemoteDataSourceImpl(
+                    api: Api(
+                      Dio(),
+                    ),
+                    context),
+              ),
             ),
           ),
-        ),
-        child: AdaptiveLayout(
-          mobileLayout: (context) => const MobileRegisterForm(),
-          tabletLayout: (context) => const SizedBox(),
-          desktopLayout: (context) => const DesktopRegisterForm(),
+          child: AdaptiveLayout(
+            mobileLayout: (context) => const MobileRegisterForm(),
+            tabletLayout: (context) => const SizedBox(),
+            desktopLayout: (context) => const DesktopRegisterForm(),
+          ),
         ),
       ),
     );

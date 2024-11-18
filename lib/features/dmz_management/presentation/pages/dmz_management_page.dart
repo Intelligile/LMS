@@ -22,7 +22,7 @@ class _DMZManagementPageState extends State<DMZManagementPage> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       body: AdaptiveLayout(
-        mobileLayout: (context) => const SizedBox(),
+        mobileLayout: (context) => const DMZManagementPageBody(),
         tabletLayout: (context) => const SizedBox(),
         desktopLayout: (context) => const DMZManagementPageBody(),
       ),
@@ -101,31 +101,35 @@ class _DMZManagementPageBodyState extends State<DMZManagementPageBody> {
                   bottomLeft: Radius.circular(20),
                 ),
               ),
-              child: Scaffold(
-                body: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: DMZForm(
-                    dmzAccounts: dmz != null ? [dmz] : [], // Wrap dmz in a list
-                    isEditing: isEditing,
-                    onSubmit: (List<DMZModel> updatedDMZList) async {
-                      try {
-                        String result;
-                        if (updatedDMZList.isNotEmpty &&
-                            updatedDMZList.first.dmzId != 0) {
-                          result = await _dmzRemoteDataSource.updateDMZAccount(
-                              updatedDMZList.first, jwtToken);
-                        } else {
-                          result = await _dmzRemoteDataSource
-                              .addDMZAccounts(updatedDMZList);
+              child: SafeArea(
+                child: Scaffold(
+                  body: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DMZForm(
+                      dmzAccounts:
+                          dmz != null ? [dmz] : [], // Wrap dmz in a list
+                      isEditing: isEditing,
+                      onSubmit: (List<DMZModel> updatedDMZList) async {
+                        try {
+                          String result;
+                          if (updatedDMZList.isNotEmpty &&
+                              updatedDMZList.first.dmzId != 0) {
+                            result =
+                                await _dmzRemoteDataSource.updateDMZAccount(
+                                    updatedDMZList.first, jwtToken);
+                          } else {
+                            result = await _dmzRemoteDataSource
+                                .addDMZAccounts(updatedDMZList);
+                          }
+                          _fetchDMZAccounts();
+                          Navigator.of(context).pop();
+                          showSnackBar(context, result, Colors.green);
+                        } catch (e) {
+                          showSnackBar(context,
+                              'Failed to save DMZ account: $e', Colors.red);
                         }
-                        _fetchDMZAccounts();
-                        Navigator.of(context).pop();
-                        showSnackBar(context, result, Colors.green);
-                      } catch (e) {
-                        showSnackBar(context, 'Failed to save DMZ account: $e',
-                            Colors.red);
-                      }
-                    },
+                      },
+                    ),
                   ),
                 ),
               ),

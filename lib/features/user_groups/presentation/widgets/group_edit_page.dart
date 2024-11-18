@@ -15,15 +15,17 @@ class GroupEditPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GroupForm(
-          group: group,
-          api: api,
-          onSave: () {
-            Navigator.of(context).pop(); // Close the drawer on save
-          }, // Pass the api to the form
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: GroupForm(
+            group: group,
+            api: api,
+            onSave: () {
+              Navigator.of(context).pop(); // Close the drawer on save
+            }, // Pass the api to the form
+          ),
         ),
       ),
     );

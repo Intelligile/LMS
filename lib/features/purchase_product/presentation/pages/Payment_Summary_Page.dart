@@ -20,36 +20,39 @@ class PaymentSummaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Payment Summary'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Payment Method: $paymentMethod',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            if (paymentMethod == 'Credit Card') ...[
-              Text('Card Number: $cardNumber'),
-              Text('Expiry Date: $expiryDate'),
-              Text('CVV: $cvv'),
-            ] else if (paymentMethod == 'Authorization Code') ...[
-              Text('Authorization Code: $authCode'),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Payment Summary'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Payment Method: $paymentMethod',
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              if (paymentMethod == 'Credit Card') ...[
+                Text('Card Number: $cardNumber'),
+                Text('Expiry Date: $expiryDate'),
+                Text('CVV: $cvv'),
+              ] else if (paymentMethod == 'Authorization Code') ...[
+                Text('Authorization Code: $authCode'),
+              ],
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Implement the action to confirm the payment and clear the cart
+                  Provider.of<CartProvider>(context, listen: false).clearCart();
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                },
+                child: const Text('Confirm Payment'),
+              ),
             ],
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Implement the action to confirm the payment and clear the cart
-                Provider.of<CartProvider>(context, listen: false).clearCart();
-                Navigator.popUntil(context, (route) => route.isFirst);
-              },
-              child: const Text('Confirm Payment'),
-            ),
-          ],
+          ),
         ),
       ),
     );

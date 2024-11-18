@@ -26,7 +26,6 @@ class _CustomCardState extends State<CustomCard> {
             width: 5,
           ),
           Expanded(
-            flex: 1,
             child: DropdownButton(
               style: TextStyle(
                 fontSize: getResponsiveFontSize(context, baseFontSize: 16),
@@ -62,7 +61,7 @@ class _CustomCardState extends State<CustomCard> {
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -175,16 +174,16 @@ class _CustomCardState extends State<CustomCard> {
           //const SizedBox(width: 15),
           //const Icon(FontAwesomeIcons.ellipsis),
           //const Spacer(),
-          Expanded(
-            flex: 1,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                'Intelligle',
-                style: TextStyle(
-                    fontSize: getResponsiveFontSize(context, baseFontSize: 16)),
-              ),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              'Intelligle',
+              style: TextStyle(
+                  fontSize: getResponsiveFontSize(context, baseFontSize: 16)),
             ),
+          ),
+          const SizedBox(
+            width: 5,
           ),
         ],
       ),

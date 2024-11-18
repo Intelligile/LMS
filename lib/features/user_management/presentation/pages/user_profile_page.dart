@@ -124,22 +124,24 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Profile'),
-        backgroundColor: const Color(0xFF017278), // LMS Primary color
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProfileSection(context),
-            const SizedBox(height: 40),
-            _buildLicenseSection(),
-            const SizedBox(height: 40),
-            _buildAuthorizationCodeSection(), // Add authorization code section
-          ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('User Profile'),
+          backgroundColor: const Color(0xFF017278), // LMS Primary color
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProfileSection(context),
+              const SizedBox(height: 40),
+              _buildLicenseSection(),
+              const SizedBox(height: 40),
+              _buildAuthorizationCodeSection(), // Add authorization code section
+            ],
+          ),
         ),
       ),
     );

@@ -38,21 +38,23 @@ class ForgotPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.go('/'); // Navigate back to the sign-in page
-          },
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              context.go('/'); // Navigate back to the sign-in page
+            },
+          ),
+          title: const Text("Forgot Password"),
         ),
-        title: const Text("Forgot Password"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: ForgotPasswordForm(
-          emailController: emailController,
-          onSubmitEmail: () => _submitEmail(context),
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: ForgotPasswordForm(
+            emailController: emailController,
+            onSubmitEmail: () => _submitEmail(context),
+          ),
         ),
       ),
     );

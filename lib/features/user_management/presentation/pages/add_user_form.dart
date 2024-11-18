@@ -70,40 +70,42 @@ class _AddUsersFormState extends State<AddUsersForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF017278), // LMS color
-        title: const Text('Add Users', style: TextStyle(color: Colors.white)),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView.builder(
-            itemCount: _users.length,
-            itemBuilder: (context, index) {
-              return _buildUserForm(index);
-            },
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF017278), // LMS color
+          title: const Text('Add Users', style: TextStyle(color: Colors.white)),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: ListView.builder(
+              itemCount: _users.length,
+              itemBuilder: (context, index) {
+                return _buildUserForm(index);
+              },
+            ),
           ),
         ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            backgroundColor: const Color(0xFF017278), // LMS color
-            onPressed: _addUser,
-            tooltip: 'Add Another User',
-            child: const Icon(Icons.add),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            backgroundColor: const Color(0xFF017278), // LMS color
-            onPressed: _submitForm,
-            tooltip: 'Submit Users',
-            child: const Icon(Icons.save),
-          ),
-        ],
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              backgroundColor: const Color(0xFF017278), // LMS color
+              onPressed: _addUser,
+              tooltip: 'Add Another User',
+              child: const Icon(Icons.add),
+            ),
+            const SizedBox(height: 10),
+            FloatingActionButton(
+              backgroundColor: const Color(0xFF017278), // LMS color
+              onPressed: _submitForm,
+              tooltip: 'Submit Users',
+              child: const Icon(Icons.save),
+            ),
+          ],
+        ),
       ),
     );
   }

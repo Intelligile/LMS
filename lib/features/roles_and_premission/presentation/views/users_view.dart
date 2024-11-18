@@ -7,9 +7,11 @@ class UsersView extends StatelessWidget {
   Authority authority;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: UsersViewBody(authority: authority),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(),
+        body: UsersViewBody(authority: authority),
+      ),
     );
   }
 }

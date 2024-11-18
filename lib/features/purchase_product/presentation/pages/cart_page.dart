@@ -12,99 +12,103 @@ class CartPage extends StatelessWidget {
     final cartProvider = Provider.of<CartProvider>(context);
     const Color lmsPrimaryColor = Color(0xFF017278); // LMS color
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Cart'),
-        backgroundColor: lmsPrimaryColor, // AppBar with LMS color
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0), // Uniform padding for content
-        child: ListView.builder(
-          itemCount: cartProvider.cartItems.length,
-          itemBuilder: (context, index) {
-            final cartItem = cartProvider.cartItems[index];
-            return Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 3, // Add elevation to modernize the look
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(10),
-                title: Text(
-                  cartItem.product.name,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Your Cart'),
+          backgroundColor: lmsPrimaryColor, // AppBar with LMS color
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0), // Uniform padding for content
+          child: ListView.builder(
+            itemCount: cartProvider.cartItems.length,
+            itemBuilder: (context, index) {
+              final cartItem = cartProvider.cartItems[index];
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                elevation: 3, // Add elevation to modernize the look
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(10),
+                  title: Text(
+                    cartItem.product.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Quantity: ${cartItem.quantity}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.update, color: Colors.grey),
+                        onPressed: () {
+                          _showUpdateDialog(context, cartItem.product,
+                              cartItem.quantity, cartProvider, lmsPrimaryColor);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.redAccent),
+                        onPressed: () {
+                          cartProvider.removeProduct(cartItem.product);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          elevation: 5,
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total: \$${cartProvider.totalAmount.toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
+                    // color: Colors.black87,
                   ),
                 ),
-                subtitle: Text(
-                  'Quantity: ${cartItem.quantity}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.update, color: Colors.grey),
-                      onPressed: () {
-                        _showUpdateDialog(context, cartItem.product,
-                            cartItem.quantity, cartProvider, lmsPrimaryColor);
-                      },
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: lmsPrimaryColor, // Use LMS color
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(10), // Rounded corners
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
-                      onPressed: () {
-                        cartProvider.removeProduct(cartItem.product);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 5,
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Total: \$${cartProvider.totalAmount.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  // color: Colors.black87,
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: lmsPrimaryColor, // Use LMS color
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CheckoutPage()),
+                    );
+                  },
+                  child: const Text(
+                    'Checkout',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CheckoutPage()),
-                  );
-                },
-                child: const Text(
-                  'Checkout',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

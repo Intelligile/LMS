@@ -51,43 +51,45 @@ class _AddDMZFormState extends State<AddDMZForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF017278), // LMS color
-        title: const Text('Add DMZ Accounts',
-            style: TextStyle(color: Colors.white)),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView.builder(
-            itemCount: _dmzAccounts.length,
-            itemBuilder: (context, index) {
-              return _buildDMZForm(index);
-            },
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF017278), // LMS color
+          title: const Text('Add DMZ Accounts',
+              style: TextStyle(color: Colors.white)),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: ListView.builder(
+              itemCount: _dmzAccounts.length,
+              itemBuilder: (context, index) {
+                return _buildDMZForm(index);
+              },
+            ),
           ),
         ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            backgroundColor: const Color(0xFF017278), // LMS color
-            onPressed: () {
-              setState(_addNewDMZAccount);
-            },
-            tooltip: 'Add Another DMZ Account',
-            child: const Icon(Icons.add),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            backgroundColor: const Color(0xFF017278), // LMS color
-            onPressed: _submitForm,
-            tooltip: 'Submit DMZ Accounts',
-            child: const Icon(Icons.save),
-          ),
-        ],
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              backgroundColor: const Color(0xFF017278), // LMS color
+              onPressed: () {
+                setState(_addNewDMZAccount);
+              },
+              tooltip: 'Add Another DMZ Account',
+              child: const Icon(Icons.add),
+            ),
+            const SizedBox(height: 10),
+            FloatingActionButton(
+              backgroundColor: const Color(0xFF017278), // LMS color
+              onPressed: _submitForm,
+              tooltip: 'Submit DMZ Accounts',
+              child: const Icon(Icons.save),
+            ),
+          ],
+        ),
       ),
     );
   }

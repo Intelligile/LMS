@@ -14,12 +14,14 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: const Color(0xffdce1e3),
-      body: AdaptiveLayout(
-        mobileLayout: (context) => const LoginMobileLayout(),
-        tabletLayout: (context) => const SizedBox(),
-        desktopLayout: (context) => const LoginDesktopLayout(),
+    return SafeArea(
+      child: Scaffold(
+        // backgroundColor: const Color(0xffdce1e3),
+        body: AdaptiveLayout(
+          mobileLayout: (context) => const LoginMobileLayout(),
+          tabletLayout: (context) => const SizedBox(),
+          desktopLayout: (context) => const LoginDesktopLayout(),
+        ),
       ),
     );
   }

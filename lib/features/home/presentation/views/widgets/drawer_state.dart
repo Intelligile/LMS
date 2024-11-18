@@ -15,7 +15,7 @@ class OpenedAndClosedDrawerProvider extends ChangeNotifier {
   bool _isDrawerOpen = true;
 
   bool get isDrawerOpen => _isDrawerOpen;
-
+  bool get isMobileDrawerOpen => true;
   void toggleDrawer() {
     _isDrawerOpen = !_isDrawerOpen;
     notifyListeners();

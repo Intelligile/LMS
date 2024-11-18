@@ -10,11 +10,13 @@ class AddNewRegionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Manage Product'),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Manage Product'),
+        ),
+        body: const AddNewRegionViewBody(),
       ),
-      body: const AddNewRegionViewBody(),
     );
   }
 }

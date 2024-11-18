@@ -5,11 +5,13 @@ class UpdateRolesView extends StatelessWidget {
   const UpdateRolesView({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xfffef7ff),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xfffef7ff),
+        ),
+        body: const UpdateRolesViewBody(),
       ),
-      body: const UpdateRolesViewBody(),
     );
   }
 }
