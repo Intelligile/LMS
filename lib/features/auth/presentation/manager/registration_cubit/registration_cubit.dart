@@ -84,13 +84,21 @@ class RegistrationCubit extends Cubit<RegistrationState> {
                       key: 'organizationId',
                       value: loginData['organizationId'].toString());
 
-                  organizationId =
-                      await secureStorage.read(key: 'organizationId') ?? '';
+                  // Parse organizationId when retrieving
+                  organizationId = int.tryParse(
+                          await secureStorage.read(key: 'organizationId') ??
+                              '0') ??
+                      0;
                   if (loginData.containsKey('exp')) {
                     await secureStorage.write(
                         key: 'tokenExpiration',
                         value: loginData['exp'].toString());
+                    print("Saved token expiration: ${loginData['exp']}");
+                  } else {
+                    print(
+                        "Token expiration (exp) not found in login response.");
                   }
+
                   print("Login result: $loginData");
 
                   emit(RegistrationSuccess());

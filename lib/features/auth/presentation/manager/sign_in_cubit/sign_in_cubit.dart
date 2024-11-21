@@ -9,7 +9,8 @@ import 'package:meta/meta.dart';
 part 'sign_in_state.dart';
 
 var userRole = '';
-var organizationId = '';
+var jwtTokenPublic = '';
+int organizationId = 0;
 var isDMZAccount = false;
 
 class SignInCubit extends Cubit<SignInState> {
@@ -29,6 +30,14 @@ class SignInCubit extends Cubit<SignInState> {
       result.fold((failure) {
         emit(SignInFailure(failure.message));
       }, (user) async {
+        final tokenExpiration =
+            await _secureStorage.read(key: 'tokenExpiration');
+        if (tokenExpiration != null) {
+          print("Retrieved token expiration: $tokenExpiration");
+        } else {
+          print("No token expiration found in secure storage.");
+        }
+
         // Store username and user role in secure storage for standard users
         await _secureStorage.write(
             key: 'jwtToken', value: await _secureStorage.read(key: 'jwtToken'));
@@ -39,7 +48,11 @@ class SignInCubit extends Cubit<SignInState> {
             key: 'userRole', value: await _secureStorage.read(key: 'userRole'));
 
         userRole = await _secureStorage.read(key: 'userRole') ?? '';
-        organizationId = await _secureStorage.read(key: 'organizationId') ?? '';
+        jwtTokenPublic = await _secureStorage.read(key: 'jwtToken') ?? '';
+        organizationId = int.tryParse(
+                await _secureStorage.read(key: 'organizationId') ?? '0') ??
+            0;
+
         emit(SignInSuccess(user));
       });
     } catch (e) {

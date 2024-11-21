@@ -138,6 +138,7 @@ class Api {
     required dynamic body,
     String? token,
   }) async {
+    print("POST Body: ${body}");
     try {
       // Set the authorization header if a token is provided
       if (token != null) {
@@ -160,6 +161,7 @@ class Api {
       );
 
       // Log the response for debugging
+
       print("POST response: ${response.data}");
 
       // Check if response data is a string and return it directly

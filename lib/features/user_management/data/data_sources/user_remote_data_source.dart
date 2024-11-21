@@ -115,7 +115,8 @@ class UserManagementRemoteDataSource {
   Future<List<UserModel>> getOrganizationUsers() async {
     try {
       var response = await api.get(
-          endPoint: "api/organizations/$organizationId/users", token: jwtToken);
+          endPoint: "api/organizations/$organizationId/users",
+          token: jwtTokenPublic);
 
       // Debugging: Print the response
       print("Response: $response");

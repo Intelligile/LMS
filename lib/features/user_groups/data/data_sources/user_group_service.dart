@@ -1,6 +1,7 @@
 import 'dart:convert'; // Import for jsonEncode
 
 import 'package:lms/core/utils/api.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/user_groups/data/models/group_model.dart';
 
 class ApiService {
@@ -10,7 +11,9 @@ class ApiService {
 
   Future<List<dynamic>> getUsers() async {
     try {
-      final response = await api.get(endPoint: 'api/auth/users');
+      final response = await api.get(
+          endPoint: 'api/organizations/$organizationId/users',
+          token: jwtTokenPublic);
       // print("RESPONSE FROM GET USERS => $response");
       // Debug print
       print('Fetched GroupModel: $response');

@@ -273,12 +273,26 @@ List<dynamic> getDrawerItems(bool drawerOpen) {
       title: drawerOpen ? 'Billing' : '',
       children: [
         ListTileItemModel(
-          icon: FontAwesomeIcons.solidCreditCard,
-          title: drawerOpen ? 'View Payments' : null,
-          path: AppRouter.kPaymentView,
+          icon: FontAwesomeIcons.dollarSign,
+          title: drawerOpen ? 'Billing Accounts' : null,
+          path: AppRouter.kBillingAccountManagement,
           padding: const EdgeInsets.only(left: 26.0),
           iconSize: 20.0,
         ),
+        ListTileItemModel(
+          icon: FontAwesomeIcons.solidCreditCard,
+          title: drawerOpen ? 'Payment Methods' : null,
+          path: AppRouter.kPaymentMethodsManagement,
+          padding: const EdgeInsets.only(left: 26.0),
+          iconSize: 20.0,
+        ),
+        // ListTileItemModel(
+        //   icon: FontAwesomeIcons.solidCreditCard,
+        //   title: drawerOpen ? 'View Payments' : null,
+        //   path: AppRouter.kPaymentView,
+        //   padding: const EdgeInsets.only(left: 26.0),
+        //   iconSize: 20.0,
+        // ),
       ],
     ),
     ListTileItemModel(

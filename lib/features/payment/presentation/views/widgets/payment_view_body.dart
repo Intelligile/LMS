@@ -209,25 +209,29 @@ class _PaymentViewBodyState extends State<PaymentViewBody> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CustomTextField(
-                          controller: _expiryDateController,
-                          textFieldSize: 190,
-                          hint: 'MM / YY',
-                          validator: (value) => _validateExpiryDate(value!)
-                              ? null
-                              : 'Invalid date',
-                          inputFormatters: [ExpiryDateInputFormatter()],
+                        Flexible(
+                          child: CustomTextField(
+                            controller: _expiryDateController,
+                            hint: 'MM / YY',
+                            validator: (value) => _validateExpiryDate(value!)
+                                ? null
+                                : 'Invalid date',
+                            inputFormatters: [ExpiryDateInputFormatter()],
+                          ),
                         ),
-                        CustomTextField(
-                          controller: _cvcController,
-                          textFieldSize: 190,
-                          hint: 'CVC',
-                          validator: (value) =>
-                              _validateCVC(value!) ? null : 'Invalid CVC',
-                          inputFormatters: [CvcInputFormatter()],
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: CustomTextField(
+                            controller: _cvcController,
+                            hint: 'CVC',
+                            validator: (value) =>
+                                _validateCVC(value!) ? null : 'Invalid CVC',
+                            inputFormatters: [CvcInputFormatter()],
+                          ),
                         ),
                       ],
                     ),
+
                     CustomTextField(
                       controller: _cardHolderName,
                       label: 'Name On Card',
@@ -235,8 +239,7 @@ class _PaymentViewBodyState extends State<PaymentViewBody> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          width: 400,
+                        Expanded(
                           child: _buildRegionDropdown(),
                         ),
                       ],
@@ -264,20 +267,22 @@ class _PaymentViewBodyState extends State<PaymentViewBody> {
   }
 
   Widget _buildRegionDropdown() {
-    return DropdownButtonFormField<String>(
-      decoration: const InputDecoration(
-        labelText: 'Country or region',
-        border: OutlineInputBorder(),
+    return Flexible(
+      child: DropdownButtonFormField<String>(
+        decoration: const InputDecoration(
+          labelText: 'Country or region',
+          border: OutlineInputBorder(),
+        ),
+        items: _regions
+            .map((region) => DropdownMenuItem(
+                  value: region,
+                  child: Text(region),
+                ))
+            .toList(),
+        onChanged: (value) {},
+        validator: (value) =>
+            value == null || value.isEmpty ? 'Please select a region' : null,
       ),
-      items: _regions
-          .map((region) => DropdownMenuItem(
-                value: region,
-                child: Text(region),
-              ))
-          .toList(),
-      onChanged: (value) {},
-      validator: (value) =>
-          value == null || value.isEmpty ? 'Please select a region' : null,
     );
   }
 }

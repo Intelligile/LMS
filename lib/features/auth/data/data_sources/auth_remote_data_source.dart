@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lms/core/utils/api.dart';
+import 'package:lms/core/utils/exp_extractor_from_jwt.dart';
 import 'package:lms/features/auth/data/models/user_model.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 
@@ -57,6 +58,18 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
         result.containsKey('organizationId') &&
         result.containsKey('jwtToken') &&
         result.containsKey('username')) {
+      if (result.containsKey('jwtToken')) {
+        jwtToken = result['jwtToken'];
+        final expiration = extractExpiration(jwtToken);
+        if (expiration != null) {
+          await _secureStorage.write(
+              key: 'tokenExpiration', value: expiration.toString());
+          print("Extracted and saved token expiration: $expiration");
+        } else {
+          print("Failed to extract 'exp' from JWT token.");
+        }
+      }
+
       // Clear any existing session data
       await _secureStorage.deleteAll();
       userRole = result['roles'];
@@ -76,10 +89,16 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
         await _secureStorage.write(
             key: 'organizationId', value: result['organizationId'].toString());
       }
-
-      if (result.containsKey('exp')) {
-        await _secureStorage.write(
-            key: 'tokenExpiration', value: result['exp'].toString());
+      if (result.containsKey('jwtToken')) {
+        jwtToken = result['jwtToken'];
+        final expiration = extractExpiration(jwtToken);
+        if (expiration != null) {
+          await _secureStorage.write(
+              key: 'tokenExpiration', value: expiration.toString());
+          print("Extracted and saved token expiration: $expiration");
+        } else {
+          print("Failed to extract 'exp' from JWT token.");
+        }
       }
 
       return result;
@@ -117,6 +136,9 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       if (result.containsKey('exp')) {
         await _secureStorage.write(
             key: 'tokenExpiration', value: result['exp'].toString());
+        print("Saved DMZ token expiration: ${result['exp']}");
+      } else {
+        print("Token expiration (exp) not found in DMZ login response.");
       }
 
       return result;

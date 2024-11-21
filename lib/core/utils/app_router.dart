@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/auth/presentation/views/forgot_password_page.dart';
 import 'package:lms/features/auth/presentation/views/register_screen.dart';
 import 'package:lms/features/auth/presentation/views/signin_screen.dart';
 import 'package:lms/features/auth/presentation/views/widgets/reset_password_form.dart';
 import 'package:lms/features/auth_code/presentation/pages/form_page.dart';
 import 'package:lms/features/auth_code/presentation/pages/list_auth_codes.dart';
+import 'package:lms/features/billing/presentation/pages/billing_account_setup_page.dart';
+import 'package:lms/features/billing/presentation/pages/billing_accounts_managment_page.dart';
+import 'package:lms/features/billing/presentation/pages/payment_methods_management_page.dart';
 import 'package:lms/features/dmz_management/presentation/pages/dmz_management_page.dart';
 import 'package:lms/features/dmz_management/presentation/pages/dmz_setup.dart';
 import 'package:lms/features/home/presentation/views/home_view.dart';
@@ -265,6 +269,28 @@ class AppRouter {
             return DMZSetupDownloadPage();
           },
         ),
+        GoRoute(
+          path: kBillingAccountForm,
+          builder: (context, state) {
+            return BillingAccountPage();
+          },
+        ),
+        GoRoute(
+          path: kBillingAccountManagement,
+          builder: (context, state) {
+            return BillingAccountManagementPage(
+              organizationId: organizationId,
+            );
+          },
+        ),
+        GoRoute(
+          path: kPaymentMethodsManagement,
+          builder: (context, state) {
+            return PaymentMethodManagementPage(
+              organizationId: organizationId,
+            );
+          },
+        ),
       ],
     );
   }
@@ -294,6 +320,11 @@ class AppRouter {
   static const kAddUsers = '/add-users';
   static const kDMZManagement = '/dmz-management';
   static const kDMZSetupDownlaod = '/dmz-setup-download';
+
+  //Billing routes
+  static const kBillingAccountForm = '/create-billing-account';
+  static const kBillingAccountManagement = '/billing-account-management';
+  static const kPaymentMethodsManagement = '/payment-methods-management';
 
   static Future<String?> _getUsernameFromSharedPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

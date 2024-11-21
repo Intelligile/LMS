@@ -6,6 +6,7 @@ import 'package:lms/core/functions/set_up_service_locator.dart';
 import 'package:lms/core/simple_bloc_observer.dart';
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/app_router.dart';
+import 'package:lms/core/utils/exp_extractor_from_jwt.dart';
 import 'package:lms/core/utils/theme.dart';
 import 'package:lms/core/utils/theme_provider.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
@@ -66,34 +67,52 @@ void main() async {
   final storedToken = await secureStorage.read(key: 'jwtToken');
   final storedUsername = await secureStorage.read(key: 'usernamePublic');
   final storedRoles = await secureStorage.read(key: 'userRole');
-  final storedOrganizationId = await secureStorage.read(key: 'organizationId');
+  int storedOrganizationId =
+      int.tryParse(await secureStorage.read(key: 'organizationId') ?? '0') ?? 0;
+
   print("Organization Id from storage: $storedOrganizationId");
 
 // Debug all storage
   final allKeys = await secureStorage.readAll();
   print("All SecureStorage contents: $allKeys");
 
-  final tokenExpiration = await secureStorage.read(key: 'tokenExpiration');
+  var tokenExpiration = await secureStorage.read(key: 'tokenExpiration');
   print("TOKEN EXPIRATION $tokenExpiration");
 
   // Check token validity
+// Check token validity
   bool isTokenValid = false;
+// Extract expiration date from the token if `tokenExpiration` is null
+  if (storedToken != null && tokenExpiration == null) {
+    final extractedExpiration = extractExpiration(storedToken);
+    if (extractedExpiration != null) {
+      await secureStorage.write(
+          key: 'tokenExpiration', value: extractedExpiration.toString());
+      print(
+          "Extracted and saved token expiration during app initialization: $extractedExpiration");
+      tokenExpiration = extractedExpiration.toString();
+    }
+  }
+
+// Validate token expiration
   if (storedToken != null && tokenExpiration != null) {
     try {
       final expirationDate = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(tokenExpiration) *
-            1000, // Ensure tokenExpiration is parsed as int
-      );
+          int.parse(tokenExpiration) * 1000);
       isTokenValid = DateTime.now().isBefore(expirationDate);
+      print("Token is valid: $isTokenValid, Expires at: $expirationDate");
     } catch (e) {
       print("Error parsing token expiration: $e");
       isTokenValid = false;
     }
+  } else {
+    print("Token or expiration not found. Token valid: $isTokenValid");
   }
 
   usernamePublic = storedUsername ?? '';
   userRole = storedRoles ?? '';
-  organizationId = storedOrganizationId ?? '';
+  jwtTokenPublic = storedToken ?? '';
+  organizationId = (storedOrganizationId ?? '') as int;
 
   // Set initial path based on token validity
   final initialPath = isTokenValid ? '/homeView' : '/';
