@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
+import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/product_region_management/data/models/product_model.dart';
 import 'package:lms/features/product_region_management/presentation/manager/product_cubit/product_cubit.dart';
@@ -47,40 +50,63 @@ class ProductListPageBody extends StatelessWidget {
       },
       builder: (context, state) {
         return Center(
-          child: ConstrainedBox(
-            constraints:
-                const BoxConstraints(maxWidth: 600), // Limits grid width
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24.0),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  // Removed NeverScrollableScrollPhysics to enable scrolling
-                  itemCount: products.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // Two columns in the grid
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1.9, // More compact aspect ratio
-                  ),
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ProductDetailPage(product: product),
-                          ),
-                        );
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0), // Padding around the content
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Add the breadcrumb at the top
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: CustomBreadcrumb(
+                      items: const ['Home', 'Purchase Product'],
+                      onTap: (index) {
+                        // Add navigation logic based on index
+                        if (index == 0) {
+                          GoRouter.of(context).go(AppRouter.kHomeView);
+                        } else if (index == 1) {
+                          // Navigate to Active Users
+                        }
                       },
-                      child: ProductCard(
-                        product: product,
-                      ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  const SizedBox(height: 16), // Add spacing after breadcrumb
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: products.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Two columns in the grid
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio:
+                          3.5, // Adjusted aspect ratio for smaller cards
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(
+                            16.0), // Padding around each card
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductDetailPage(product: product),
+                              ),
+                            );
+                          },
+                          child: ProductCard(
+                            product: product,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
