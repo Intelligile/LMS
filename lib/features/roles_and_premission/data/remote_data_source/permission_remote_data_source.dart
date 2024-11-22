@@ -2,6 +2,7 @@
 
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/roles_and_premission/data/models/permission.dart';
 
 abstract class PermissionRemoteDataSource {
@@ -19,7 +20,8 @@ class PermissionRemoteDataSourceImpl extends PermissionRemoteDataSource {
   Future<void> addPermissions(List<Permission> permissions) async {
     List<Map<String, dynamic>> body =
         permissions.map((permission) => permission.toJson()).toList();
-    await api.post(endPoint: 'api/permissions', body: body, token: jwtToken);
+    await api.post(
+        endPoint: 'api/permissions', body: body, token: jwtTokenPublic);
   }
 
   @override
@@ -28,10 +30,11 @@ class PermissionRemoteDataSourceImpl extends PermissionRemoteDataSource {
     print(jwtToken);
     var result;
     if (roleName == null) {
-      result = await api.get(endPoint: 'api/permissions', token: jwtToken);
+      result =
+          await api.get(endPoint: 'api/permissions', token: jwtTokenPublic);
     } else {
       result = await api.get(
-          endPoint: 'api/permissions/by-role/$roleName', token: jwtToken);
+          endPoint: 'api/permissions/by-role/$roleName', token: jwtTokenPublic);
     }
     for (var permissionData in result) {
       permissions.add(Permission.fromJson(permissionData));

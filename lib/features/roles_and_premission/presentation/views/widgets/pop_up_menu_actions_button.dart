@@ -24,10 +24,10 @@ class PopUpMenuActionsButton extends StatelessWidget {
             value: 'Get Invite Link',
             child: Text('Get Invite Link'),
           ),
-          const PopupMenuItem<String>(
-            value: 'Remove',
-            child: Text('Remove'),
-          ),
+          // const PopupMenuItem<String>(
+          //   value: 'Remove',
+          //   child: Text('Remove'),
+          // ),
         ];
       },
     );

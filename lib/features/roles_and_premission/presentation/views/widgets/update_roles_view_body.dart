@@ -161,22 +161,33 @@ class RoleNameDropdown extends StatefulWidget {
 }
 
 class _RoleNameDropdownState extends State<RoleNameDropdown> {
-  late String selectedRole;
+  String? selectedRole;
 
   @override
   void initState() {
     super.initState();
-    // Initialize selectedRole and selectedAuthority
-    selectedRole = widget.authorities[0].authority ?? '';
-    selectedAuthority = widget.authorities.firstWhere(
-      (authority) => authority.authority == selectedRole,
-    );
+    debugPrint(
+        "Authorities: ${widget.authorities.map((e) => e.authority).toList()}");
 
-    // Call getPermissions after the first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PermissionCubit>().getPermissions(roleName: selectedRole);
-      context.read<PermissionCubit>().getPermissions();
-    });
+    // Ensure authorities are not empty and contain unique values
+    final uniqueAuthorities =
+        widget.authorities.toSet().toList(); // Remove duplicates
+
+    if (uniqueAuthorities.isNotEmpty) {
+      // Initialize selectedRole and selectedAuthority
+      selectedRole = uniqueAuthorities[0].authority;
+      selectedAuthority = uniqueAuthorities.firstWhere(
+        (authority) => authority.authority == selectedRole,
+      );
+
+      // Call getPermissions after the first frame
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<PermissionCubit>().getPermissions(roleName: selectedRole!);
+      });
+    } else {
+      // Handle case where authorities are empty
+      selectedRole = null;
+    }
   }
 
   @override
@@ -199,19 +210,21 @@ class _RoleNameDropdownState extends State<RoleNameDropdown> {
               isExpanded: true,
               value: selectedRole,
               onChanged: (String? newValue) {
-                setState(() {
-                  selectedRole = newValue!;
-                  // Update selectedAuthority based on selectedRole
-                  selectedAuthority = widget.authorities.firstWhere(
-                    (authority) => authority.authority == selectedRole,
-                  );
-                });
+                if (newValue != null) {
+                  setState(() {
+                    selectedRole = newValue;
+                    // Update selectedAuthority based on selectedRole
+                    selectedAuthority = widget.authorities.firstWhere(
+                      (authority) => authority.authority == selectedRole,
+                    );
+                  });
 
-                updatedPermission.clear();
-                // Trigger the getPermissions function with the updated role name
-                context
-                    .read<PermissionCubit>()
-                    .getPermissions(roleName: selectedRole);
+                  updatedPermission.clear();
+                  // Trigger the getPermissions function with the updated role name
+                  context
+                      .read<PermissionCubit>()
+                      .getPermissions(roleName: selectedRole!);
+                }
               },
               items: widget.authorities
                   .map<DropdownMenuItem<String>>((Authority value) {

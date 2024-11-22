@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lms/constants.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/custom_breadcrumb.dart';
@@ -75,10 +76,10 @@ class _RolesAndPermissionDashboardViewBodyState
                                 },
                                 child: const ActionsContainer(
                                     containerBgColor: Colors.white,
-                                    txtColor: Colors.blue,
+                                    txtColor: kPrimaryColor,
                                     containerIcon: Icon(
                                       Icons.settings,
-                                      color: Colors.blue,
+                                      color: kPrimaryColor,
                                     ),
                                     containerText: 'Manage roles'),
                               ),
@@ -91,7 +92,7 @@ class _RolesAndPermissionDashboardViewBodyState
                                       color: Colors.white,
                                     ),
                                     containerText: 'Invite people',
-                                    containerBgColor: Colors.blue,
+                                    containerBgColor: kPrimaryColor,
                                     txtColor: Colors.white),
                               )
                             ],
@@ -112,10 +113,10 @@ class _RolesAndPermissionDashboardViewBodyState
                             },
                             child: const ActionsContainer(
                                 containerBgColor: Colors.white,
-                                txtColor: Colors.blue,
+                                txtColor: kPrimaryColor,
                                 containerIcon: Icon(
                                   Icons.settings,
-                                  color: Colors.blue,
+                                  color: kPrimaryColor,
                                 ),
                                 containerText: 'Manage roles'),
                           ),
@@ -128,7 +129,7 @@ class _RolesAndPermissionDashboardViewBodyState
                                   color: Colors.white,
                                 ),
                                 containerText: 'Invite people',
-                                containerBgColor: Colors.blue,
+                                containerBgColor: kPrimaryColor,
                                 txtColor: Colors.white),
                           )
                         ],
@@ -190,7 +191,7 @@ class _RolesAndPermissionDashboardViewBodyState
                         role.trim(),
                         style: const TextStyle(
                           height: 1.5,
-                          fontFamily: 'Courier',
+                          fontFamily: 'Avenir',
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -215,8 +216,8 @@ class _RolesAndPermissionDashboardViewBodyState
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        CircleAvatar(
-          backgroundColor: Colors.blue[100],
+        const CircleAvatar(
+          backgroundColor: kPrimaryColor,
           radius: 20,
         ),
         const SizedBox(width: 8),

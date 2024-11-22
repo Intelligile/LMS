@@ -2,6 +2,7 @@
 
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/roles_and_premission/data/models/authority.dart';
 
 abstract class AuthorityRemoteDataSource {
@@ -20,20 +21,22 @@ class AuthorityRemoteDataSourceImpl extends AuthorityRemoteDataSource {
   Future<void> addAuthorities(List<Authority> authorities) async {
     List<Map<String, dynamic>> body =
         authorities.map((authority) => authority.toJson()).toList();
-    await api.post(endPoint: 'api/authorities', body: body, token: jwtToken);
+    await api.post(
+        endPoint: 'api/authorities', body: body, token: jwtTokenPublic);
   }
 
   @override
   Future<List<Authority>> getAuthorities({int? authorityId = 0}) async {
     List<Authority> authorities = [];
-    print(jwtToken);
+    print(jwtTokenPublic);
     var result;
     if (authorityId == 0 || authorityId == null) {
-      result = await api.get(endPoint: 'api/authorities', token: jwtToken);
+      result =
+          await api.get(endPoint: 'api/authorities', token: jwtTokenPublic);
     } else {
       {
         result = await api.get(
-            endPoint: 'api/authorities/$authorityId', token: jwtToken);
+            endPoint: 'api/authorities/$authorityId', token: jwtTokenPublic);
       }
     }
     for (var authorityData in result) {
@@ -48,6 +51,6 @@ class AuthorityRemoteDataSourceImpl extends AuthorityRemoteDataSource {
     await api.put(
         endPoint: 'api/authorities/$authorityId/permissions',
         body: newAuthorities,
-        token: jwtToken);
+        token: jwtTokenPublic);
   }
 }
