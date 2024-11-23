@@ -55,21 +55,28 @@ class _AllPermissionCardState extends State<AllPermissionCard> {
     return Row(
       children: [
         // Wrap the Checkbox in a SizedBox or Container
-        SizedBox(
-          width: 40,
-          child: Checkbox(
-            value: isChecked,
-            onChanged: _onCheckboxChanged,
-          ),
-        ),
         // Use Flexible to ensure the ListTile takes up remaining space correctly
         Expanded(
-          child: Text(
-            widget.permission.permission ?? '',
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          flex: 3,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 40,
+                child: Checkbox(
+                  value: isChecked,
+                  onChanged: _onCheckboxChanged,
+                ),
+              ),
+              Text(
+                widget.permission.permission ?? '',
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
         ),
         const Expanded(
+          flex: 4,
           child: Text(
             // permission.scope,
             'organization',
@@ -81,6 +88,7 @@ class _AllPermissionCardState extends State<AllPermissionCard> {
           ),
         ),
         const Expanded(
+          flex: 3,
           child: Text(
             // permission.configuration,
             'none',

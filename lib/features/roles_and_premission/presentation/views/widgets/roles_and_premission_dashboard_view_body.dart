@@ -317,9 +317,11 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
                 style: Styles.textStyle20,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                     child: TabBar(
+                      dividerColor: Colors.transparent,
                       controller: _tabController,
                       labelColor: Colors.black,
                       unselectedLabelColor: Colors.grey,
@@ -354,35 +356,38 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
                     ),
 
                     // Permissions tab
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: Column(
-                        children: [
-                          const Row(
-                            children: [
-                              Expanded(flex: 2, child: Text('Role')),
-                              Expanded(child: Text('Scope')),
-                              Expanded(child: Text('Configuration')),
-                            ],
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: perms.length,
-                            itemBuilder: (context, index) {
-                              final permission = perms[index];
-                              return state is PermissionStateLoading
-                                  ? const Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : AllPermissionCard(
-                                      permission: permission,
-                                    );
-                            },
-                          ),
-                        ],
-                      ),
+                    Column(
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Row(
+                          children: [
+                            Expanded(child: SizedBox()),
+                            Expanded(flex: 5, child: Text('Role')),
+                            Expanded(flex: 4, child: Text('Scope')),
+                            Expanded(flex: 3, child: Text('Configuration')),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: perms.length,
+                          itemBuilder: (context, index) {
+                            final permission = perms[index];
+                            return state is PermissionStateLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : AllPermissionCard(
+                                    permission: permission,
+                                  );
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
