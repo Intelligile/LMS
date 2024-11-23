@@ -86,7 +86,6 @@ class _UserFormState extends State<UserForm> {
       body: Row(
         children: [
           Expanded(
-            flex: 4,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
@@ -247,7 +246,6 @@ class _UserFormState extends State<UserForm> {
               ),
             ),
           ),
-          const Expanded(child: SizedBox())
         ],
       ),
     );

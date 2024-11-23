@@ -52,28 +52,46 @@ class _AllPermissionCardState extends State<AllPermissionCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          // Wrap the Checkbox in a SizedBox or Container
-          SizedBox(
-            width: 40,
-            child: Checkbox(
-              value: isChecked,
-              onChanged: _onCheckboxChanged,
-            ),
+    return Row(
+      children: [
+        // Wrap the Checkbox in a SizedBox or Container
+        SizedBox(
+          width: 40,
+          child: Checkbox(
+            value: isChecked,
+            onChanged: _onCheckboxChanged,
           ),
-          // Use Flexible to ensure the ListTile takes up remaining space correctly
-          Flexible(
-            child: ListTile(
-              title: Text(widget.permission.permission ?? ''),
-              onTap: () {},
-              subtitle: Text(widget.permission.permission ?? ''),
-            ),
+        ),
+        // Use Flexible to ensure the ListTile takes up remaining space correctly
+        Expanded(
+          child: Text(
+            widget.permission.permission ?? '',
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
-        ],
-      ),
+        ),
+        const Expanded(
+          child: Text(
+            // permission.scope,
+            'organization',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const Expanded(
+          child: Text(
+            // permission.configuration,
+            'none',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
     );
   }
 }
