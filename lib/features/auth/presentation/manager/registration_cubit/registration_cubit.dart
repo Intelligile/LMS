@@ -16,9 +16,11 @@ class RegistrationCubit extends Cubit<RegistrationState> {
   final LoginUseCase loginUseCase; // Properly include LoginUseCase
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  RegistrationCubit(this.registerUseCase, this.authRemoteDataSource,
-      this.loginUseCase) // Add loginUseCase in constructor
-      : super(RegistrationInitial());
+  RegistrationCubit(
+    this.registerUseCase,
+    this.authRemoteDataSource,
+    this.loginUseCase,
+  ) : super(RegistrationInitial());
 
   Future<void> register({
     required String username,
@@ -27,11 +29,14 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     required String lastName,
     required String phone,
     required String email,
-    required String organizationName,
-    required String organizationCountry,
-    required String organizationAddress,
-    required String organizationContactEmail,
-    required String organizationContactPhone,
+    required String accountName,
+    required String departmentName,
+    required String legalEntityName,
+    required String globalEntityName,
+    required String website,
+    required String legalContactName,
+    required String legalContactEmail,
+    required String legalContactNumber,
   }) async {
     emit(RegistrationLoading());
 
@@ -43,11 +48,14 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         pw: password,
         un: username,
         phone: phone,
-        organizationName: organizationName,
-        organizationCountry: organizationCountry,
-        organizationAddress: organizationAddress,
-        organizationContactEmail: organizationContactEmail,
-        organizationContactPhone: organizationContactPhone,
+        accountName: accountName,
+        departmentName: departmentName,
+        legalEntityName: legalEntityName,
+        globalEntityName: globalEntityName,
+        website: website,
+        legalContactName: legalContactName,
+        legalContactEmail: legalContactEmail,
+        legalContactNumber: legalContactNumber,
       );
 
       result.fold(

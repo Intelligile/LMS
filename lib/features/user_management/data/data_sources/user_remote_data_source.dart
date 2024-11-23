@@ -148,7 +148,7 @@ class UserManagementRemoteDataSource {
     try {
       // Call the API to get the user data as a Map
       var response = await api.getUser(
-          endPoint: "api/auth/user/profile/$username", token: jwtToken);
+          endPoint: "api/auth/user/profile/$username", token: jwtTokenPublic);
 
       // Convert the Map to UserModel
       return response;

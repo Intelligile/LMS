@@ -58,34 +58,38 @@ class AuthRepositoryImpl extends AuthRepository {
 
   @override
   Future<Either<Failure, Unit>> registerUser({
-    int id = 0,
     String username = '',
     String password = '',
     String firstName = '',
     String lastName = '',
     String phone = '',
     String email = '',
-    String organizationName = '',
-    String organizationCountry = '',
-    String organizationAddress = '',
-    String organizationContactEmail = '',
-    String organizationContactPhone = '',
+    String accountName = '',
+    String departmentName = '',
+    String legalEntityName = '',
+    String globalEntityName = '',
+    String website = '',
+    String legalContactName = '',
+    String legalContactEmail = '',
+    String legalContactNumber = '',
   }) async {
     try {
       // Pass all user and organization details to the remote data source
       await authRemoteDataSource.registerUser(
-        id: id,
         firstName: firstName,
         lastName: lastName,
         phone: phone,
         email: email,
         password: password,
         username: username,
-        organizationName: organizationName,
-        organizationCountry: organizationCountry,
-        organizationAddress: organizationAddress,
-        organizationContactEmail: organizationContactEmail,
-        organizationContactPhone: organizationContactPhone,
+        accountName: accountName,
+        departmentName: departmentName,
+        legalEntityName: legalEntityName,
+        globalEntityName: globalEntityName,
+        website: website,
+        legalContactName: legalContactName,
+        legalContactEmail: legalContactEmail,
+        legalContactNumber: legalContactNumber,
       );
       return right(unit); // Return Unit from dartz
     } catch (e) {

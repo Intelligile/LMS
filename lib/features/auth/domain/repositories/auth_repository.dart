@@ -19,10 +19,13 @@ abstract class AuthRepository {
     required String password,
     required String phone,
     required String email,
-    required String organizationName,
-    required String organizationCountry,
-    required String organizationAddress,
-    required String organizationContactEmail,
-    required String organizationContactPhone,
+    required String accountName,
+    required String departmentName,
+    required String legalEntityName,
+    required String globalEntityName,
+    required String website,
+    required String legalContactName,
+    required String legalContactEmail,
+    required String legalContactNumber,
   });
 }

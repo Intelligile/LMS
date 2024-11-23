@@ -24,11 +24,14 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
   final _emailController = TextEditingController();
 
   // Organization fields
-  final _organizationNameController = TextEditingController();
-  final _organizationCountryController = TextEditingController();
-  final _organizationAddressController = TextEditingController();
-  final _organizationContactEmailController = TextEditingController();
-  final _organizationContactPhoneController = TextEditingController();
+  final _accountNameController = TextEditingController();
+  final _departmentNameController = TextEditingController();
+  final _legalEntityNameController = TextEditingController();
+  final _globalEntityNameController = TextEditingController();
+  final _websiteController = TextEditingController();
+  final _legalContactNameController = TextEditingController();
+  final _legalContactEmailController = TextEditingController();
+  final _legalContactNumberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -108,24 +111,35 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
                           ),
                           const SizedBox(height: 16),
                           buildAuthTextField(
-                              controller: _organizationNameController,
-                              label: 'Organization Name'),
+                              controller: _accountNameController,
+                              label: 'Account Name'),
                           const SizedBox(height: 16),
                           buildAuthTextField(
-                              controller: _organizationCountryController,
-                              label: 'Country'),
+                              controller: _departmentNameController,
+                              label: 'Department Name'),
                           const SizedBox(height: 16),
                           buildAuthTextField(
-                              controller: _organizationAddressController,
-                              label: 'Address'),
+                              controller: _legalEntityNameController,
+                              label: 'Legal Entity Name'),
                           const SizedBox(height: 16),
                           buildAuthTextField(
-                              controller: _organizationContactEmailController,
-                              label: 'Contact Email'),
+                              controller: _globalEntityNameController,
+                              label: 'Global Entity Name'),
                           const SizedBox(height: 16),
                           buildAuthTextField(
-                              controller: _organizationContactPhoneController,
-                              label: 'Contact Phone'),
+                              controller: _websiteController, label: 'Website'),
+                          const SizedBox(height: 16),
+                          buildAuthTextField(
+                              controller: _legalContactNameController,
+                              label: 'Legal Contact Name'),
+                          const SizedBox(height: 16),
+                          buildAuthTextField(
+                              controller: _legalContactEmailController,
+                              label: 'Legal Contact Email'),
+                          const SizedBox(height: 16),
+                          buildAuthTextField(
+                              controller: _legalContactNumberController,
+                              label: 'Legal Contact Number'),
                           const SizedBox(height: 24),
 
                           // Submit Button
@@ -153,20 +167,27 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
                                                     _lastNameController.text,
                                                 phone: _phoneController.text,
                                                 email: _emailController.text,
-                                                organizationName:
-                                                    _organizationNameController
+                                                accountName:
+                                                    _accountNameController.text,
+                                                departmentName:
+                                                    _departmentNameController
                                                         .text,
-                                                organizationCountry:
-                                                    _organizationCountryController
+                                                legalEntityName:
+                                                    _legalEntityNameController
                                                         .text,
-                                                organizationAddress:
-                                                    _organizationAddressController
+                                                globalEntityName:
+                                                    _globalEntityNameController
                                                         .text,
-                                                organizationContactEmail:
-                                                    _organizationContactEmailController
+                                                website:
+                                                    _websiteController.text,
+                                                legalContactName:
+                                                    _legalContactNameController
                                                         .text,
-                                                organizationContactPhone:
-                                                    _organizationContactPhoneController
+                                                legalContactEmail:
+                                                    _legalContactEmailController
+                                                        .text,
+                                                legalContactNumber:
+                                                    _legalContactNumberController
                                                         .text,
                                               );
                                         }

@@ -9,23 +9,31 @@ String jwtToken = '';
 String usernamePublic = '';
 
 abstract class AuthRemoteDataSource {
-  Future<Map<String, dynamic>> loginUser(
-      {required String username, required String password});
-  Future<Map<String, dynamic>> dmzLogin(
-      {required String uniqueId, required String password});
+  Future<Map<String, dynamic>> loginUser({
+    required String username,
+    required String password,
+  });
+
+  Future<Map<String, dynamic>> dmzLogin({
+    required String uniqueId,
+    required String password,
+  });
+
   Future<void> registerUser({
-    required int id,
     required String firstName,
     required String lastName,
     required String username,
     required String password,
     required String phone,
     required String email,
-    String? organizationName,
-    String? organizationCountry,
-    String? organizationAddress,
-    String? organizationContactEmail,
-    String? organizationContactPhone,
+    String? accountName,
+    String? departmentName,
+    String? legalEntityName,
+    String? globalEntityName,
+    String? website,
+    String? legalContactName,
+    String? legalContactEmail,
+    String? legalContactNumber,
   });
 }
 
@@ -148,24 +156,24 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   }
 
   @override
-  @override
   Future<void> registerUser({
-    required int id,
     required String firstName,
     required String lastName,
     required String username,
     required String password,
     required String phone,
     required String email,
-    String? organizationName,
-    String? organizationCountry,
-    String? organizationAddress,
-    String? organizationContactEmail,
-    String? organizationContactPhone,
+    String? accountName,
+    String? departmentName,
+    String? legalEntityName,
+    String? globalEntityName,
+    String? website,
+    String? legalContactName,
+    String? legalContactEmail,
+    String? legalContactNumber,
   }) async {
     // Construct the request body
     final requestBody = {
-      "id": id,
       "username": username,
       "password": password,
       "email": email,
@@ -174,11 +182,14 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       "phone": phone,
       "enabled": true,
       "authorityIDs": [1], // Adjust as per requirements
-      "organizationName": organizationName ?? "",
-      "organizationCountry": organizationCountry ?? "",
-      "organizationAddress": organizationAddress ?? "",
-      "organizationContactEmail": organizationContactEmail ?? "",
-      "organizationContactPhone": organizationContactPhone ?? "",
+      "accountName": accountName ?? "",
+      "departmentName": departmentName ?? "",
+      "legalEntityName": legalEntityName ?? "",
+      "globalEntityName": globalEntityName ?? "",
+      "website": website ?? "",
+      "legalContactName": legalContactName ?? "",
+      "legalContactEmail": legalContactEmail ?? "",
+      "legalContactNumber": legalContactNumber ?? "",
     };
 
     // Log the request body for debugging
