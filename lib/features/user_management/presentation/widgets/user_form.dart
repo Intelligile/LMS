@@ -1,5 +1,10 @@
+import 'dart:convert';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
+import 'package:lms/features/roles_and_premission/data/models/authority.dart';
 import 'package:lms/features/user_management/data/models/user_model.dart';
 
 class UserForm extends StatefulWidget {
@@ -22,9 +27,11 @@ class _UserFormState extends State<UserForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   List<UserModel> _users = [];
-  int _currentStep = 0;
   bool _passwordVisible = false;
   String _initialPassword = '';
+  List<Authority> _roles = [];
+  List<int> _selectedRoles = [];
+  bool _isDrawerOpen = false;
 
   @override
   void initState() {
@@ -45,14 +52,110 @@ class _UserFormState extends State<UserForm> {
         groups: [],
       ));
     } else {
-      // Store initial encoded password
       _initialPassword = _users[0].password;
-      _passwordController.text = _initialPassword; // Display the password
+      _passwordController.text = _initialPassword;
+    }
+
+    _fetchRoles();
+  }
+
+  Future<void> _fetchRoles() async {
+    const token = 'your-token-here'; // Replace with your token
+    final response = await http.get(
+      Uri.parse('http://localhost:8082/api/authorities'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwtTokenPublic',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _roles = (json.decode(response.body) as List)
+            .map((role) => Authority.fromJson(role))
+            .toList();
+      });
+    } else {
+      // Handle error
+      print('Error fetching roles: ${response.statusCode}');
+    }
+  }
+
+  Future<void> _fetchUserRoles() async {
+    const token = 'your-token-here'; // Replace with your token
+    final response = await http.get(
+      Uri.parse('http://localhost:8082/api/users/with-roles/$organizationId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwtTokenPublic',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> userRolesData = json.decode(response.body);
+
+      // Find the current user's roles based on user ID
+      final currentUserRoles = userRolesData.firstWhere(
+        (user) => user['id'] == _users[0].id,
+        orElse: () => null,
+      );
+
+      if (currentUserRoles != null) {
+        setState(() {
+          _selectedRoles = (currentUserRoles['roles'] as List<dynamic>)
+              .map<int>(
+                  (role) => _roles.firstWhere((r) => r.authority == role).id)
+              .toList();
+        });
+      }
+    } else {
+      // Handle error
+      print('Error fetching user roles: ${response.statusCode}');
+    }
+  }
+
+  Future<void> _assignRoles() async {
+    final userId = _users[0].id;
+
+    // Debugging: Print selected roles and user ID
+    print('Assigning roles: $_selectedRoles to user ID: $userId');
+    print('JWT Token: $jwtTokenPublic');
+
+    final response = await http.post(
+      Uri.parse('http://localhost:8082/api/authorities/assign-roles-to-user'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwtTokenPublic',
+      },
+      body: json.encode({
+        'userId': userId, // Match the expected API parameter name
+        'roleIds': _selectedRoles,
+      }),
+    );
+
+    // Debugging: Log response details
+    print('API Response Status Code: ${response.statusCode}');
+    print('API Response Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      try {
+        setState(() {
+          _users[0].authorities =
+              _roles.where((role) => _selectedRoles.contains(role.id)).toList();
+        });
+
+        print('Roles successfully assigned: ${_users[0].authorities}');
+        _closeDrawer();
+      } catch (e) {
+        print('Error updating user authorities: $e');
+      }
+    } else {
+      print('Error assigning roles: HTTP ${response.statusCode}');
+      print('Error Response Body: ${response.body}');
     }
   }
 
   bool _isPasswordEncoded(String password) {
-    // Check if the password matches the pattern of an encoded BCrypt hash
     return password.startsWith(r'$2a$') && password.length == 60;
   }
 
@@ -60,12 +163,9 @@ class _UserFormState extends State<UserForm> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      // Check if the password in the controller is already encoded
       if (!_isPasswordEncoded(_passwordController.text)) {
-        // Update password only if it’s not already encoded
         _users[0].password = _passwordController.text;
       } else {
-        // Keep the original encoded password
         _users[0].password = _initialPassword;
       }
 
@@ -73,9 +173,16 @@ class _UserFormState extends State<UserForm> {
     }
   }
 
-  void _onStepTapped(int step) {
+  void _openDrawer() {
+    _fetchUserRoles(); // Fetch roles for the selected user
     setState(() {
-      _currentStep = step;
+      _isDrawerOpen = true;
+    });
+  }
+
+  void _closeDrawer() {
+    setState(() {
+      _isDrawerOpen = false;
     });
   }
 
@@ -135,12 +242,6 @@ class _UserFormState extends State<UserForm> {
                           ),
                           const SizedBox(height: 20),
                           _buildTextField(
-                            label: 'Display name',
-                            initialValue: _users[0].username,
-                            onSaved: (value) => _users[0].username = value!,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildTextField(
                             label: 'Username',
                             initialValue: _users[0].username,
                             onSaved: (value) => _users[0].username = value!,
@@ -158,18 +259,12 @@ class _UserFormState extends State<UserForm> {
                             onSaved: (value) => _users[0].email = value!,
                           ),
                           const SizedBox(height: 20),
-
-                          // Password field with visibility toggle
                           TextFormField(
                             controller: _passwordController,
                             obscureText: !_passwordVisible,
                             decoration: InputDecoration(
                               labelText: 'Password',
-                              labelStyle: const TextStyle(fontSize: 18),
                               border: const OutlineInputBorder(),
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: const EdgeInsets.all(12),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _passwordVisible
@@ -189,18 +284,14 @@ class _UserFormState extends State<UserForm> {
                               }
                               return null;
                             },
-                            style: const TextStyle(fontSize: 18),
                           ),
                           const SizedBox(height: 20),
-
                           _buildTextField(
                             label: 'Phone',
                             initialValue: _users[0].phone,
                             onSaved: (value) => _users[0].phone = value!,
                           ),
                           const SizedBox(height: 20),
-
-                          // Enabled toggle switch
                           SwitchListTile(
                             title: const Text('Enabled',
                                 style: TextStyle(fontSize: 18)),
@@ -211,6 +302,41 @@ class _UserFormState extends State<UserForm> {
                                 _users[0].enabled = value;
                               });
                             },
+                          ),
+                          const SizedBox(height: 20),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 150),
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: TextButton(
+                                  onPressed: _openDrawer,
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: const Color(0xFF017278),
+                                    padding: EdgeInsets.zero,
+                                  ).copyWith(
+                                    textStyle: MaterialStateProperty
+                                        .resolveWith<TextStyle>(
+                                      (Set<MaterialState> states) {
+                                        if (states
+                                            .contains(MaterialState.hovered)) {
+                                          return const TextStyle(
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontWeight: FontWeight.bold,
+                                          );
+                                        }
+                                        return const TextStyle(
+                                          decoration: TextDecoration.none,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  child: const Text('Manage Roles'),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -231,8 +357,6 @@ class _UserFormState extends State<UserForm> {
                             onPressed: _submitForm,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF017278),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 12),
                             ),
                             child: const Text('Submit',
                                 style: TextStyle(
@@ -246,6 +370,55 @@ class _UserFormState extends State<UserForm> {
               ),
             ),
           ),
+          if (_isDrawerOpen)
+            Container(
+              width: 300,
+              color: Colors.grey[200],
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'Manage Roles',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: _roles.length,
+                      itemBuilder: (context, index) {
+                        final role = _roles[index];
+                        return CheckboxListTile(
+                          title: Text(role.authority ?? ''),
+                          value: _selectedRoles.contains(role.id),
+                          onChanged: (value) {
+                            setState(() {
+                              if (value!) {
+                                _selectedRoles.add(role.id);
+                              } else {
+                                _selectedRoles.remove(role.id);
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _assignRoles,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF017278),
+                    ),
+                    child: const Text('Save Roles'),
+                  ),
+                  TextButton(
+                    onPressed: _closeDrawer,
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -261,13 +434,8 @@ class _UserFormState extends State<UserForm> {
       initialValue: initialValue,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: 18),
         border: const OutlineInputBorder(),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.all(12),
       ),
-      style: const TextStyle(fontSize: 18),
       onSaved: onSaved,
       validator: validator,
     );
