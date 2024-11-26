@@ -204,11 +204,10 @@ class _RoleItemState extends State<RoleItem> {
                   ],
                 ),
               ),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  "this is a demo description of certain role",
-                  // widget.role.description ?? '',
-                  style: TextStyle(
+                  widget.role.description ?? '',
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
                   ),
@@ -495,21 +494,26 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
                             onChanged: (value) {
                               setState(() {
                                 if (value == true) {
-                                  // Add permission to updatedPermission
-                                  updatedPermission.add(permission);
+                                  // Assign permission
                                   permission.authorityIds ??=
-                                      <dynamic>[]; // Ensure it's initialized
+                                      <dynamic>[]; // Initialize if null
                                   permission.authorityIds!
                                       .add(widget.authority.id);
                                 } else {
-                                  // Remove permission from updatedPermission
-                                  updatedPermission.removeWhere(
-                                      (perm) => perm.id == permission.id);
+                                  // Unassign permission
                                   permission.authorityIds
                                       ?.remove(widget.authority.id);
                                 }
 
-                                // Extract current checked permission IDs
+                                // Immediately update the UI
+                                bool updatedIsAssigned = permission.authorityIds
+                                        ?.contains(widget.authority.id) ??
+                                    false;
+
+                                // Refresh UI with the updated state
+                                isAssigned = updatedIsAssigned;
+
+                                // Prepare checked IDs for the API call
                                 List<dynamic> checkedIds = perms
                                     .where((perm) =>
                                         perm.authorityIds
