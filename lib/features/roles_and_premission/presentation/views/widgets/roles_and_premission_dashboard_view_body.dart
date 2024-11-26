@@ -400,9 +400,9 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    subtitle: const Text(
-                      'Assigned Admin',
-                      style: TextStyle(
+                    subtitle: Text(
+                      '${user.email}',
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
                       ),
@@ -455,90 +455,95 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
             );
           }
 
-          return Column(
-            children: [
-              const SizedBox(height: 20),
-              const Row(
-                children: [
-                  Expanded(flex: 5, child: Text('Permission')),
-                  Expanded(flex: 3, child: Text('Assigned')),
-                ],
-              ),
-              const Divider(),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: perms.length,
-                  itemBuilder: (context, index) {
-                    final permission = perms[index];
-                    // Determine if permission is currently assigned
-                    bool isAssigned = permission.authorityIds
-                            ?.contains(widget.authority.id) ??
-                        false;
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                const Row(
+                  children: [
+                    Expanded(flex: 5, child: Text('Permission')),
+                    Expanded(flex: 3, child: Text('Assigned')),
+                  ],
+                ),
+                const Divider(),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: perms.length,
+                    itemBuilder: (context, index) {
+                      final permission = perms[index];
+                      // Determine if permission is currently assigned
+                      bool isAssigned = permission.authorityIds
+                              ?.contains(widget.authority.id) ??
+                          false;
 
-                    return Row(
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(
-                              permission.permission ?? '',
-                              style: const TextStyle(fontSize: 16),
+                      return Row(
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                permission.permission ?? '',
+                                style: const TextStyle(fontSize: 16),
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Checkbox(
-                            value: isAssigned,
-                            onChanged: (value) {
-                              setState(() {
-                                if (value == true) {
-                                  // Assign permission
-                                  permission.authorityIds ??=
-                                      <dynamic>[]; // Initialize if null
-                                  permission.authorityIds!
-                                      .add(widget.authority.id);
-                                } else {
-                                  // Unassign permission
-                                  permission.authorityIds
-                                      ?.remove(widget.authority.id);
-                                }
+                          Expanded(
+                            flex: 3,
+                            child: Checkbox(
+                              value: isAssigned,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value == true) {
+                                    // Assign permission
+                                    permission.authorityIds ??=
+                                        <dynamic>[]; // Initialize if null
+                                    permission.authorityIds!
+                                        .add(widget.authority.id);
+                                  } else {
+                                    // Unassign permission
+                                    permission.authorityIds
+                                        ?.remove(widget.authority.id);
+                                  }
 
-                                // Immediately update the UI
-                                bool updatedIsAssigned = permission.authorityIds
-                                        ?.contains(widget.authority.id) ??
-                                    false;
+                                  // Immediately update the UI
+                                  bool updatedIsAssigned = permission
+                                          .authorityIds
+                                          ?.contains(widget.authority.id) ??
+                                      false;
 
-                                // Refresh UI with the updated state
-                                isAssigned = updatedIsAssigned;
+                                  // Refresh UI with the updated state
+                                  isAssigned = updatedIsAssigned;
 
-                                // Prepare checked IDs for the API call
-                                List<dynamic> checkedIds = perms
-                                    .where((perm) =>
-                                        perm.authorityIds
-                                            ?.contains(widget.authority.id) ??
-                                        false)
-                                    .map((perm) => perm.id as dynamic)
-                                    .toList();
+                                  // Prepare checked IDs for the API call
+                                  List<dynamic> checkedIds = perms
+                                      .where((perm) =>
+                                          perm.authorityIds
+                                              ?.contains(widget.authority.id) ??
+                                          false)
+                                      .map((perm) => perm.id as dynamic)
+                                      .toList();
 
-                                // Call updateAuthorityPermissions endpoint
-                                context
-                                    .read<AuthorityCubit>()
-                                    .updateAuthorityPermissions(
-                                      authorityId: widget.authority.id,
-                                      authorities: checkedIds,
-                                    );
-                              });
-                            },
+                                  // Call updateAuthorityPermissions endpoint
+                                  context
+                                      .read<AuthorityCubit>()
+                                      .updateAuthorityPermissions(
+                                        authorityId: widget.authority.id,
+                                        authorities: checkedIds,
+                                      );
+                                });
+                              },
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         } else if (state is PermissionStateFailure) {
           return Center(
