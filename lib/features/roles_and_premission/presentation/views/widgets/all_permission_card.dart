@@ -52,28 +52,54 @@ class _AllPermissionCardState extends State<AllPermissionCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          // Wrap the Checkbox in a SizedBox or Container
-          SizedBox(
-            width: 40,
-            child: Checkbox(
-              value: isChecked,
-              onChanged: _onCheckboxChanged,
-            ),
+    return Row(
+      children: [
+        // Wrap the Checkbox in a SizedBox or Container
+        // Use Flexible to ensure the ListTile takes up remaining space correctly
+        Expanded(
+          flex: 3,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 40,
+                child: Checkbox(
+                  value: isChecked,
+                  onChanged: _onCheckboxChanged,
+                ),
+              ),
+              Text(
+                widget.permission.permission ?? '',
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
-          // Use Flexible to ensure the ListTile takes up remaining space correctly
-          Flexible(
-            child: ListTile(
-              title: Text(widget.permission.permission ?? ''),
-              onTap: () {},
-              subtitle: Text(widget.permission.permission ?? ''),
+        ),
+        const Expanded(
+          flex: 4,
+          child: Text(
+            // permission.scope,
+            'organization',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
             ),
+            textAlign: TextAlign.center,
           ),
-        ],
-      ),
+        ),
+        const Expanded(
+          flex: 3,
+          child: Text(
+            // permission.configuration,
+            'none',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
     );
   }
 }

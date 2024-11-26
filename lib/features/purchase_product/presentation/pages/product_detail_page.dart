@@ -1,16 +1,15 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/assets.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/payment/presentation/views/widgets/payment_view_body.dart';
 import 'package:lms/features/product_region_management/data/models/product_model.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -98,7 +97,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           child: Align(
             alignment: Alignment.centerRight,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.6,
+              width: MediaQuery.of(context).size.width * 0.9,
               height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: Colors.white,
