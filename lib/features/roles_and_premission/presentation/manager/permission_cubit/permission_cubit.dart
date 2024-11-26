@@ -30,12 +30,18 @@ class PermissionCubit extends Cubit<PermissionState> {
     var result = await getPermissionUseCase.call(roleName: roleName);
     result.fold(
       (failure) {
+        // Log failure for debugging
+        print("Get Permissions Failed: ${failure.message}");
         emit(PermissionStateFailure(errorMessage: failure.message));
       },
       (permissions) {
         if (roleName == null) {
+          // Log permissions for debugging
+          print("Get All Permissions Success: ${permissions.length} items");
           emit(GetAllPermissionStateSuccess(permissions: permissions));
         } else {
+          print(
+              "Get Permissions for Role $roleName Success: ${permissions.length} items");
           emit(GetPermissionStateSuccess(permissions: permissions));
         }
       },

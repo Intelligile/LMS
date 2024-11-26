@@ -29,13 +29,12 @@ class PermissionRemoteDataSourceImpl extends PermissionRemoteDataSource {
     List<Permission> permissions = [];
     print(jwtToken);
     var result;
-    if (roleName == null) {
-      result =
-          await api.get(endPoint: 'api/permissions', token: jwtTokenPublic);
-    } else {
-      result = await api.get(
-          endPoint: 'api/permissions/by-role/$roleName', token: jwtTokenPublic);
-    }
+    // if (roleName != null) {
+    result = await api.get(endPoint: 'api/permissions', token: jwtTokenPublic);
+    // } else {
+    //   result = await api.get(
+    //       endPoint: 'api/permissions/by-role/$roleName', token: jwtTokenPublic);
+    // }
     for (var permissionData in result) {
       permissions.add(Permission.fromJson(permissionData));
     }

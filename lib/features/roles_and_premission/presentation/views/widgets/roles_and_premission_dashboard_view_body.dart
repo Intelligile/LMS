@@ -290,6 +290,7 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
 
   List<UserDto> _users = [];
   List<Permission> perms = [];
+
   @override
   Widget build(BuildContext context) {
     context
@@ -297,257 +298,260 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
         .getPermissions(roleName: widget.authority.authority);
     context.read<UserDtoCubit>().getUsers(roleId: widget.authority.id);
 
-    context.read<PermissionCubit>().getPermissions();
-    return BlocListener<UserDtoCubit, UserDtoState>(
-      listener: (context, state) {
-        if (state is FetchUserFailureState) {
-          showSnackBar(context, state.errorMessage, Colors.red);
-        } else if (state is FetchUserSuccessState) {
-          _users = state.users;
-          for (UserDto u in _users) {
-            print(u.firstname);
-          }
-        }
-      },
-      child: BlocListener<PermissionCubit, PermissionState>(
-        listener: (context, state) {
-          if (state is GetAllPermissionStateSuccess) {
-            perms = state.permissions;
-            for (Permission p in perms) {
-              print(p.permission);
-            }
-          }
-          if (state is GetPermissionStateSuccess) {
-            singleRolesPermissions = state.permissions;
-          } else if (state is PermissionStateFailure) {
-            showSnackBar(context, state.errorMessage, Colors.red);
-          }
-        },
-        child: BlocBuilder<UserDtoCubit, UserDtoState>(
-          builder: (context, state) {
-            return BlocBuilder<PermissionCubit, PermissionState>(
-              builder: (context, state) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.authority.authority ?? '',
-                      style: Styles.textStyle20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: TabBar(
-                            dividerColor: Colors.transparent,
-                            controller: _tabController,
-                            labelColor: Colors.black,
-                            unselectedLabelColor: Colors.grey,
-                            indicatorColor: Colors.blue,
-                            tabs: const [
-                              Tab(text: 'General'),
-                              Tab(text: 'Assigned'),
-                              Tab(text: 'Permissions'),
-                            ],
-                          ),
-                        ),
-                        const Expanded(child: SizedBox()),
-                      ],
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-                          // General tab
-                          const Center(
-                            child: Text(
-                              'General Information',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.grey),
-                            ),
-                          ),
-                          // Assigned tab
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Row(
-                                children: [
-                                  Expanded(flex: 2, child: Text('Admin')),
-                                  Expanded(flex: 2, child: Text('Type')),
-                                ],
-                              ),
-                              state is FetchUserLoadingState
-                                  ? const Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : _users.isNotEmpty
-                                      ? Expanded(
-                                          child: ListView.builder(
-                                          itemCount: _users.length,
-                                          itemBuilder: (context, index) {
-                                            return Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Text(
-                                                      _users[index].username ??
-                                                          ''),
-                                                ),
-                                                const Expanded(
-                                                  flex: 2,
-                                                  child: Text('Default'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ))
-                                      : Text(
-                                          'no users in role : ${widget.authority.authority}')
-                            ],
-                          ),
-
-                          // Permissions tab
-                          Column(
-                            children: [
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              const Row(
-                                children: [
-                                  Expanded(child: SizedBox()),
-                                  Expanded(flex: 5, child: Text('Role')),
-                                  Expanded(flex: 4, child: Text('Scope')),
-                                  Expanded(
-                                      flex: 3, child: Text('Configuration')),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: perms.length,
-                                itemBuilder: (context, index) {
-                                  final permission = perms[index];
-                                  return state is PermissionStateLoading
-                                      ? const Center(
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      : perms.isEmpty
-                                          ? const Center(
-                                              child: Text(
-                                                  'no available permissions!'),
-                                            )
-                                          : AllPermissionCard(
-                                              permission: permission,
-                                            );
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 110,
-                          child: BlocListener<AuthorityCubit, AuthorityState>(
-                              listener: (context, state) {
-                                if (state
-                                    is UpdateAuthorityPermissionsStateSuccess) {
-                                  showSnackBar(context, 'updated successfully',
-                                      Colors.green);
-                                  context
-                                      .read<PermissionCubit>()
-                                      .getPermissions(
-                                          roleName: widget.authority.authority);
-                                } else if (state
-                                    is UpdateAuthorityPermissionsStateFailure) {
-                                  showSnackBar(
-                                      context, state.errorMessage, Colors.red);
-                                }
-                              },
-                              child: state
-                                      is UpdateAuthorityPermissionsStateLoading
-                                  ? const Center(
-                                      child: CircularProgressIndicator())
-                                  : ActionsContainer(
-                                      containerBgColor: Colors.green,
-                                      containerIcon: const Icon(Icons.save),
-                                      containerText: 'Save',
-                                      txtColor: Colors.white,
-                                      onPressed: () {
-                                        List<dynamic> permissionsId =
-                                            updatedPermission
-                                                .map((p) => p.id)
-                                                .toList();
-                                        context
-                                            .read<AuthorityCubit>()
-                                            .updateAuthorityPermissions(
-                                                authorityId:
-                                                    widget.authority.id,
-                                                authorities: permissionsId);
-                                      },
-                                    )),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                );
-              },
-            );
-          },
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text(
+          widget.authority.authority ?? 'Authority Details',
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context
+                  .read<PermissionCubit>()
+                  .getPermissions(roleName: widget.authority.authority);
+              context
+                  .read<UserDtoCubit>()
+                  .getUsers(roleId: widget.authority.id);
+            },
+            icon: const Icon(Icons.refresh),
+          )
+        ],
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.grey,
+          indicatorColor: Colors.blue,
+          tabs: const [
+            Tab(text: 'General'),
+            Tab(text: 'Assigned'),
+            Tab(text: 'Permissions'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildGeneralTab(),
+          _buildAssignedTab(context),
+          _buildPermissionsTab(context),
+        ],
       ),
     );
   }
+
+  Widget _buildGeneralTab() {
+    return const Center(
+      child: Text(
+        'General Information',
+        style: TextStyle(fontSize: 16, color: Colors.grey),
+      ),
+    );
+  }
+
+  Widget _buildAssignedTab(BuildContext context) {
+    return BlocBuilder<UserDtoCubit, UserDtoState>(
+      builder: (context, state) {
+        if (state is FetchUserLoadingState) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is FetchUserSuccessState) {
+          _users = state.users;
+          if (_users.isEmpty) {
+            return const Center(
+              child: Text(
+                'No users assigned to this role.',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView.builder(
+              itemCount: _users.length,
+              itemBuilder: (context, index) {
+                final user = _users[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.blueAccent,
+                      child: Text(
+                        user.firstname?[0].toUpperCase() ?? '',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      user.username ?? '',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    subtitle: const Text(
+                      'Assigned Admin',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    trailing: const Text(
+                      'Default',
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        } else if (state is FetchUserFailureState) {
+          return Center(
+            child: Text(
+              state.errorMessage,
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
+        } else {
+          return const Center(
+            child: Text(
+              'No data available.',
+              style: TextStyle(color: Colors.grey),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildPermissionsTab(BuildContext context) {
+    return BlocBuilder<PermissionCubit, PermissionState>(
+      builder: (context, state) {
+        if (state is PermissionStateLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is GetPermissionStateSuccess) {
+          perms = state.permissions;
+
+          // Log permissions for debugging
+          print('Permissions Loaded: ${perms.length}');
+
+          if (perms.isEmpty) {
+            return const Center(
+              child: Text(
+                'No permissions available.',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            );
+          }
+
+          return Column(
+            children: [
+              const SizedBox(height: 20),
+              const Row(
+                children: [
+                  Expanded(flex: 5, child: Text('Permission')),
+                  Expanded(flex: 3, child: Text('Assigned')),
+                ],
+              ),
+              const Divider(),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: perms.length,
+                  itemBuilder: (context, index) {
+                    final permission = perms[index];
+                    // Determine if permission is currently assigned
+                    bool isAssigned = permission.authorityIds
+                            ?.contains(widget.authority.id) ??
+                        false;
+
+                    return Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              permission.permission ?? '',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Checkbox(
+                            value: isAssigned,
+                            onChanged: (value) {
+                              setState(() {
+                                if (value == true) {
+                                  // Add permission to updatedPermission
+                                  updatedPermission.add(permission);
+                                  permission.authorityIds ??=
+                                      <dynamic>[]; // Ensure it's initialized
+                                  permission.authorityIds!
+                                      .add(widget.authority.id);
+                                } else {
+                                  // Remove permission from updatedPermission
+                                  updatedPermission.removeWhere(
+                                      (perm) => perm.id == permission.id);
+                                  permission.authorityIds
+                                      ?.remove(widget.authority.id);
+                                }
+
+                                // Extract current checked permission IDs
+                                List<dynamic> checkedIds = perms
+                                    .where((perm) =>
+                                        perm.authorityIds
+                                            ?.contains(widget.authority.id) ??
+                                        false)
+                                    .map((perm) => perm.id as dynamic)
+                                    .toList();
+
+                                // Call updateAuthorityPermissions endpoint
+                                context
+                                    .read<AuthorityCubit>()
+                                    .updateAuthorityPermissions(
+                                      authorityId: widget.authority.id,
+                                      authorities: checkedIds,
+                                    );
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        } else if (state is PermissionStateFailure) {
+          return Center(
+            child: Text(
+              state.errorMessage,
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
+        } else {
+          return const Center(
+            child: Text(
+              'Loading permissions...',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          );
+        }
+      },
+    );
+  }
 }
-
-// class AuthorityDetailsView extends StatelessWidget {
-//   const AuthorityDetailsView({
-//     super.key,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(16.0),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             authority.authority ?? '',
-//             style: Styles.textStyle20,
-//           ),
-//           Row(
-//             children: [
-//               TextButton(
-//                 onPressed: () {},
-//                 child: const Text(
-//                   'Save',
-//                   style: TextStyle(fontSize: 16, color: Colors.black),
-//                 ),
-//               ),
-//               TextButton(
-//                 onPressed: () => Navigator.of(context).pop(),
-//                 child: const Text(
-//                   'Cancel',
-//                   style: TextStyle(fontSize: 16, color: Colors.black),
-//                 ),
-//               ),
-//             ],
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
