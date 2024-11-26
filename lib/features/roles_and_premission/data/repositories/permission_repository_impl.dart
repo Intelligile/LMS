@@ -42,4 +42,13 @@ class PermissionRepositoryImpl extends PermissionRepository {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  Future<bool> hasAccess(String permissionName, String roleId) async {
+    final result = await getPermissions(roleName: roleId);
+    return result.fold(
+      (failure) => false,
+      (permissions) =>
+          permissions.any((perm) => perm.permission == permissionName),
+    );
+  }
 }

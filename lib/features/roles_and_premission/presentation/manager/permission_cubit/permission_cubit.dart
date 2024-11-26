@@ -47,4 +47,8 @@ class PermissionCubit extends Cubit<PermissionState> {
       },
     );
   }
+
+  bool hasPermission(String permissionName, List<Permission> permissions) {
+    return permissions.any((perm) => perm.permission == permissionName);
+  }
 }

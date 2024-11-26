@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
@@ -13,6 +14,10 @@ class UserManagementRemoteDataSource {
   UserManagementRemoteDataSource(this.api);
 
   Future<String> addUsers(List<UserModel> users) async {
+    const secureStorage = FlutterSecureStorage();
+    int storedOrganizationId =
+        int.tryParse(await secureStorage.read(key: 'organizationId') ?? '0') ??
+            0;
     // Prepare the list of user data for the request body
     List<Map<String, dynamic>> userDataList = users.map((user) {
       return {
@@ -23,6 +28,7 @@ class UserManagementRemoteDataSource {
         "lastname": user.lastname,
         "phone": user.phone,
         "enabled": user.enabled,
+        "organizationId": storedOrganizationId,
       };
     }).toList();
 

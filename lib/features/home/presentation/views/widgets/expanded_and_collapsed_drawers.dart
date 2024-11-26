@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/core/utils/app_router.dart';
@@ -8,6 +9,8 @@ import 'package:lms/features/home/data/models/list_tile_model.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_item.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_menu.dart';
 import 'package:lms/features/home/presentation/views/widgets/drawer_state.dart';
+import 'package:lms/features/roles_and_premission/data/models/permission.dart';
+import 'package:lms/features/roles_and_premission/presentation/manager/permission_cubit/permission_cubit.dart';
 import 'package:provider/provider.dart';
 
 class CustomExpandedDrawer extends StatefulWidget {
@@ -20,13 +23,33 @@ class CustomExpandedDrawer extends StatefulWidget {
 
 class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
   int? hoveredIndex; // Only one index tracked at a time
+  @override
+  void initState() {
+    super.initState();
+    // Trigger permissions fetch on initialization
+    context.read<PermissionCubit>().getPermissions();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<OpenedAndClosedDrawerProvider>(
-      builder: (context, drawerStateProvider, child) {
-        bool drawerOpen = drawerStateProvider.isDrawerOpen;
-        List<dynamic> drawerItems = getDrawerItems(drawerOpen);
+    return BlocBuilder<PermissionCubit, PermissionState>(
+      builder: (context, state) {
+        List<Permission> permissions = [];
+
+        if (state is GetAllPermissionStateSuccess) {
+          permissions = state.permissions;
+        } else if (state is PermissionStateFailure) {
+          print("Error fetching permissions: ${state.errorMessage}");
+        }
+
+        // Debugging: Print the permissions list
+        print(
+            "DEBUG: Permissions List: ${permissions.map((perm) => perm.permission).toList()}");
+
+        bool drawerOpen =
+            context.watch<OpenedAndClosedDrawerProvider>().isDrawerOpen;
+
+        List<dynamic> drawerItems = getDrawerItems(drawerOpen, permissions);
 
         return Padding(
           padding: const EdgeInsets.only(left: 6, top: 12),
@@ -136,7 +159,14 @@ class _CustomCollapsedDrawerState extends State<CustomCollapsedDrawer> {
     return Consumer<OpenedAndClosedDrawerProvider>(
       builder: (context, drawerStateProvider, child) {
         bool drawerOpen = drawerStateProvider.isDrawerOpen;
-        List<dynamic> drawerItems = getDrawerItems(drawerOpen);
+        List<Permission> permissions = context.read<PermissionCubit>().state
+                is GetAllPermissionStateSuccess
+            ? (context.read<PermissionCubit>().state
+                    as GetAllPermissionStateSuccess)
+                .permissions
+            : [];
+
+        List<dynamic> drawerItems = getDrawerItems(drawerOpen, permissions);
 
         return SizedBox(
           width: 200,
@@ -230,102 +260,126 @@ class _CustomCollapsedDrawerState extends State<CustomCollapsedDrawer> {
   }
 }
 
-// Define getDrawerItems to retrieve drawer items as needed
-List<dynamic> getDrawerItems(bool drawerOpen) {
+List<dynamic> getDrawerItems(bool drawerOpen, List<Permission> permissions) {
   return [
-    ListTileItemModel(
-      icon: Icons.home_outlined,
-      title: drawerOpen ? 'Home' : null,
-      path: AppRouter.kHomeView,
-    ),
-    if (userRole.contains('ROLE_ADMIN'))
+    // Home
+    if (permissions.any((perm) => perm.permission == 'VIEW_HOME'))
+      ListTileItemModel(
+        icon: Icons.home_outlined,
+        title: drawerOpen ? 'Home' : null,
+        path: AppRouter.kHomeView,
+      ),
+
+    // Users
+    if (permissions.any((perm) => perm.permission == 'VIEW_USERS'))
       ExpansionListTileItemModel(
-        isExpanded: false,
+        isExpanded: drawerOpen,
         icon: Icons.person_outline_sharp,
         title: drawerOpen ? 'Users' : '',
         children: [
+          if (permissions.any((perm) => perm.permission == 'EDIT_USERS'))
+            ListTileItemModel(
+              icon: Icons.visibility,
+              title: drawerOpen ? 'Manage Users' : null,
+              path: AppRouter.kUserManagement,
+              padding: drawerOpen
+                  ? const EdgeInsets.only(left: 26.0)
+                  : const EdgeInsets.only(left: 0.0),
+              iconSize: 20.0,
+            ),
+        ],
+      ),
+
+    // Teams & Groups
+    if (permissions.any((perm) => perm.permission == 'VIEW_TEAMS_GROUPS'))
+      ExpansionListTileItemModel(
+        isExpanded: drawerOpen,
+        icon: Icons.groups_outlined,
+        title: drawerOpen ? 'Teams & Groups' : '',
+        children: [
           ListTileItemModel(
-            icon: Icons.manage_accounts,
-            title: drawerOpen ? 'Manage Users' : null,
-            path: AppRouter.kUserManagement,
-            padding: const EdgeInsets.only(left: 26.0),
+            icon: Icons.group,
+            title: drawerOpen ? 'View Groups' : null,
+            path: AppRouter.kTeamManagement,
+            padding: drawerOpen
+                ? const EdgeInsets.only(left: 26.0)
+                : const EdgeInsets.only(left: 0.0),
             iconSize: 20.0,
           ),
         ],
       ),
-    ExpansionListTileItemModel(
-      isExpanded: false,
-      icon: Icons.groups_outlined,
-      title: drawerOpen ? 'Teams & Groups' : '',
-      children: [
-        ListTileItemModel(
-          icon: Icons.group,
-          title: drawerOpen ? 'Show Groups' : null,
-          path: AppRouter.kTeamManagement,
-          padding: const EdgeInsets.only(left: 26.0),
-          iconSize: 20.0,
-        ),
-      ],
-    ),
-    ExpansionListTileItemModel(
-      isExpanded: false,
-      icon: FontAwesomeIcons.moneyBill,
-      title: drawerOpen ? 'Billing' : '',
-      children: [
-        ListTileItemModel(
-          icon: FontAwesomeIcons.dollarSign,
-          title: drawerOpen ? 'Billing Accounts' : null,
-          path: AppRouter.kBillingAccountManagement,
-          padding: const EdgeInsets.only(left: 26.0),
-          iconSize: 20.0,
-        ),
-        ListTileItemModel(
-          icon: FontAwesomeIcons.solidCreditCard,
-          title: drawerOpen ? 'Payment Methods' : null,
-          path: AppRouter.kPaymentMethodsManagement,
-          padding: const EdgeInsets.only(left: 26.0),
-          iconSize: 20.0,
-        ),
-        // ListTileItemModel(
-        //   icon: FontAwesomeIcons.solidCreditCard,
-        //   title: drawerOpen ? 'View Payments' : null,
-        //   path: AppRouter.kPaymentView,
-        //   padding: const EdgeInsets.only(left: 26.0),
-        //   iconSize: 20.0,
-        // ),
-      ],
-    ),
-    ListTileItemModel(
-      icon: Icons.verified_user,
-      title: drawerOpen ? 'Roles and permissions' : null,
-      path: AppRouter.kRolesAndPermissionView,
-    ),
-    ListTileItemModel(
-      icon: Icons.settings,
-      title: drawerOpen ? 'Product Management' : null,
-      path: AppRouter.kProductManagement,
-    ),
-    ExpansionListTileItemModel(
-      isExpanded: false,
-      icon: Icons.add_shopping_cart_sharp,
-      title: drawerOpen ? 'Product' : '',
-      children: [
-        ListTileItemModel(
-          icon: Icons.shopping_cart,
-          title: drawerOpen ? 'Purchase Product' : null,
-          path: AppRouter.kProductList,
-          padding: const EdgeInsets.only(left: 26.0),
-          iconSize: 20.0,
-        ),
-        ListTileItemModel(
-          icon: Icons.manage_accounts,
-          title: drawerOpen ? 'Manage Purchased Products' : null,
-          path: AppRouter.kLicenseRenewalView,
-          padding: const EdgeInsets.only(left: 26.0),
-          iconSize: 20.0,
-        ),
-      ],
-    ),
+
+    // Billing
+    if (permissions.any((perm) => perm.permission == 'VIEW_BILLING'))
+      ExpansionListTileItemModel(
+        isExpanded: drawerOpen,
+        icon: FontAwesomeIcons.moneyBill,
+        title: drawerOpen ? 'Billing' : '',
+        children: [
+          if (permissions
+              .any((perm) => perm.permission == 'MANAGE_BILLING_ACCOUNTS'))
+            ListTileItemModel(
+              icon: FontAwesomeIcons.dollarSign,
+              title: drawerOpen ? 'Billing Accounts' : null,
+              path: AppRouter.kBillingAccountManagement,
+              padding: drawerOpen
+                  ? const EdgeInsets.only(left: 26.0)
+                  : const EdgeInsets.only(left: 0.0),
+              iconSize: 20.0,
+            ),
+          if (permissions
+              .any((perm) => perm.permission == 'MANAGE_PAYMENT_METHODS'))
+            ListTileItemModel(
+              icon: FontAwesomeIcons.solidCreditCard,
+              title: drawerOpen ? 'Payment Methods' : null,
+              path: AppRouter.kPaymentMethodsManagement,
+              padding: drawerOpen
+                  ? const EdgeInsets.only(left: 26.0)
+                  : const EdgeInsets.only(left: 0.0),
+              iconSize: 20.0,
+            ),
+        ],
+      ),
+
+    // Roles & Permissions
+    if (permissions.any((perm) => perm.permission == 'VIEW_ROLES_PERMISSIONS'))
+      ListTileItemModel(
+        icon: Icons.verified_user,
+        title: drawerOpen ? 'Roles and Permissions' : null,
+        path: AppRouter.kRolesAndPermissionView,
+      ),
+
+    // Product
+    if (permissions.any((perm) => perm.permission == 'VIEW_PURCHASE_PRODUCT'))
+      ExpansionListTileItemModel(
+        isExpanded: drawerOpen,
+        icon: Icons.add_shopping_cart_sharp,
+        title: drawerOpen ? 'Product' : '',
+        children: [
+          ListTileItemModel(
+            icon: Icons.shopping_cart,
+            title: drawerOpen ? 'Purchase Product' : null,
+            path: AppRouter.kProductList,
+            padding: drawerOpen
+                ? const EdgeInsets.only(left: 26.0)
+                : const EdgeInsets.only(left: 0.0),
+            iconSize: 20.0,
+          ),
+          if (permissions
+              .any((perm) => perm.permission == 'COMPLETE_PURCHASE_PRODUCT'))
+            ListTileItemModel(
+              icon: Icons.check,
+              title: drawerOpen ? 'Manage Purchased Products' : null,
+              path: AppRouter.kLicenseRenewalView,
+              padding: drawerOpen
+                  ? const EdgeInsets.only(left: 26.0)
+                  : const EdgeInsets.only(left: 0.0),
+              iconSize: 20.0,
+            ),
+        ],
+      ),
+
+    // Always Visible Items
     ListTileItemModel(
       icon: Icons.generating_tokens_sharp,
       title: drawerOpen ? 'Generate Auth Code' : null,

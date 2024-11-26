@@ -24,4 +24,8 @@ class Permission {
         'permissionDescription': permissionDescription,
         'authorityIds': authorityIds,
       };
+
+  bool hasPermission(String authorityId) {
+    return authorityIds?.contains(authorityId) ?? false;
+  }
 }
