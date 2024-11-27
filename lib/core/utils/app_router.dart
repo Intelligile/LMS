@@ -5,6 +5,7 @@ import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cub
 import 'package:lms/features/auth/presentation/views/forgot_password_page.dart';
 import 'package:lms/features/auth/presentation/views/register_screen.dart';
 import 'package:lms/features/auth/presentation/views/signin_screen.dart';
+import 'package:lms/features/auth/presentation/views/widgets/email_verification_page.dart';
 import 'package:lms/features/auth/presentation/views/widgets/reset_password_form.dart';
 import 'package:lms/features/auth_code/presentation/pages/form_page.dart';
 import 'package:lms/features/auth_code/presentation/pages/list_auth_codes.dart';
@@ -291,6 +292,16 @@ class AppRouter {
             );
           },
         ),
+
+        GoRoute(
+          path: kVerifyAccount,
+          builder: (context, state) {
+            return EmailVerificationPage(
+              username: usernamePublic,
+              authRemoteDataSource: context.read<AuthRemoteDataSource>(),
+            );
+          },
+        ),
       ],
     );
   }
@@ -325,6 +336,8 @@ class AppRouter {
   static const kBillingAccountForm = '/create-billing-account';
   static const kBillingAccountManagement = '/billing-account-management';
   static const kPaymentMethodsManagement = '/payment-methods-management';
+
+  static const kVerifyAccount = '/verify-account';
 
   static Future<String?> _getUsernameFromSharedPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

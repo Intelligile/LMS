@@ -27,7 +27,7 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
   void initState() {
     super.initState();
     // Trigger permissions fetch on initialization
-    context.read<PermissionCubit>().getPermissions();
+    context.read<PermissionCubit>().getPermissions(roleName: userRole);
   }
 
   @override
@@ -36,10 +36,14 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
       builder: (context, state) {
         List<Permission> permissions = [];
 
-        if (state is GetAllPermissionStateSuccess) {
+        if (state is GetPermissionStateSuccess) {
           permissions = state.permissions;
         } else if (state is PermissionStateFailure) {
           print("Error fetching permissions: ${state.errorMessage}");
+        } else if (state is PermissionStateLoading) {
+          print("Permissions are loading...");
+        } else {
+          print("Current state: $state");
         }
 
         // Debugging: Print the permissions list
@@ -271,7 +275,7 @@ List<dynamic> getDrawerItems(bool drawerOpen, List<Permission> permissions) {
       ),
 
     // Users
-    if (permissions.any((perm) => perm.permission == 'VIEW_USERS'))
+    if (permissions.any((perm) => perm.permission == 'EDIT_USERS'))
       ExpansionListTileItemModel(
         isExpanded: drawerOpen,
         icon: Icons.person_outline_sharp,
@@ -310,7 +314,7 @@ List<dynamic> getDrawerItems(bool drawerOpen, List<Permission> permissions) {
       ),
 
     // Billing
-    if (permissions.any((perm) => perm.permission == 'VIEW_BILLING'))
+    if (permissions.any((perm) => perm.permission == 'MANAGE_BILLING_ACCOUNTS'))
       ExpansionListTileItemModel(
         isExpanded: drawerOpen,
         icon: FontAwesomeIcons.moneyBill,

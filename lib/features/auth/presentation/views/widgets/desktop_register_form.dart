@@ -37,10 +37,23 @@ class _RegisterFormState extends State<DesktopRegisterForm> {
   Widget build(BuildContext context) {
     return BlocListener<RegistrationCubit, RegistrationState>(
       listener: (context, state) {
+        // Debug state
+        print("Current State: $state");
+
         if (state is RegistrationSuccess) {
-          showSnackBar(context, 'Sign-up successful', Colors.green);
+          // Navigate to home view for verified users
+          showSnackBar(
+            context,
+            'Sign-up successful! You are verified.',
+            Colors.green,
+          );
           GoRouter.of(context).push(AppRouter.kHomeView);
         } else if (state is RegistrationFailure) {
+          // Navigate to verification page for unverified users
+          showSnackBar(context, state.errorMessage, Colors.red);
+          GoRouter.of(context).push(AppRouter.kVerifyAccount);
+        } else if (state is RegistrationFailure) {
+          // Handle general errors
           showSnackBar(context, state.errorMessage, Colors.red);
         }
       },

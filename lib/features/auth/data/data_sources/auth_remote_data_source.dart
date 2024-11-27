@@ -60,6 +60,12 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       print("Login error: $result");
       throw Exception("Login failed: $result");
     }
+    if (result is Map<String, dynamic> && result.containsKey('isVerified')) {
+      if (result['isVerified'] == false || result['isVerified'] == "false") {
+        // Do not throw; pass the response to the cubit
+        return result;
+      }
+    }
 
     if (result is Map<String, dynamic> &&
         result.containsKey('roles') &&

@@ -24,6 +24,10 @@ class Permission {
         'permissionDescription': permissionDescription,
         'authorityIds': authorityIds,
       };
+  @override
+  String toString() {
+    return 'Permission(id: $id, permission: $permission, description: $permissionDescription, authorityIds: $authorityIds)';
+  }
 
   bool hasPermission(String authorityId) {
     return authorityIds?.contains(authorityId) ?? false;

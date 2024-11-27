@@ -8,6 +8,7 @@ import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/utils/styles.dart';
 import 'package:lms/core/widgets/custom_breadcrumb.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/roles_and_premission/data/models/authority.dart';
 import 'package:lms/features/roles_and_premission/data/models/permission.dart';
 import 'package:lms/features/roles_and_premission/data/models/user_dto.dart';
@@ -166,6 +167,7 @@ class _RoleItemState extends State<RoleItem> {
   void initState() {
     super.initState();
     isSelected = false;
+    context.read<PermissionCubit>().getPermissions(roleName: userRole);
   }
 
   @override
@@ -292,9 +294,7 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<PermissionCubit>()
-        .getPermissions(roleName: widget.authority.authority);
+    context.read<PermissionCubit>().getPermissions();
     context.read<UserDtoCubit>().getUsers(roleId: widget.authority.id);
 
     return Scaffold(
@@ -438,15 +438,20 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
   Widget _buildPermissionsTab(BuildContext context) {
     return BlocBuilder<PermissionCubit, PermissionState>(
       builder: (context, state) {
+        // Handle loading state
         if (state is PermissionStateLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is GetPermissionStateSuccess) {
-          perms = state.permissions;
+        }
+        // Handle success state with permissions
+        else if (state is GetAllPermissionStateSuccess) {
+          // Ensure permissions list is populated
+          final List<Permission> permissions = state.permissions;
 
-          // Log permissions for debugging
-          print('Permissions Loaded: ${perms.length}');
+          print('Permissions Loaded: ${permissions.length}');
+          print(
+              'Permissions Details: ${permissions.map((perm) => perm.toJson()).toList()}');
 
-          if (perms.isEmpty) {
+          if (permissions.isEmpty) {
             return const Center(
               child: Text(
                 'No permissions available.',
@@ -469,10 +474,9 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
                 const Divider(),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: perms.length,
+                    itemCount: permissions.length,
                     itemBuilder: (context, index) {
-                      final permission = perms[index];
-                      // Determine if permission is currently assigned
+                      final permission = permissions[index];
                       bool isAssigned = permission.authorityIds
                               ?.contains(widget.authority.id) ??
                           false;
@@ -497,36 +501,22 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
                               onChanged: (value) {
                                 setState(() {
                                   if (value == true) {
-                                    // Assign permission
-                                    permission.authorityIds ??=
-                                        <dynamic>[]; // Initialize if null
+                                    permission.authorityIds ??= [];
                                     permission.authorityIds!
                                         .add(widget.authority.id);
                                   } else {
-                                    // Unassign permission
                                     permission.authorityIds
                                         ?.remove(widget.authority.id);
                                   }
 
-                                  // Immediately update the UI
-                                  bool updatedIsAssigned = permission
-                                          .authorityIds
-                                          ?.contains(widget.authority.id) ??
-                                      false;
-
-                                  // Refresh UI with the updated state
-                                  isAssigned = updatedIsAssigned;
-
-                                  // Prepare checked IDs for the API call
-                                  List<dynamic> checkedIds = perms
+                                  List<dynamic> checkedIds = permissions
                                       .where((perm) =>
                                           perm.authorityIds
                                               ?.contains(widget.authority.id) ??
                                           false)
-                                      .map((perm) => perm.id as dynamic)
+                                      .map((perm) => perm.id)
                                       .toList();
 
-                                  // Call updateAuthorityPermissions endpoint
                                   context
                                       .read<AuthorityCubit>()
                                       .updateAuthorityPermissions(
@@ -545,14 +535,19 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
               ],
             ),
           );
-        } else if (state is PermissionStateFailure) {
+        }
+        // Handle failure state
+        else if (state is PermissionStateFailure) {
+          print('Error fetching permissions: ${state.errorMessage}');
           return Center(
             child: Text(
               state.errorMessage,
               style: const TextStyle(color: Colors.red),
             ),
           );
-        } else {
+        }
+        // Default case
+        else {
           return const Center(
             child: Text(
               'Loading permissions...',

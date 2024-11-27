@@ -27,17 +27,59 @@ class PermissionRemoteDataSourceImpl extends PermissionRemoteDataSource {
   @override
   Future<List<Permission>> getPermissions({String? roleName}) async {
     List<Permission> permissions = [];
-    print(jwtToken);
-    var result;
-    // if (roleName != null) {
-    result = await api.get(endPoint: 'api/permissions', token: jwtTokenPublic);
-    // } else {
-    //   result = await api.get(
-    //       endPoint: 'api/permissions/by-role/$roleName', token: jwtTokenPublic);
-    // }
-    for (var permissionData in result) {
-      permissions.add(Permission.fromJson(permissionData));
+    print("JWT Token: $jwtToken");
+    print("IN GET PERMISSIONS METHOD");
+
+    try {
+      if (roleName == null) {
+        // Fetch all permissions directly if roleName is null
+        var result =
+            await api.get(endPoint: 'api/permissions', token: jwtTokenPublic);
+        print("Fetched all permissions: $result");
+
+        if (result is List) {
+          for (var permissionData in result) {
+            try {
+              permissions.add(Permission.fromJson(permissionData));
+            } catch (e) {
+              print("Error parsing permission: $permissionData, Error: $e");
+            }
+          }
+        } else {
+          print("Invalid response format for all permissions: $result");
+        }
+      } else {
+        // Extract the first role name if multiple are provided
+        roleName = roleName.split(',').first.trim();
+        print("ROLE NAME: $roleName");
+
+        // Fetch permissions for the specific role
+        var result = await api.get(
+          endPoint: 'api/permissions/by-role/$roleName',
+          token: jwtTokenPublic,
+        );
+        print("Fetched permissions for role $roleName: $result");
+
+        if (result is List) {
+          for (var permissionData in result) {
+            try {
+              permissions.add(Permission.fromJson(permissionData));
+            } catch (e) {
+              print("Error parsing permission: $permissionData, Error: $e");
+            }
+          }
+        } else {
+          print("Invalid response format for role $roleName: $result");
+        }
+      }
+
+      // Debugging the final permissions list
+      print(
+          "DEBUG: Final Permissions List: ${permissions.map((perm) => perm.permission).toList()}");
+    } catch (e) {
+      print("Error in getPermissions: $e");
     }
+
     return permissions;
   }
 }

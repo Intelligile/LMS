@@ -14,12 +14,16 @@ class PermissionCubit extends Cubit<PermissionState> {
 
   Future<void> addPermission(List<Permission> permissions) async {
     emit(PermissionStateLoading());
+    print(
+        "Attempting to add permissions: ${permissions.map((perm) => perm.toJson()).toList()}");
     var result = await addPermissionUseCase.call(permissions: permissions);
     result.fold(
       (failure) {
+        print("Failed to add permissions: ${failure.message}");
         emit(PermissionStateFailure(errorMessage: failure.message));
       },
       (permissions) {
+        print("Successfully added permissions");
         emit(AddPermissionStateSuccess());
       },
     );
@@ -27,28 +31,38 @@ class PermissionCubit extends Cubit<PermissionState> {
 
   Future<void> getPermissions({String? roleName}) async {
     emit(PermissionStateLoading());
-    var result = await getPermissionUseCase.call(roleName: roleName);
-    result.fold(
-      (failure) {
-        // Log failure for debugging
-        print("Get Permissions Failed: ${failure.message}");
-        emit(PermissionStateFailure(errorMessage: failure.message));
-      },
-      (permissions) {
-        if (roleName == null) {
-          // Log permissions for debugging
-          print("Get All Permissions Success: ${permissions.length} items");
-          emit(GetAllPermissionStateSuccess(permissions: permissions));
-        } else {
+    print("Fetching permissions for role: $roleName");
+
+    try {
+      var result = await getPermissionUseCase.call(roleName: roleName);
+      result.fold(
+        (failure) {
+          print("Get Permissions Failed: ${failure.message}");
+          emit(PermissionStateFailure(errorMessage: failure.message));
+        },
+        (permissions) {
           print(
-              "Get Permissions for Role $roleName Success: ${permissions.length} items");
-          emit(GetPermissionStateSuccess(permissions: permissions));
-        }
-      },
-    );
+              "Permissions fetched: ${permissions.map((perm) => perm.permission).toList()}");
+          if (permissions.isEmpty) {
+            print("No permissions available");
+          }
+
+          if (roleName == null) {
+            emit(GetAllPermissionStateSuccess(permissions: permissions));
+          } else {
+            emit(GetPermissionStateSuccess(permissions: permissions));
+          }
+        },
+      );
+    } catch (e) {
+      print("Unexpected error: $e");
+      emit(PermissionStateFailure(errorMessage: e.toString()));
+    }
   }
 
   bool hasPermission(String permissionName, List<Permission> permissions) {
+    print(
+        "Checking if permission '$permissionName' exists in: ${permissions.map((perm) => perm.permission).toList()}");
     return permissions.any((perm) => perm.permission == permissionName);
   }
 }
