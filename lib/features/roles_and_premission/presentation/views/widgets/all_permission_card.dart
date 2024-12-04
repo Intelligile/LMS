@@ -24,7 +24,8 @@ class _AllPermissionCardState extends State<AllPermissionCard> {
   void initState() {
     super.initState();
     // Initialize isChecked based on whether the permission is in singleRolesPermissions
-    isChecked = singleRolesPermissions.any((perm) => perm.permission == widget.permission.permission);
+    isChecked = singleRolesPermissions
+        .any((perm) => perm.permission == widget.permission.permission);
 
     // Ensure already checked permissions are added to the updatedPermission list
     if (isChecked && !updatedPermission.contains(widget.permission)) {
@@ -43,7 +44,8 @@ class _AllPermissionCardState extends State<AllPermissionCard> {
         }
       } else {
         // Remove permission from updatedPermission list
-        updatedPermission.removeWhere((perm) => perm.permission == widget.permission.permission);
+        updatedPermission.removeWhere(
+            (perm) => perm.permission == widget.permission.permission);
       }
     });
   }

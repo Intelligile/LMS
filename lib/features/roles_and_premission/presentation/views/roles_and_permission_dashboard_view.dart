@@ -9,6 +9,7 @@ List<Authority> authorities = [];
 List<Permission> singleRolesPermissions = [];
 List<Permission> allPermissions = [];
 List<UserDto> users = [];
+
 class RolesAndPermissionDashboardView extends StatelessWidget {
   const RolesAndPermissionDashboardView({super.key});
 

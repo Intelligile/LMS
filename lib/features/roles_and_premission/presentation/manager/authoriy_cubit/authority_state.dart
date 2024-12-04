@@ -10,7 +10,9 @@ final class AuthorityStateLoading extends AuthorityState {}
 final class UpdateAuthorityPermissionsStateLoading extends AuthorityState {}
 
 final class AddAuthorityStateSuccess extends AuthorityState {}
+
 final class UpdateAuthorityPermissionsStateSuccess extends AuthorityState {}
+
 final class GetAuthorityStateSuccess extends AuthorityState {
   final List<Authority> authorities;
 
@@ -22,6 +24,7 @@ final class AuthorityStateFailure extends AuthorityState {
 
   AuthorityStateFailure({required this.errorMessage});
 }
+
 final class UpdateAuthorityPermissionsStateFailure extends AuthorityState {
   final String errorMessage;
 

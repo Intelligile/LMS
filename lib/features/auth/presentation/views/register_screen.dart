@@ -9,7 +9,7 @@ import 'package:lms/features/auth/presentation/manager/registration_cubit/regist
 import 'package:lms/features/auth/presentation/views/widgets/register_form.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +20,14 @@ class RegisterScreen extends StatelessWidget {
           RegisterUseCase(
             authRepository: AuthRepositoryImpl(
               authRemoteDataSource: AuthRemoteDataSourceImpl(
-                api: Api(
-                  Dio(),
-                ),
-              ),
+                  api: Api(
+                    Dio(),
+                  ),
+                  context),
             ),
           ),
         ),
-        child: RegisterForm(),
+        child: const RegisterForm(),
       ),
     );
   }

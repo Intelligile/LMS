@@ -7,8 +7,7 @@ class PaymentSummaryPage extends StatelessWidget {
   final String? cardNumber;
   final String? expiryDate;
   final String? cvv;
-  final String? bankAccount;
-  final String? paypalEmail;
+  final String? authCode;
 
   const PaymentSummaryPage({
     Key? key,
@@ -16,8 +15,7 @@ class PaymentSummaryPage extends StatelessWidget {
     this.cardNumber,
     this.expiryDate,
     this.cvv,
-    this.bankAccount,
-    this.paypalEmail,
+    this.authCode,
   }) : super(key: key);
 
   @override
@@ -39,10 +37,8 @@ class PaymentSummaryPage extends StatelessWidget {
               Text('Card Number: $cardNumber'),
               Text('Expiry Date: $expiryDate'),
               Text('CVV: $cvv'),
-            ] else if (paymentMethod == 'PayPal') ...[
-              Text('PayPal Email: $paypalEmail'),
-            ] else if (paymentMethod == 'Bank Transfer') ...[
-              Text('Bank Account: $bankAccount'),
+            ] else if (paymentMethod == 'Authorization Code') ...[
+              Text('Authorization Code: $authCode'),
             ],
             SizedBox(height: 20),
             ElevatedButton(

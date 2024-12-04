@@ -9,7 +9,7 @@ class PermissionCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListTile(
-        title: Text(title??''),
+        title: Text(title ?? ''),
         onTap: () {},
         subtitle: Text(subTitle ?? ''),
       ),

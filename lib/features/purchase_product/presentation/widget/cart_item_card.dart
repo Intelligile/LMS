@@ -35,7 +35,8 @@ class CartItemCard extends StatelessWidget {
         ),
         trailing: Column(
           children: [
-            Text('Total: \$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
+            Text(
+                'Total: \$${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
             IconButton(
               icon: Icon(Icons.delete),
               onPressed: onRemove,

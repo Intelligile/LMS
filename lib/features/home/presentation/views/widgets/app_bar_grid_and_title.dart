@@ -20,7 +20,7 @@ class AppBarGridIconAndTitle extends StatelessWidget {
           ),
         ),
         Text(
-          'Microsoft 365 admin center',
+          'License Management System',
           style: Styles.textStyle20.copyWith(color: Colors.white, fontSize: 18),
         ),
       ],

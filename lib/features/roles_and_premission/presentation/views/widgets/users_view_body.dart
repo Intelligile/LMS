@@ -31,17 +31,17 @@ class UsersViewBody extends StatelessWidget {
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
-                  :  _users.isNotEmpty? Expanded(
-                      child: ListView.builder(
-                      itemCount: _users.length,
-                      itemBuilder: (context, index) {
-                        return PermissionCard(
-                          title: _users[index].username,
-                        );
-                      },
-                    )):Text(
-                      'no users in role : ${authority.authority}'
-                    )
+                  : _users.isNotEmpty
+                      ? Expanded(
+                          child: ListView.builder(
+                          itemCount: _users.length,
+                          itemBuilder: (context, index) {
+                            return PermissionCard(
+                              title: _users[index].username,
+                            );
+                          },
+                        ))
+                      : Text('no users in role : ${authority.authority}')
             ],
           );
         },

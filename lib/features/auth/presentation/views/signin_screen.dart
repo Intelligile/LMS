@@ -1,4 +1,3 @@
-// lib/features/auth/presentation/pages/sign_in.dart
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +12,6 @@ class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SignInState createState() => _SignInState();
 }
 
@@ -29,36 +27,46 @@ class _SignInState extends State<SignIn> {
         child: Column(
           children: <Widget>[
             Container(
-              height: 300,
-              color: Colors.blue,
+              height: 250,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF017278), Colors.white],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
               child: const Center(
                 child: Text(
                   "Login",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 45,
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
               child: BlocProvider(
                 create: (_) => SignInCubit(
                   LoginUseCase(
                     AuthRepositoryImpl(
                       authRemoteDataSource: AuthRemoteDataSourceImpl(
-                        api: Api(
-                          Dio(),
-                        ),
+                        api: Api(Dio()),
+                        context,
                       ),
                     ),
                   ),
                 ),
-                child: SignInForm(
-                  usernameController: _usernameController,
-                  passwordController: _passwordController,
+                child: Column(
+                  children: [
+                    SignInForm(
+                      usernameController: _usernameController,
+                      passwordController: _passwordController,
+                    ),
+                  ],
                 ),
               ),
             ),

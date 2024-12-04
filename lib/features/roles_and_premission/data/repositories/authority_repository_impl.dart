@@ -29,10 +29,11 @@ class AuthorityRepositoryImpl extends AuthorityRepository {
   }
 
   @override
-  Future<Either<Failure, List<Authority>>> getAuthorities({int ? authorityId=0}) async {
+  Future<Either<Failure, List<Authority>>> getAuthorities(
+      {int? authorityId = 0}) async {
     try {
-      List<Authority> authorities =
-          await authorityRemoteDataSource.getAuthorities(authorityId: authorityId);
+      List<Authority> authorities = await authorityRemoteDataSource
+          .getAuthorities(authorityId: authorityId);
       return right(authorities); // Return Unit from dartz
     } catch (e) {
       print("Error in registerUser: $e"); // Logging the error
@@ -42,11 +43,13 @@ class AuthorityRepositoryImpl extends AuthorityRepository {
       return left(ServerFailure(e.toString()));
     }
   }
-  
+
   @override
-  Future<Either<Failure, Unit>> updateAuthorityPermissions({required authorityId, required List newAuthorities})async {
+  Future<Either<Failure, Unit>> updateAuthorityPermissions(
+      {required authorityId, required List newAuthorities}) async {
     try {
-      await authorityRemoteDataSource.updateAuthorityPermissions(authorityId: authorityId,newAuthorities: newAuthorities);
+      await authorityRemoteDataSource.updateAuthorityPermissions(
+          authorityId: authorityId, newAuthorities: newAuthorities);
       return right(unit); // Return Unit from dartz
     } catch (e) {
       print("Error in registerUser: $e"); // Logging the error
@@ -56,6 +59,4 @@ class AuthorityRepositoryImpl extends AuthorityRepository {
       return left(ServerFailure(e.toString()));
     }
   }
-  
-  
 }

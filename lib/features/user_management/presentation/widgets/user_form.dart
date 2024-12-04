@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/features/user_management/data/models/user_model.dart';
 
 class UserForm extends StatefulWidget {
   final List<UserModel> users;
-  final bool
-      isEditing; // Flag to indicate whether the form is for editing or adding
+  final bool isEditing;
   final Function(List<UserModel>) onSubmit;
 
   UserForm(
@@ -24,13 +24,7 @@ class _UserFormState extends State<UserForm> {
     super.initState();
     _users = widget.users;
 
-    if (widget.isEditing) {
-      // If editing, ensure that the existing users are set up correctly
-      for (var user in _users) {
-        user.password = ''; // Don't pre-fill password when editing
-      }
-    } else {
-      // If adding, initialize with a blank user
+    if (!widget.isEditing) {
       _users.add(UserModel(
         id: 0,
         username: '',
@@ -41,6 +35,7 @@ class _UserFormState extends State<UserForm> {
         phone: '',
         enabled: true,
         authorities: [],
+        groups: [],
       ));
     }
   }
@@ -49,21 +44,17 @@ class _UserFormState extends State<UserForm> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      // Check for duplicate usernames and emails
       final usernames = _users.map((user) => user.username).toSet();
       final emails = _users.map((user) => user.email).toSet();
 
       if (usernames.length != _users.length) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Duplicate usernames are not allowed')),
-        );
+        showSnackBar(
+            context, 'Duplicate usernames are not allowed', Colors.red);
         return;
       }
 
       if (emails.length != _users.length) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Duplicate emails are not allowed')),
-        );
+        showSnackBar(context, 'Duplicate emails are not allowed', Colors.red);
         return;
       }
 
@@ -84,6 +75,7 @@ class _UserFormState extends State<UserForm> {
         phone: '',
         enabled: true,
         authorities: [],
+        groups: [],
       ));
     });
   }
@@ -99,6 +91,7 @@ class _UserFormState extends State<UserForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.isEditing ? 'Edit Users' : 'Add Multiple Users'),
+        backgroundColor: Color(0xFF017278), // LMS color
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -107,7 +100,12 @@ class _UserFormState extends State<UserForm> {
           child: ListView.builder(
             itemCount: _users.length,
             itemBuilder: (context, index) {
-              return _buildUserForm(index);
+              return Column(
+                children: [
+                  _buildUserForm(index),
+                  SizedBox(height: 16.0), // Space between user forms
+                ],
+              );
             },
           ),
         ),
@@ -118,12 +116,14 @@ class _UserFormState extends State<UserForm> {
           FloatingActionButton(
             onPressed: _addUser,
             child: Icon(Icons.add),
+            backgroundColor: Color(0xFF017278), // LMS color
             tooltip: 'Add Another User',
           ),
           SizedBox(height: 10),
           FloatingActionButton(
             onPressed: _submitForm,
             child: Icon(Icons.save),
+            backgroundColor: Color(0xFF017278), // LMS color
             tooltip: 'Submit Users',
           ),
         ],
@@ -134,13 +134,17 @@ class _UserFormState extends State<UserForm> {
   Widget _buildUserForm(int index) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextFormField(
+            _buildTextField(
+              label: 'Username',
               initialValue: _users[index].username,
-              decoration: InputDecoration(labelText: 'Username'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter a username';
                 if (_users.where((user) => user.username == value).length > 1) {
@@ -150,19 +154,21 @@ class _UserFormState extends State<UserForm> {
               },
               onSaved: (value) => _users[index].username = value!,
             ),
-            if (!widget.isEditing)
-              TextFormField(
-                initialValue: _users[index].password,
-                decoration: InputDecoration(labelText: 'Password'),
-                validator: (value) {
-                  if (value!.isEmpty) return 'Please enter a password';
-                  return null;
-                },
-                onSaved: (value) => _users[index].password = value!,
-              ),
-            TextFormField(
+            SizedBox(height: 12.0), // Space between form fields
+            _buildTextField(
+              label: 'Password',
+              initialValue: _users[index].password,
+              obscureText: true,
+              validator: (value) {
+                if (value!.isEmpty) return 'Please enter a password';
+                return null;
+              },
+              onSaved: (value) => _users[index].password = value!,
+            ),
+            SizedBox(height: 12.0), // Space between form fields
+            _buildTextField(
+              label: 'Email',
               initialValue: _users[index].email,
-              decoration: InputDecoration(labelText: 'Email'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter an email';
                 if (!EmailValidator.validate(value))
@@ -174,35 +180,40 @@ class _UserFormState extends State<UserForm> {
               },
               onSaved: (value) => _users[index].email = value!,
             ),
-            TextFormField(
+            SizedBox(height: 12.0), // Space between form fields
+            _buildTextField(
+              label: 'First Name',
               initialValue: _users[index].firstname,
-              decoration: InputDecoration(labelText: 'First Name'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter a first name';
                 return null;
               },
               onSaved: (value) => _users[index].firstname = value!,
             ),
-            TextFormField(
+            SizedBox(height: 12.0), // Space between form fields
+            _buildTextField(
+              label: 'Last Name',
               initialValue: _users[index].lastname,
-              decoration: InputDecoration(labelText: 'Last Name'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter a last name';
                 return null;
               },
               onSaved: (value) => _users[index].lastname = value!,
             ),
-            TextFormField(
+            SizedBox(height: 12.0), // Space between form fields
+            _buildTextField(
+              label: 'Phone',
               initialValue: _users[index].phone,
-              decoration: InputDecoration(labelText: 'Phone'),
               validator: (value) {
                 if (value!.isEmpty) return 'Please enter a phone number';
                 return null;
               },
               onSaved: (value) => _users[index].phone = value!,
             ),
+            SizedBox(height: 12.0), // Space between form fields
             SwitchListTile(
               title: Text('Enabled'),
+              activeColor: Color(0xFF017278), // LMS color
               value: _users[index].enabled,
               onChanged: (value) {
                 setState(() {
@@ -210,22 +221,46 @@ class _UserFormState extends State<UserForm> {
                 });
               },
             ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                if (_users.length > 1) {
-                  _removeUser(index);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('At least one user is required')),
-                  );
-                }
-              },
-              tooltip: 'Remove User',
+            SizedBox(height: 12.0), // Space between Switch and delete button
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  if (_users.length > 1) {
+                    _removeUser(index);
+                  } else {
+                    showSnackBar(
+                        context, 'At least one user is required', Colors.red);
+                  }
+                },
+                tooltip: 'Remove User',
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required String? initialValue,
+    required FormFieldValidator<String>? validator,
+    required FormFieldSetter<String>? onSaved,
+    bool obscureText = false,
+  }) {
+    return TextFormField(
+      initialValue: initialValue,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(),
+        filled: true,
+        fillColor: Colors.grey[100],
+      ),
+      validator: validator,
+      onSaved: onSaved,
     );
   }
 }

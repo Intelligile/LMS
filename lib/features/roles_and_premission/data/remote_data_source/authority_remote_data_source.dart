@@ -5,9 +5,10 @@ import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart
 import 'package:lms/features/roles_and_premission/data/models/authority.dart';
 
 abstract class AuthorityRemoteDataSource {
-  Future<List<Authority>> getAuthorities({int ? authorityId=0});
+  Future<List<Authority>> getAuthorities({int? authorityId = 0});
   Future<void> addAuthorities(List<Authority> authorities);
-  Future<void> updateAuthorityPermissions({required dynamic authorityId,required List<dynamic>newAuthorities});
+  Future<void> updateAuthorityPermissions(
+      {required dynamic authorityId, required List<dynamic> newAuthorities});
 }
 
 class AuthorityRemoteDataSourceImpl extends AuthorityRemoteDataSource {
@@ -23,29 +24,30 @@ class AuthorityRemoteDataSourceImpl extends AuthorityRemoteDataSource {
   }
 
   @override
-  Future<List<Authority>> getAuthorities({int ? authorityId=0}) async {
+  Future<List<Authority>> getAuthorities({int? authorityId = 0}) async {
     List<Authority> authorities = [];
     print(jwtToken);
     var result;
-    if(authorityId == 0 || authorityId == null)
-    {result = await api.get(endPoint: 'api/authorities', token: jwtToken);}
-    else {
-      {result = await api.get(endPoint: 'api/authorities/$authorityId', token: jwtToken);}
+    if (authorityId == 0 || authorityId == null) {
+      result = await api.get(endPoint: 'api/authorities', token: jwtToken);
+    } else {
+      {
+        result = await api.get(
+            endPoint: 'api/authorities/$authorityId', token: jwtToken);
+      }
     }
     for (var authorityData in result) {
       authorities.add(Authority.fromJson(authorityData));
     }
     return authorities;
   }
-  
-  @override
-  Future<void> updateAuthorityPermissions({required authorityId, required List newAuthorities})async {
-    await api.put(endPoint: 'api/authorities/$authorityId/permissions', body: newAuthorities, token: jwtToken);
-  }
-  
 
-  
- 
-  
-  
+  @override
+  Future<void> updateAuthorityPermissions(
+      {required authorityId, required List newAuthorities}) async {
+    await api.put(
+        endPoint: 'api/authorities/$authorityId/permissions',
+        body: newAuthorities,
+        token: jwtToken);
+  }
 }

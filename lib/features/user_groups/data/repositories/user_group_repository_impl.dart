@@ -11,15 +11,11 @@ class UserGroupRepositoryImpl implements UserGroupRepository {
   UserGroupRepositoryImpl(this.apiService);
 
   @override
-  Future<Either<Failure, void>> assignUserToGroup(UserGroup userGroup) async {
+  Future<void> assignUsersToGroup(int groupId, List<int> userIds) async {
     try {
-      await apiService.assignUserToGroup(UserGroupModel(
-        userId: userGroup.userId,
-        groupId: userGroup.groupId,
-      ).toJson());
-      return Right(null);
+      await apiService.assignUserToGroup(groupId, userIds);
     } catch (e) {
-      return Left(ServerFailure("User Not assigned to this group $e"));
+      throw Exception('Error assigning users to group: $e');
     }
   }
 
@@ -45,5 +41,11 @@ class UserGroupRepositoryImpl implements UserGroupRepository {
     } catch (e) {
       return Left(ServerFailure("Users cant be fetched $e"));
     }
+  }
+
+  @override
+  Future<Either<Failure, void>> assignUserToGroup(UserGroup userGroup) {
+    // TODO: implement assignUserToGroup
+    throw UnimplementedError();
   }
 }

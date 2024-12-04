@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:lms/features/purchase_product/domain/entities/product.dart';
+import 'package:lms/features/product_region_management/data/models/product_model.dart';
 
 class CartItem {
-  final Product product;
+  final RegionProductModel product;
   int quantity;
 
   CartItem({required this.product, this.quantity = 1});
 }
 
 class CartProvider with ChangeNotifier {
-  List<CartItem> _items = [];
+  final List<CartItem> _items = [];
 
   List<CartItem> get cartItems => _items;
 
@@ -18,7 +18,7 @@ class CartProvider with ChangeNotifier {
         0.0, (sum, item) => sum + item.product.price * item.quantity);
   }
 
-  void addProduct(Product product, int quantity) {
+  void addProduct(RegionProductModel product, int quantity) {
     final existingIndex =
         _items.indexWhere((item) => item.product.id == product.id);
     if (existingIndex >= 0) {
@@ -30,7 +30,7 @@ class CartProvider with ChangeNotifier {
   }
 
   // Single updateProductQuantity method
-  void updateProductQuantity(Product product, int quantity) {
+  void updateProductQuantity(RegionProductModel product, int quantity) {
     final existingIndex =
         _items.indexWhere((item) => item.product.id == product.id);
 
@@ -43,7 +43,7 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeProduct(Product product) {
+  void removeProduct(RegionProductModel product) {
     _items.removeWhere((item) => item.product.id == product.id);
     notifyListeners();
   }

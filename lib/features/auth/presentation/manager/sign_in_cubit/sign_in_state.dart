@@ -12,7 +12,10 @@ class SignInSuccess extends SignInState {
   // final String username;
   // final String roles;
 
-  // SignInSuccess(this.jwtToken, this.username, this.roles);
+  // SignInSuccess(this.username);
+  final Unit unit;
+
+  SignInSuccess(this.unit);
 }
 
 class SignInFailure extends SignInState {

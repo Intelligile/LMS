@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms/constants.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/utils/styles.dart';
 
 class CustomCard extends StatefulWidget {
@@ -72,41 +74,62 @@ class _CustomCardState extends State<CustomCard> {
                       color: Colors.black,
                     ),
                     const SizedBox(width: 15),
-                    const Icon(
-                      Icons.person_add_alt,
-                      color: kIconColor,
-                    ),
-                    const Text(
-                      '  Add a user',
-                      style: Styles.textStyle16,
-                    ),
-                    const SizedBox(width: 15),
-                    const Icon(
-                      FontAwesomeIcons.key,
-                      size: 20,
-                      color: kIconColor,
-                    ),
-                    const Text(
-                      '  Reset password',
-                      style: Styles.textStyle16,
-                    ),
-                    const SizedBox(width: 15),
-                    const Icon(
-                      Icons.person_add_alt,
-                      color: kIconColor,
-                    ),
-                    const Text(
-                      '  Add a group',
-                      style: Styles.textStyle16,
-                    ),
-                    const SizedBox(width: 15),
-                    const Icon(
-                      FontAwesomeIcons.creditCard,
-                      color: kIconColor,
-                    ),
-                    const Text(
-                      '  View your bill',
-                      style: Styles.textStyle16,
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            GoRouter.of(context).go(AppRouter.kAddUsers);
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(
+                                Icons.person_add_alt,
+                                color: kIconColor,
+                              ),
+                              Text(
+                                '  Add a user',
+                                style: Styles.textStyle16,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        InkWell(
+                          onTap: () {
+                            GoRouter.of(context).go(AppRouter.kAddGroup);
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(
+                                Icons.person_add_alt,
+                                color: kIconColor,
+                              ),
+                              Text(
+                                '  Add a group',
+                                style: Styles.textStyle16,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        InkWell(
+                          onTap: () {
+                            // Add action for viewing the bill
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(
+                                FontAwesomeIcons.creditCard,
+                                color: kIconColor,
+                              ),
+                              Text(
+                                '  View your bill',
+                                style: Styles.textStyle16,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(width: 15),
                     const Icon(FontAwesomeIcons.ellipsis),

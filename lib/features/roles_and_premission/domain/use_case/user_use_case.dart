@@ -10,10 +10,8 @@ class FetchUsersUseCase {
   FetchUsersUseCase({
     required this.userRepository,
   });
-  
 
   Future<Either<Failure, List<UserDto>>> call({dynamic roleId}) async {
     return await userRepository.getUsers(roleId: roleId);
   }
-
 }

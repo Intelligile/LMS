@@ -7,14 +7,15 @@ class ActionsContainer extends StatelessWidget {
     required this.containerIcon,
     required this.containerText,
     required this.containerBgColor,
-    required this.txtColor, this.onPressed,
+    required this.txtColor,
+    this.onPressed,
   });
   final Icon containerIcon;
   final String containerText;
   final Color containerBgColor;
   final Color txtColor;
   final VoidCallback? onPressed;
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -29,7 +30,7 @@ class ActionsContainer extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-               containerIcon,
+              containerIcon,
               Text(
                 containerText,
                 style: Styles.textStyle20.copyWith(
