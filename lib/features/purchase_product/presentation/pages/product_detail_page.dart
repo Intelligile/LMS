@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,7 +7,7 @@ import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/assets.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
-import 'package:lms/features/payment/presentation/views/widgets/payment_view_body.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/product_region_management/data/models/product_model.dart';
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
 
@@ -25,7 +24,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final TextEditingController _licenseCountController = TextEditingController();
   final TextEditingController _authorizationCodeController =
       TextEditingController();
+  String _subscriptionPeriod = "Monthly"; // Default subscription period
   late UserManagementRemoteDataSource _userRemoteDataSource;
+  List<dynamic> _billingAccounts = [];
+  List<dynamic> _paymentMethods = [];
+  String? _selectedBillingAccountId;
+  String? _selectedPaymentMethodId;
+  final String _authToken = "Bearer $jwtTokenPublic"; // Replace with your token
 
   @override
   void initState() {
@@ -35,19 +40,57 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     _userRemoteDataSource = UserManagementRemoteDataSource(api);
   }
 
-  Future<bool> _checkAuthorizationCode(String code) async {
-    return true;
+  Future<void> _fetchBillingAccounts(int orgId) async {
+    final url =
+        Uri.parse('http://localhost:8082/api/billing-accounts/org/$orgId');
+    try {
+      final response = await http.get(
+        url,
+        headers: {"Authorization": _authToken},
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          _billingAccounts = json.decode(response.body);
+        });
+      } else {
+        throw Exception("Failed to fetch billing accounts");
+      }
+    } catch (e) {
+      showSnackBar("Error fetching billing accounts: $e", Colors.red);
+    }
+  }
+
+  Future<void> _fetchPaymentMethods(String billingAccountId) async {
+    final url = Uri.parse(
+        'http://localhost:8082/api/payment-methods/billing-account/$billingAccountId');
+    try {
+      final response = await http.get(
+        url,
+        headers: {"Authorization": _authToken},
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          _paymentMethods = json.decode(response.body);
+        });
+      } else {
+        throw Exception("Failed to fetch payment methods");
+      }
+    } catch (e) {
+      showSnackBar("Error fetching payment methods: $e", Colors.red);
+    }
   }
 
   Future<void> _createOrder(Map<String, dynamic>? billingData) async {
     final url = Uri.parse('http://localhost:8082/api/billing/create-order');
 
     try {
+      // Fetch users and find the matched user
       final users = await _userRemoteDataSource.getUsers();
       final matchedUser =
           users.firstWhere((user) => user.username == usernamePublic);
       final userId = matchedUser.id;
 
+      // Construct the order data
       final orderData = {
         "userId": userId,
         "items": [
@@ -59,25 +102,38 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ],
         "totalAmount":
             widget.product.price * int.parse(_licenseCountController.text),
+        "subscriptionType": _subscriptionType, // Monthly or Yearly subscription
+        "paymentType": _paymentType, // Monthly Payment or Yearly Payment
       };
 
+      // Add authorization code if provided
       if (_authorizationCodeController.text.isNotEmpty) {
         orderData["authorizationCode"] = _authorizationCodeController.text;
-      } else if (billingData != null) {
-        orderData["billing"] = billingData;
-      } else {
+      }
+      // Add billing and payment information if provided
+      else if (billingData != null) {
+        orderData["billingAccountId"] = billingData["billingAccountId"];
+        orderData["paymentMethodId"] = billingData["paymentMethodId"];
+      }
+      // Show error if no payment information is provided
+      else {
         showSnackBar("Payment information required.", Colors.red);
         return;
       }
 
+      // Make the HTTP POST request
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": _authToken,
+        },
         body: json.encode(orderData),
       );
 
+      // Handle the response
       if (response.statusCode == 200) {
-        showSnackBar("Invoice generated successfully!", Colors.green);
+        showSnackBar("Order created successfully!", Colors.green);
       } else {
         showSnackBar("Failed to create order.", Colors.red);
       }
@@ -86,66 +142,75 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
   }
 
-  void _openPaymentFormFromRight(BuildContext context) async {
-    await Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: false,
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            SlideTransition(
-          position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
-              .animate(animation),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 12,
-                    offset: Offset(-4, 0),
-                  ),
-                ],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
-                ),
-              ),
-              child: SafeArea(
-                child: Scaffold(
-                  body: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: PaymentViewBody(
-                      onBillingDataSubmitted: (billingData) async {
-                        await _createOrder(billingData);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        transitionDuration: const Duration(milliseconds: 400),
-      ),
-    );
-  }
-
   Future<void> _handleCheckout() async {
     final authCode = _authorizationCodeController.text;
 
     if (authCode.isNotEmpty) {
-      final isAuthorized = await _checkAuthorizationCode(authCode);
-      if (isAuthorized) {
-        await _createOrder(null);
-      } else {
-        showSnackBar("Invalid authorization code.", Colors.red);
-      }
+      await _createOrder(null);
     } else {
-      _openPaymentFormFromRight(context);
+      await _fetchBillingAccounts(organizationId);
+
+      if (_billingAccounts.isEmpty) {
+        showSnackBar("No billing accounts available.", Colors.red);
+        return;
+      }
+
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Select Billing Account"),
+          content: DropdownButton<String>(
+            isExpanded: true,
+            hint: const Text("Choose Billing Account"),
+            value: _selectedBillingAccountId,
+            onChanged: (value) async {
+              setState(() {
+                _selectedBillingAccountId = value;
+              });
+              await _fetchPaymentMethods(value!);
+              Navigator.pop(context);
+              _showPaymentMethodDialog();
+            },
+            items: _billingAccounts.map((account) {
+              return DropdownMenuItem(
+                value: account['id'].toString(),
+                child: Text(account['businessName']),
+              );
+            }).toList(),
+          ),
+        ),
+      );
     }
+  }
+
+  void _showPaymentMethodDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Select Payment Method"),
+        content: DropdownButton<String>(
+          isExpanded: true,
+          hint: const Text("Choose Payment Method"),
+          value: _selectedPaymentMethodId,
+          onChanged: (value) {
+            setState(() {
+              _selectedPaymentMethodId = value;
+            });
+            Navigator.pop(context);
+            _createOrder({
+              "billingAccountId": _selectedBillingAccountId,
+              "paymentMethodId": _selectedPaymentMethodId,
+            });
+          },
+          items: _paymentMethods.map((method) {
+            return DropdownMenuItem(
+              value: method['id'].toString(),
+              child: Text("${method['methodName']} - ${method['cardNumber']}"),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 
   void showSnackBar(String message, Color color) {
@@ -155,29 +220,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         backgroundColor: color,
       ),
     );
-  }
-
-  IconData iconFromName(String iconName) {
-    switch (iconName) {
-      case 'gears':
-        return FontAwesomeIcons.gears;
-      case 'code-fork':
-        return FontAwesomeIcons.codeFork;
-      case 'bank':
-        return FontAwesomeIcons.buildingColumns;
-      case 'cubes':
-        return FontAwesomeIcons.cubes;
-      case 'cloud':
-        return FontAwesomeIcons.cloud;
-      case 'street':
-        return FontAwesomeIcons.streetView;
-      case 'eye':
-        return FontAwesomeIcons.eye;
-      case 'ravelry':
-        return FontAwesomeIcons.ravelry;
-      default:
-        return FontAwesomeIcons.questionCircle;
-    }
   }
 
   @override
@@ -217,12 +259,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             _buildSectionTitle('Number of Licenses'),
             const SizedBox(height: 15),
             _buildLicenseCountInput(),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Subscription Period'),
+            _buildSubscriptionAndPaymentDropdowns(),
             const SizedBox(height: 30),
             _buildSectionTitle('Checkout Options'),
             const SizedBox(height: 15),
             _buildCheckoutOptions(),
-            const SizedBox(height: 30),
-            _buildImageGrid(widget.product.name, crossAxisCount: 1),
           ],
         ),
       ),
@@ -253,6 +296,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         const SizedBox(height: 15),
                         _buildLicenseCountInput(),
                         const SizedBox(height: 30),
+                        _buildSectionTitle('Subscription Period'),
+                        _buildSubscriptionAndPaymentDropdowns(),
                         _buildSectionTitle('Checkout Options'),
                         const SizedBox(height: 15),
                         _buildCheckoutOptions(),
@@ -265,51 +310,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   flex: 2,
                   child:
                       _buildImageGrid(widget.product.name, crossAxisCount: 1),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNotebookLayout() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildProductHeader(),
-                        const SizedBox(height: 20),
-                        _buildProductInfo(),
-                        const SizedBox(height: 30),
-                        _buildSectionTitle('Number of Licenses'),
-                        const SizedBox(height: 15),
-                        _buildLicenseCountInput(),
-                        const SizedBox(height: 30),
-                        _buildSectionTitle('Checkout Options'),
-                        const SizedBox(height: 15),
-                        _buildCheckoutOptions(),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 24),
-                Expanded(
-                  flex: 3,
-                  child:
-                      _buildImageGrid(widget.product.name, crossAxisCount: 3),
                 ),
               ],
             ),
@@ -339,6 +339,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   const SizedBox(height: 15),
                   _buildLicenseCountInput(),
                   const SizedBox(height: 30),
+                  _buildSectionTitle('Subscription Period'),
+                  _buildSubscriptionAndPaymentDropdowns(),
                   _buildSectionTitle('Checkout Options'),
                   const SizedBox(height: 15),
                   _buildCheckoutOptions(),
@@ -354,6 +356,175 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ],
       ),
     );
+  }
+
+  String _subscriptionType = "Monthly"; // Default selection
+  String _paymentType = "Monthly Payment"; // Default selection
+
+  Widget _buildSubscriptionAndPaymentDropdowns() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Subscription Type',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        DropdownButton<String>(
+          isExpanded: true,
+          value: _subscriptionType,
+          onChanged: (String? newValue) {
+            setState(() {
+              _subscriptionType = newValue!;
+            });
+          },
+          items: ['Monthly', 'Yearly'].map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Payment Type',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        DropdownButton<String>(
+          isExpanded: true,
+          value: _paymentType,
+          onChanged: (String? newValue) {
+            setState(() {
+              _paymentType = newValue!;
+            });
+          },
+          items: ['Monthly Payment', 'Yearly Payment'].map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLicenseCountInput() {
+    return TextField(
+      controller: _licenseCountController,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        hintText: 'Enter quantity',
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCheckoutOptions() {
+    return ElevatedButton(
+      onPressed: _handleCheckout,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF017278),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+      child: const Text(
+        "Subscribe",
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildProductHeader() {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: FaIcon(
+            iconFromName(widget.product.imageUrl),
+            size: 30,
+            color: const Color(0xFF017278),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.product.name,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '\$${widget.product.price.toStringAsFixed(2)} / license',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProductInfo() {
+    return Text(
+      widget.product.description,
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.black87,
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.grey.shade800,
+      ),
+    );
+  }
+
+  IconData iconFromName(String iconName) {
+    switch (iconName) {
+      case 'gears':
+        return FontAwesomeIcons.gears;
+      case 'code-fork':
+        return FontAwesomeIcons.codeFork;
+      case 'bank':
+        return FontAwesomeIcons.buildingColumns;
+      case 'cubes':
+        return FontAwesomeIcons.cubes;
+      case 'cloud':
+        return FontAwesomeIcons.cloud;
+      case 'street':
+        return FontAwesomeIcons.streetView;
+      case 'eye':
+        return FontAwesomeIcons.eye;
+      case 'ravelry':
+        return FontAwesomeIcons.ravelry;
+      default:
+        return FontAwesomeIcons.questionCircle;
+    }
   }
 
   Widget _buildImageGrid(String productName, {int crossAxisCount = 3}) {
@@ -451,148 +622,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildProductHeader() {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: FaIcon(
-            iconFromName(widget.product.imageUrl),
-            size: 30,
-            color: const Color(0xFF017278),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.product.name,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                '\$${widget.product.price.toStringAsFixed(2)} / license',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey.shade700,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProductInfo() {
-    return Text(
-      widget.product.description,
-      style: const TextStyle(
-        fontSize: 16,
-        color: Colors.black87,
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.grey.shade800,
-      ),
-    );
-  }
-
-  Widget _buildLicenseCountInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Number of Licenses',
-          style: TextStyle(fontSize: 16, color: Colors.black87),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _licenseCountController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            hintText: 'Enter quantity',
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCheckoutOptions() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: _authorizationCodeController,
-          decoration: InputDecoration(
-            labelText: 'Authorization Code (optional)',
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: _handleCheckout,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF017278),
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              minimumSize: const Size.fromHeight(60),
-            ),
-            child: const Text(
-              'Checkout',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

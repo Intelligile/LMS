@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lms/constants.dart';
 import 'package:lms/core/utils/assets.dart';
 import 'package:lms/core/utils/styles.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/home/presentation/views/widgets/custom_card.dart';
 import 'package:lms/features/home/presentation/views/widgets/custom_card_container.dart';
 import 'package:lms/features/home/presentation/views/widgets/custom_tab_bar.dart';
@@ -22,15 +24,61 @@ class DesktopHomeViewBody extends StatefulWidget {
 
 class _DesktopHomeViewBodyState extends State<DesktopHomeViewBody>
     with SingleTickerProviderStateMixin {
+  int licenseCount = 0;
+  int userCount = 0;
   //bool _drawerOpen = false;
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    fetchLicenseCount();
+    fetchUserCount();
     _tabController = TabController(length: 4, vsync: this);
   }
 
+  Future<void> fetchLicenseCount() async {
+    const String url = 'http://localhost:8081/api/license/user/4/count';
+
+    try {
+      final response = await Dio().get(url);
+      if (response.statusCode == 200) {
+        setState(() {
+          licenseCount = response.data; // Assuming API returns an integer
+        });
+      } else {
+        print('Failed to fetch license count: ${response.statusMessage}');
+      }
+    } catch (e) {
+      print('Error fetching license count: $e');
+    }
+  }
+
+  Future<void> fetchUserCount() async {
+    String url =
+        'http://localhost:8082/api/organizations/$organizationId/users';
+
+    try {
+      final response = await Dio().get(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $jwtTokenPublic',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          userCount = (response.data as List).length; // Count the users
+        });
+      } else {
+        print('Failed to fetch user count: ${response.statusMessage}');
+      }
+    } catch (e) {
+      print('Error fetching user count: $e');
+    }
+  }
   // void _toggleDrawer() {
   //   setState(() {
   //     _drawerOpen = !_drawerOpen;
@@ -63,46 +111,47 @@ class _DesktopHomeViewBodyState extends State<DesktopHomeViewBody>
               'Good morning, ${widget.username}', // Use the username here
               style: Styles.textStyle28,
             ),
-            const Text(
-              'The Simplified view helps you focus on the most common tasks for the organization like you',
-              style: Styles.textStyle16,
-            ),
+            // const Text(
+            //   'The Simplified view helps you focus on the most common tasks for the organization like you',
+            //   style: Styles.textStyle16,
+            // ),
             const SizedBox(
               height: 50,
             ),
+            // Row(
+            //   children: [
+            //     const Text(
+            //       'For organization like yours',
+            //       style: Styles.textStyle20,
+            //     ),
+            //     const SizedBox(
+            //       width: 10,
+            //     ),
+            //     Text(
+            //       'Show more',
+            //       style: Styles.textStyle20.copyWith(color: kIconColor),
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
             Row(
               children: [
-                const Text(
-                  'For organization like yours',
-                  style: Styles.textStyle20,
+                CustomContainer(
+                  iconPath: AssetsData.copilotImage,
+                  cardTitle: 'Your purchased licenses',
+                  cardText:
+                      'You have purchased $licenseCount license${licenseCount == 1 ? '' : 's'}',
                 ),
                 const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  'Show more',
-                  style: Styles.textStyle20.copyWith(color: kIconColor),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Row(
-              children: [
-                CustomContainer(
-                    iconPath: AssetsData.copilotImage,
-                    cardTitle: 'Assign unused licenses',
-                    cardText:
-                        'You have 1 unused license for Microsoft 365 Business Standard.'),
-                SizedBox(
                   width: 50,
                 ),
                 CustomContainer(
-                    icon: Icon(FontAwesomeIcons.chalkboardUser),
+                    icon: const Icon(FontAwesomeIcons.chalkboardUser),
                     cardTitle: 'Help people stay productive on the go',
                     cardText:
-                        'Share training for the Microsoft 365 app for iOS or Android.'),
+                        'You have $userCount user${userCount == 1 ? '' : 's'} in your organization'),
               ],
             ),
             const SizedBox(

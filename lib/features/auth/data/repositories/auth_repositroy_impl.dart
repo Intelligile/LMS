@@ -18,6 +18,10 @@ class AuthRepositoryImpl extends AuthRepository {
     String password = '',
   }) async {
     try {
+      if (username.isEmpty || password.isEmpty) {
+        return left(ServerFailure("Username or password cannot be empty"));
+      }
+
       // Await the result from loginUser in authRemoteDataSource
       await authRemoteDataSource.loginUser(
         password: password,

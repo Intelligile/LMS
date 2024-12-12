@@ -1,12 +1,17 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/exp_extractor_from_jwt.dart';
 import 'package:lms/features/auth/data/models/user_model.dart';
-import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart'; // Import the jwt_decode package
 
 String jwtToken = '';
 String usernamePublic = '';
+String refreshToken = '';
 
 abstract class AuthRemoteDataSource {
   Future<Map<String, dynamic>> loginUser({
@@ -60,60 +65,55 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       print("Login error: $result");
       throw Exception("Login failed: $result");
     }
-    if (result is Map<String, dynamic> && result.containsKey('isVerified')) {
-      if (result['isVerified'] == false || result['isVerified'] == "false") {
-        // Do not throw; pass the response to the cubit
+
+    if (result is Map<String, dynamic>) {
+      // Check if the required fields are present in the response
+      if (!result.containsKey('jwtToken') ||
+          !result.containsKey('username') ||
+          !result.containsKey('roles')) {
+        throw Exception("Missing required fields in the response");
+      }
+
+      // Check if the user is verified
+      if (result.containsKey('isVerified') && result['isVerified'] == false) {
         return result;
       }
-    }
 
-    if (result is Map<String, dynamic> &&
-        result.containsKey('roles') &&
-        result.containsKey('organizationId') &&
-        result.containsKey('jwtToken') &&
-        result.containsKey('username')) {
-      if (result.containsKey('jwtToken')) {
-        jwtToken = result['jwtToken'];
-        final expiration = extractExpiration(jwtToken);
-        if (expiration != null) {
-          await _secureStorage.write(
-              key: 'tokenExpiration', value: expiration.toString());
-          print("Extracted and saved token expiration: $expiration");
-        } else {
-          print("Failed to extract 'exp' from JWT token.");
-        }
+      // Assign values only if they are not null
+      jwtToken = result['jwtToken'] ?? '';
+      usernamePublic = result['username'] ?? '';
+      refreshToken = result['refreshToken'] ?? '';
+      userRole = result['roles'] ?? '';
+
+      if (jwtToken.isEmpty || usernamePublic.isEmpty || userRole.isEmpty) {
+        throw Exception("Invalid login response, some fields are empty");
+      }
+
+      final expiration = extractExpiration(jwtToken);
+      if (expiration != null) {
+        await _secureStorage.write(
+            key: 'tokenExpiration', value: expiration.toString());
+        print("Extracted and saved token expiration: $expiration");
+      } else {
+        print("Failed to extract 'exp' from JWT token.");
       }
 
       // Clear any existing session data
       await _secureStorage.deleteAll();
-      userRole = result['roles'];
-      print("User role: $userRole");
 
-      jwtToken = result['jwtToken'];
-      usernamePublic = result['username'];
+      // Save the values in secure storage
+      await _secureStorage.write(key: 'jwtToken', value: jwtToken);
+      await _secureStorage.write(key: 'usernamePublic', value: usernamePublic);
+      await _secureStorage.write(key: 'userRole', value: userRole);
+      await _secureStorage.write(key: 'refreshToken', value: refreshToken);
 
-      await _secureStorage.write(key: 'jwtToken', value: result['jwtToken']);
-      await _secureStorage.write(
-          key: 'usernamePublic', value: result['username']);
-      await _secureStorage.write(key: 'userRole', value: result['roles']);
-
-      // Ensure organizationId is converted to String
       if (result.containsKey('organizationId')) {
-        print("Storing OrganizationId: ${result['organizationId']}");
         await _secureStorage.write(
             key: 'organizationId', value: result['organizationId'].toString());
       }
-      if (result.containsKey('jwtToken')) {
-        jwtToken = result['jwtToken'];
-        final expiration = extractExpiration(jwtToken);
-        if (expiration != null) {
-          await _secureStorage.write(
-              key: 'tokenExpiration', value: expiration.toString());
-          print("Extracted and saved token expiration: $expiration");
-        } else {
-          print("Failed to extract 'exp' from JWT token.");
-        }
-      }
+
+      // After login, refresh access token if needed
+      await getAccessToken();
 
       return result;
     } else {
@@ -155,6 +155,9 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
         print("Token expiration (exp) not found in DMZ login response.");
       }
 
+      // After DMZ login, refresh access token if needed
+      await getAccessToken();
+
       return result;
     } else {
       throw Exception('Unexpected response format from server');
@@ -178,7 +181,6 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
     String? legalContactEmail,
     String? legalContactNumber,
   }) async {
-    // Construct the request body
     final requestBody = {
       "username": username,
       "password": password,
@@ -187,7 +189,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       "lastname": lastName,
       "phone": phone,
       "enabled": true,
-      "authorityIDs": [1], // Adjust as per requirements
+      "authorityIDs": [1],
       "accountName": accountName ?? "",
       "departmentName": departmentName ?? "",
       "legalEntityName": legalEntityName ?? "",
@@ -198,13 +200,67 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       "legalContactNumber": legalContactNumber ?? "",
     };
 
-    // Log the request body for debugging
     print("Register User Request Body: $requestBody");
 
-    // Send the request to the API
     await api.post(
       endPoint: "api/auth/signup",
-      body: [requestBody], // Wrap in an array to match the JSON structure
+      body: [requestBody],
     );
+  }
+
+  Future<String> getAccessToken() async {
+    const secureStorage = FlutterSecureStorage();
+    String? accessToken = await secureStorage.read(key: 'jwtToken');
+
+    if (accessToken == null || await isTokenExpired(accessToken)) {
+      accessToken = await refreshAccessToken();
+    }
+
+    return accessToken!;
+  }
+
+  Future<bool> isTokenExpired(String token) async {
+    try {
+      final decodedToken =
+          Jwt.parseJwt(token); // Correct method usage from jwt_decode
+      final expiryDate =
+          DateTime.fromMillisecondsSinceEpoch(decodedToken['exp'] * 1000);
+      return DateTime.now().isAfter(expiryDate);
+    } catch (e) {
+      print("Error decoding token: $e");
+      return true; // Return true if decoding fails or token is expired
+    }
+  }
+
+  Future<String> refreshAccessToken() async {
+    const secureStorage = FlutterSecureStorage();
+    String? storedRefreshToken = await secureStorage.read(key: 'refreshToken');
+
+    if (storedRefreshToken == null) {
+      throw Exception("Refresh token not found");
+    }
+
+    try {
+      var response = await api.post(
+        endPoint: "api/auth/refresh-token",
+        body: jsonEncode({"refreshToken": storedRefreshToken}),
+      );
+
+      String newAccessToken = response["accessToken"];
+
+      await secureStorage.write(key: 'jwtToken', value: newAccessToken);
+
+      return newAccessToken;
+    } catch (e) {
+      print("Error refreshing access token: $e");
+      throw Exception("Failed to refresh token");
+    }
+  }
+
+  void autoRefreshToken() {
+    Timer.periodic(Duration(minutes: 5), (timer) async {
+      String accessToken = await getAccessToken();
+      print("Auto-refreshed token: $accessToken");
+    });
   }
 }

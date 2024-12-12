@@ -11,7 +11,7 @@ Widget buildAuthTextField({
     obscureText: obscureText,
     validator: (value) {
       if (value == null || value.isEmpty) {
-        return 'Please enter your $label.toLowerCase()';
+        return 'Please enter your ${label.toLowerCase()}'; // Correct string interpolation
       }
       return null;
     },

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +12,10 @@ import 'package:lms/core/utils/exp_extractor_from_jwt.dart';
 import 'package:lms/core/utils/theme.dart';
 import 'package:lms/core/utils/theme_provider.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:lms/features/auth/data/repositories/auth_repositroy_impl.dart';
+import 'package:lms/features/auth/domain/use_case/login_use_case.dart';
+import 'package:lms/features/auth/domain/use_case/register_use_case.dart';
+import 'package:lms/features/auth/presentation/manager/registration_cubit/registration_cubit.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/auth_code/data/repositories/authorization_code_repository_impl.dart';
 import 'package:lms/features/auth_code/domain/repositories/authorization_code_repository.dart';
@@ -60,6 +66,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   setUpServiceLocator();
+  // Initialize Api instance
+  final api = Api(Dio());
   Bloc.observer = SimpleBlocObserver();
   const secureStorage = FlutterSecureStorage();
 
@@ -135,12 +143,54 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => ExpansionTileDrawerProvider()),
         ChangeNotifierProvider(create: (_) => OpenedAndClosedDrawerProvider()),
+        Provider<Api>(
+          create: (_) => api,
+        ),
+        Provider<AuthRemoteDataSource>(
+          create: (context) => AuthRemoteDataSourceImpl(
+            api: context.read<Api>(),
+            context,
+          ),
+        ),
+        Provider<AuthRepositoryImpl>(
+          create: (context) => AuthRepositoryImpl(
+            authRemoteDataSource: context.read<AuthRemoteDataSource>(),
+          ),
+        ),
+        Provider<RegisterUseCase>(
+          create: (context) => RegisterUseCase(
+            authRepository: context.read<AuthRepositoryImpl>(),
+          ),
+        ),
+        Provider<LoginUseCase>(
+          create: (context) => LoginUseCase(
+            context.read<AuthRepositoryImpl>(),
+          ),
+        ),
+        BlocProvider<RegistrationCubit>(
+          create: (context) => RegistrationCubit(
+            context.read<RegisterUseCase>(),
+            context.read<AuthRemoteDataSource>(),
+            context.read<LoginUseCase>(),
+          ),
+        ),
       ],
       child: MyApp(
         router: router,
       ),
     ),
   );
+}
+
+void autoRefreshToken(AuthRemoteDataSourceImpl authRemoteDataSourceImpl) {
+  Timer.periodic(Duration(minutes: 5), (timer) async {
+    try {
+      String accessToken = await authRemoteDataSourceImpl.getAccessToken();
+      print("Auto-refreshed token: $accessToken");
+    } catch (e) {
+      print("Error auto-refreshing token: $e");
+    }
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -150,6 +200,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final api = Api(Dio());
+    // Here we have access to the context
+    final authRemoteDataSourceImpl =
+        AuthRemoteDataSourceImpl(api: api, context);
+
+    // Call auto-refresh token function
+    autoRefreshToken(authRemoteDataSourceImpl);
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthorityCubit>(

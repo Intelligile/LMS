@@ -41,8 +41,7 @@ class PermissionCubit extends Cubit<PermissionState> {
           emit(PermissionStateFailure(errorMessage: failure.message));
         },
         (permissions) {
-          print(
-              "Permissions fetched: ${permissions.map((perm) => perm.permission).toList()}");
+          print("Permissions fetched");
           if (permissions.isEmpty) {
             print("No permissions available");
           }

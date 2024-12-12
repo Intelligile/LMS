@@ -11,6 +11,7 @@ import 'package:lms/features/auth_code/presentation/pages/form_page.dart';
 import 'package:lms/features/auth_code/presentation/pages/list_auth_codes.dart';
 import 'package:lms/features/billing/presentation/pages/billing_account_setup_page.dart';
 import 'package:lms/features/billing/presentation/pages/billing_accounts_managment_page.dart';
+import 'package:lms/features/billing/presentation/pages/billing_payments_managament_page.dart';
 import 'package:lms/features/billing/presentation/pages/payment_methods_management_page.dart';
 import 'package:lms/features/dmz_management/presentation/pages/dmz_management_page.dart';
 import 'package:lms/features/dmz_management/presentation/pages/dmz_setup.dart';
@@ -302,6 +303,13 @@ class AppRouter {
             );
           },
         ),
+
+        GoRoute(
+          path: kBillingAndPayments,
+          builder: (context, state) {
+            return const BillingAndPaymentsManagementPage();
+          },
+        ),
       ],
     );
   }
@@ -338,6 +346,8 @@ class AppRouter {
   static const kPaymentMethodsManagement = '/payment-methods-management';
 
   static const kVerifyAccount = '/verify-account';
+
+  static const kBillingAndPayments = '/billing-payments-managament';
 
   static Future<String?> _getUsernameFromSharedPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

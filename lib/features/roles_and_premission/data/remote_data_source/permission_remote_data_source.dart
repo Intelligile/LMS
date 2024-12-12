@@ -35,7 +35,7 @@ class PermissionRemoteDataSourceImpl extends PermissionRemoteDataSource {
         // Fetch all permissions directly if roleName is null
         var result =
             await api.get(endPoint: 'api/permissions', token: jwtTokenPublic);
-        print("Fetched all permissions: $result");
+        // print("Fetched all permissions: $result");
 
         if (result is List) {
           for (var permissionData in result) {
@@ -58,7 +58,7 @@ class PermissionRemoteDataSourceImpl extends PermissionRemoteDataSource {
           endPoint: 'api/permissions/by-role/$roleName',
           token: jwtTokenPublic,
         );
-        print("Fetched permissions for role $roleName: $result");
+        // print("Fetched permissions for role $roleName: $result");
 
         if (result is List) {
           for (var permissionData in result) {
@@ -74,8 +74,8 @@ class PermissionRemoteDataSourceImpl extends PermissionRemoteDataSource {
       }
 
       // Debugging the final permissions list
-      print(
-          "DEBUG: Final Permissions List: ${permissions.map((perm) => perm.permission).toList()}");
+      // print(
+      //     "DEBUG: Final Permissions List: ${permissions.map((perm) => perm.permission).toList()}");
     } catch (e) {
       print("Error in getPermissions: $e");
     }

@@ -119,7 +119,7 @@ class _CustomCardState extends State<CustomCard> {
                 const SizedBox(width: 15),
                 InkWell(
                   onTap: () {
-                    // Add action for viewing the bill
+                    GoRouter.of(context).go(AppRouter.kProductList);
                   },
                   child: Row(
                     children: [
@@ -145,7 +145,7 @@ class _CustomCardState extends State<CustomCard> {
                 const SizedBox(width: 15),
                 InkWell(
                   onTap: () {
-                    // Add action for viewing the bill
+                    GoRouter.of(context).go(AppRouter.kBillingAccountForm);
                   },
                   child: Row(
                     children: [

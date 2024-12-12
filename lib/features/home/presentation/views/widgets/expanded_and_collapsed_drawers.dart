@@ -47,8 +47,8 @@ class _CustomExpandedDrawerState extends State<CustomExpandedDrawer> {
         }
 
         // Debugging: Print the permissions list
-        print(
-            "DEBUG: Permissions List: ${permissions.map((perm) => perm.permission).toList()}");
+        // print(
+        //     "DEBUG: Permissions List: ${permissions.map((perm) => perm.permission).toList()}");
 
         bool drawerOpen =
             context.watch<OpenedAndClosedDrawerProvider>().isDrawerOpen;
@@ -342,6 +342,17 @@ List<dynamic> getDrawerItems(bool drawerOpen, List<Permission> permissions) {
                   : const EdgeInsets.only(left: 0.0),
               iconSize: 20.0,
             ),
+          if (permissions
+              .any((perm) => perm.permission == 'MANAGE_PAYMENT_METHODS'))
+            ListTileItemModel(
+              icon: FontAwesomeIcons.solidCreditCard,
+              title: drawerOpen ? 'Billing & Payments' : null,
+              path: AppRouter.kBillingAndPayments,
+              padding: drawerOpen
+                  ? const EdgeInsets.only(left: 26.0)
+                  : const EdgeInsets.only(left: 0.0),
+              iconSize: 20.0,
+            ),
         ],
       ),
 
@@ -384,6 +395,11 @@ List<dynamic> getDrawerItems(bool drawerOpen, List<Permission> permissions) {
       ),
 
     // Always Visible Items
+    ListTileItemModel(
+      icon: Icons.settings,
+      title: drawerOpen ? 'Product Management' : null,
+      path: AppRouter.kProductManagement,
+    ),
     ListTileItemModel(
       icon: Icons.generating_tokens_sharp,
       title: drawerOpen ? 'Generate Auth Code' : null,
