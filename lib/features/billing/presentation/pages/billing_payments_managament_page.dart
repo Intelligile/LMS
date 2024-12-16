@@ -1,19 +1,21 @@
-import 'dart:io';
 import 'dart:typed_data';
-import 'dart:html' as html;
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
-import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
 import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:lms/features/billing/presentation/widgets/billing_payments_management_web.dart'
+    if (dart.library.io) 'package:lms/features/billing/presentation/widgets/billing_payments_management_nonweb.dart';
+
+// import 'billing_payments_management_web.dart'
+//      'billing_payments_management_nonweb.dart';
 
 class BillingAndPaymentsManagementPage extends StatefulWidget {
-  const BillingAndPaymentsManagementPage({Key? key}) : super(key: key);
+  const BillingAndPaymentsManagementPage({super.key});
 
   @override
   _BillingAndPaymentsManagementPageState createState() =>
@@ -25,7 +27,6 @@ class _BillingAndPaymentsManagementPageState
   late Dio _dio;
   bool _isLoading = true;
   List<Map<String, dynamic>> _billingData = [];
-
   final Color primaryColor = const Color(0xFF017278);
 
   @override
@@ -66,22 +67,12 @@ class _BillingAndPaymentsManagementPageState
         ),
       );
 
-      // Convert the response data to Uint8List
       final bytes = Uint8List.fromList(response.data);
-
-      // Create a blob and a download link
-      final blob = html.Blob([bytes]);
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      final anchor = html.AnchorElement(href: url)
-        ..target = 'blank'
-        ..download = 'bill_$billId.pdf'
-        ..click();
-      html.Url.revokeObjectUrl(url);
+      downloadPDF(billId, bytes);
 
       showSnackBar(context, 'PDF downloaded successfully!', Colors.green);
     } catch (e) {
       showSnackBar(context, 'Failed to download PDF: $e', Colors.red);
-      print(e);
     }
   }
 
