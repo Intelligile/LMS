@@ -24,7 +24,7 @@ class _ProductListPageState extends State<ProductListPage> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       body: AdaptiveLayout(
-        mobileLayout: (context) => const SizedBox(),
+        mobileLayout: (context) => const ProductListPageBody(),
         tabletLayout: (context) => const SizedBox(),
         desktopLayout: (context) => const ProductListPageBody(),
       ),
@@ -49,65 +49,61 @@ class ProductListPageBody extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0), // Padding around the content
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Add the breadcrumb at the top
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: CustomBreadcrumb(
-                      items: const ['Home', 'Purchase Product'],
-                      onTap: (index) {
-                        // Add navigation logic based on index
-                        if (index == 0) {
-                          GoRouter.of(context).go(AppRouter.kHomeView);
-                        } else if (index == 1) {
-                          // Navigate to Active Users
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16), // Add spacing after breadcrumb
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: products.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Two columns in the grid
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio:
-                          3.5, // Adjusted aspect ratio for smaller cards
-                    ),
-                    itemBuilder: (context, index) {
-                      final product = products[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(
-                            16.0), // Padding around each card
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductDetailPage(product: product),
-                              ),
-                            );
-                          },
-                          child: ProductCard(
-                            product: product,
-                          ),
-                        ),
-                      );
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0), // Padding around the content
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Add the breadcrumb at the top
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: CustomBreadcrumb(
+                    items: const ['Home', 'Purchase Product'],
+                    onTap: (index) {
+                      // Add navigation logic based on index
+                      if (index == 0) {
+                        GoRouter.of(context).go(AppRouter.kHomeView);
+                      } else if (index == 1) {
+                        // Navigate to Active Users
+                      }
                     },
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 16), // Add spacing after breadcrumb
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: products.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing:
+                        MediaQuery.sizeOf(context).width > 600 ? 16 : 8,
+                    crossAxisSpacing:
+                        MediaQuery.sizeOf(context).width > 600 ? 16 : 8,
+                    childAspectRatio:
+                        MediaQuery.sizeOf(context).width > 600 ? 2.5 : 1,
+                  ),
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProductDetailPage(product: product),
+                          ),
+                        );
+                      },
+                      child: ProductCard(
+                        product: product,
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         );
