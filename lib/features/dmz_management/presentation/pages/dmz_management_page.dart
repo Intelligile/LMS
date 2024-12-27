@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/api.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
 import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
@@ -187,7 +189,7 @@ class _DMZManagementPageBodyState extends State<DMZManagementPageBody> {
                   items: const ['Home', 'DMZ Accounts'],
                   onTap: (index) {
                     if (index == 0) {
-                      // Navigate to Home
+                      GoRouter.of(context).go(AppRouter.kHomeView);
                     }
                   },
                 ),

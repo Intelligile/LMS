@@ -79,7 +79,7 @@ class UserNameIcon extends StatelessWidget {
 
   void _navigateToManageProfile(BuildContext context, String username) {
     // Navigate to the user profile page
-    GoRouter.of(context).go('${AppRouter.kUserProfile}/$username');
+    GoRouter.of(context).push('${AppRouter.kUserProfile}/$username');
   }
 
   void _performLogout(BuildContext context) async {

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
@@ -9,8 +12,6 @@ import 'package:lms/features/user_management/domain/entities/license.dart';
 import 'package:lms/features/user_management/domain/use_cases/get_user_licenses.dart';
 import 'package:lms/features/user_management/domain/use_cases/get_user_profile_data.dart';
 import 'package:lms/features/user_management/domain/use_cases/update_user_profile.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class UserProfilePage extends StatefulWidget {
   final GetUserProfile getUserProfile;
@@ -207,7 +208,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('User Profile'),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back),
+            color: Colors.white,
+          ),
+          title:
+              const Text('User Profile', style: TextStyle(color: Colors.white)),
           backgroundColor: const Color(0xFF017278), // LMS Primary color
         ),
         body: SingleChildScrollView(

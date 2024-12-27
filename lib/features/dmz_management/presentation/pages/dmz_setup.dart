@@ -1,8 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/core/widgets/custom_scaffold.dart';
-import 'package:lms/core/utils/api.dart';
-import 'package:dio/dio.dart';
 
 class DMZSetupDownloadPage extends StatefulWidget {
   const DMZSetupDownloadPage({super.key});
@@ -23,8 +24,8 @@ class _DMZSetupDownloadPageState extends State<DMZSetupDownloadPage> {
 
       await dio.download(url, savePath);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('DMZ setup downloaded successfully!'),
+        const SnackBar(
+          content: Text('DMZ setup downloaded successfully!'),
           backgroundColor: Colors.green,
         ),
       );
@@ -50,7 +51,7 @@ class _DMZSetupDownloadPageState extends State<DMZSetupDownloadPage> {
               items: const ['Home', 'DMZ Setup Download'],
               onTap: (index) {
                 if (index == 0) {
-                  Navigator.of(context).pop();
+                  GoRouter.of(context).go(AppRouter.kHomeView);
                 }
               },
             ),
