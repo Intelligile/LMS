@@ -24,7 +24,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
   Widget build(BuildContext context) {
     return CustomScaffold(
         body: AdaptiveLayout(
-      mobileLayout: (context) => const SizedBox(),
+      mobileLayout: (context) => const UserManagementPageBody(),
       tabletLayout: (context) => const SizedBox(),
       desktopLayout: (context) => const UserManagementPageBody(),
     ));

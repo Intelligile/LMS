@@ -385,17 +385,11 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         TextButton(
-                                          onPressed: () => _editUser(user),
+                                          onPressed: () =>
+                                              _openUserFormFromRight(context,
+                                                  user: user, isEditing: true),
                                           child: const Text(
                                             'Edit',
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () => _deleteUser(user),
-                                          child: const Text(
-                                            'Delete',
                                             style:
                                                 TextStyle(color: Colors.black),
                                           ),
@@ -413,8 +407,4 @@ class _UserManagementPageBodyState extends State<UserManagementPageBody> {
             ),
           );
   }
-
-  _editUser(UserModel user) {}
-
-  _deleteUser(UserModel user) {}
 }
