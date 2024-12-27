@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:lms/constants.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/core/utils/app_router.dart';
-import 'package:lms/core/utils/styles.dart';
 import 'package:lms/core/widgets/custom_breadcrumb.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/roles_and_premission/data/models/authority.dart';
@@ -17,7 +16,6 @@ import 'package:lms/features/roles_and_premission/presentation/manager/permissio
 import 'package:lms/features/roles_and_premission/presentation/manager/user_cubit/user_dto_cubit.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/roles_and_permission_dashboard_view.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/actions_container.dart';
-import 'package:lms/features/roles_and_premission/presentation/views/widgets/all_permission_card.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/roles_table_filtering_row.dart';
 import 'package:lms/features/roles_and_premission/presentation/views/widgets/roles_table_header.dart';
 
@@ -236,7 +234,7 @@ class _RoleItemState extends State<RoleItem> {
             alignment: Alignment.centerRight,
             child: Container(
               width: MediaQuery.of(context).size.width *
-                  0.6, // 60% width of screen
+                  0.9, // 60% width of screen
               height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: Colors.white,

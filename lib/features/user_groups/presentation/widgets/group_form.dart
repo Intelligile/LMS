@@ -103,7 +103,19 @@ class _GroupFormState extends State<GroupForm> {
                   child: _buildUserList(),
                 ),
                 const SizedBox(height: 20),
-                _buildActionButtons(context),
+                Row(
+                  children: [
+                    _buildActionButtons(
+                      context,
+                      onPressed: _saveGroup,
+                    ),
+                    const SizedBox(width: 20),
+                    _buildActionButtons(context, buttonName: 'Cancel',
+                        onPressed: () {
+                      Navigator.pop(context);
+                    }, bgColor: Colors.red),
+                  ],
+                ),
               ],
             ),
           ),
@@ -162,25 +174,26 @@ class _GroupFormState extends State<GroupForm> {
     );
   }
 
-  Row _buildActionButtons(BuildContext context) {
+  Row _buildActionButtons(BuildContext context,
+      {required VoidCallback onPressed, String? buttonName, Color? bgColor}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF017278),
+            backgroundColor: bgColor ?? const Color(0xFF017278),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           ),
-          onPressed: _saveGroup,
-          child: const Text(
-            'Save',
-            style: TextStyle(fontSize: 16, color: Colors.white),
+          onPressed: onPressed,
+          child: Text(
+            buttonName ?? 'Save',
+            style: const TextStyle(fontSize: 16, color: Colors.white),
           ),
         ),
-        if (widget.group != null)
+        if (widget.group != null && buttonName == null)
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
