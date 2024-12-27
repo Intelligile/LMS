@@ -81,172 +81,175 @@ class _UserFormState extends State<UserForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 16.0),
-                      child: Text(
-                        'Set up the basics',
-                        style: TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 40.0, vertical: 24.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 16.0),
+                        child: Text(
+                          'Set up the basics',
+                          style: TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 24.0),
-                      child: Text(
-                        'To get started, fill out some basic information about who you’re adding as a user.',
-                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 24.0),
+                        child: Text(
+                          'To get started, fill out some basic information about who you’re adding as a user.',
+                          style:
+                              TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildTextField(
-                                  label: 'First name',
-                                  initialValue: _users[0].firstname,
-                                  onSaved: (value) =>
-                                      _users[0].firstname = value!,
+                      Expanded(
+                        child: ListView(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildTextField(
+                                    label: 'First name',
+                                    initialValue: _users[0].firstname,
+                                    onSaved: (value) =>
+                                        _users[0].firstname = value!,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: _buildTextField(
-                                  label: 'Last name',
-                                  initialValue: _users[0].lastname,
-                                  onSaved: (value) =>
-                                      _users[0].lastname = value!,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: _buildTextField(
+                                    label: 'Last name',
+                                    initialValue: _users[0].lastname,
+                                    onSaved: (value) =>
+                                        _users[0].lastname = value!,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          _buildTextField(
-                            label: 'Display name',
-                            initialValue: _users[0].username,
-                            onSaved: (value) => _users[0].username = value!,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildTextField(
-                            label: 'Username',
-                            initialValue: _users[0].username,
-                            onSaved: (value) => _users[0].username = value!,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildTextField(
-                            label: 'Email',
-                            initialValue: _users[0].email,
-                            validator: (value) {
-                              if (!EmailValidator.validate(value ?? '')) {
-                                return 'Invalid email format';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) => _users[0].email = value!,
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Password field with visibility toggle
-                          TextFormField(
-                            controller: _passwordController,
-                            obscureText: !_passwordVisible,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: const TextStyle(fontSize: 18),
-                              border: const OutlineInputBorder(),
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: const EdgeInsets.all(12),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _passwordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _passwordVisible = !_passwordVisible;
-                                  });
-                                },
-                              ),
+                              ],
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a password';
-                              }
-                              return null;
-                            },
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          const SizedBox(height: 20),
-
-                          _buildTextField(
-                            label: 'Phone',
-                            initialValue: _users[0].phone,
-                            onSaved: (value) => _users[0].phone = value!,
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Enabled toggle switch
-                          SwitchListTile(
-                            title: const Text('Enabled',
-                                style: TextStyle(fontSize: 18)),
-                            activeColor: const Color(0xFF017278),
-                            value: _users[0].enabled,
-                            onChanged: (value) {
-                              setState(() {
-                                _users[0].enabled = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(color: Colors.grey[300]),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Cancel',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black)),
-                          ),
-                          ElevatedButton(
-                            onPressed: _submitForm,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF017278),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 12),
+                            const SizedBox(height: 20),
+                            _buildTextField(
+                              label: 'Display name',
+                              initialValue: _users[0].username,
+                              onSaved: (value) => _users[0].username = value!,
                             ),
-                            child: const Text('Submit',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white)),
-                          ),
-                        ],
+                            const SizedBox(height: 20),
+                            _buildTextField(
+                              label: 'Username',
+                              initialValue: _users[0].username,
+                              onSaved: (value) => _users[0].username = value!,
+                            ),
+                            const SizedBox(height: 20),
+                            _buildTextField(
+                              label: 'Email',
+                              initialValue: _users[0].email,
+                              validator: (value) {
+                                if (!EmailValidator.validate(value ?? '')) {
+                                  return 'Invalid email format';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) => _users[0].email = value!,
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Password field with visibility toggle
+                            TextFormField(
+                              controller: _passwordController,
+                              obscureText: !_passwordVisible,
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                labelStyle: const TextStyle(fontSize: 18),
+                                border: const OutlineInputBorder(),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.all(12),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _passwordVisible = !_passwordVisible;
+                                    });
+                                  },
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a password';
+                                }
+                                return null;
+                              },
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            const SizedBox(height: 20),
+
+                            _buildTextField(
+                              label: 'Phone',
+                              initialValue: _users[0].phone,
+                              onSaved: (value) => _users[0].phone = value!,
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Enabled toggle switch
+                            SwitchListTile(
+                              title: const Text('Enabled',
+                                  style: TextStyle(fontSize: 18)),
+                              activeColor: const Color(0xFF017278),
+                              value: _users[0].enabled,
+                              onChanged: (value) {
+                                setState(() {
+                                  _users[0].enabled = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Divider(color: Colors.grey[300]),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('Cancel',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black)),
+                            ),
+                            ElevatedButton(
+                              onPressed: _submitForm,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF017278),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                              ),
+                              child: const Text('Submit',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

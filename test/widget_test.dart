@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lms/core/utils/app_router.dart'; // Adjust the import path if needed
 import 'package:lms/main.dart';
 
 // Create a mock or dummy GoRouter instance
@@ -10,8 +9,10 @@ GoRouter createTestRouter() {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Home Page')),
+        builder: (context, state) => const SafeArea(
+          child: Scaffold(
+            body: Center(child: Text('Home Page')),
+          ),
         ),
       ),
     ],

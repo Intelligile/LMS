@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/core/functions/set_up_service_locator.dart';
 import 'package:lms/core/simple_bloc_observer.dart';
@@ -57,10 +58,8 @@ import 'package:lms/features/user_groups/presentation/state/group_bloc.dart';
 import 'package:lms/features/user_management/data/data_sources/user_remote_data_source.dart';
 import 'package:lms/features/user_management/domain/use_cases/add_user.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/user_management/data/repositories/user_repository.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -183,7 +182,7 @@ void main() async {
 }
 
 void autoRefreshToken(AuthRemoteDataSourceImpl authRemoteDataSourceImpl) {
-  Timer.periodic(Duration(minutes: 5), (timer) async {
+  Timer.periodic(const Duration(minutes: 5), (timer) async {
     try {
       String accessToken = await authRemoteDataSourceImpl.getAccessToken();
       print("Auto-refreshed token: $accessToken");
@@ -323,7 +322,7 @@ class MyApp extends StatelessWidget {
           builder: (context, themeProvider, child) {
             return MaterialApp.router(
               routerConfig: router,
-              debugShowCheckedModeBanner: true,
+              debugShowCheckedModeBanner: false,
               theme: getLightTheme(),
               darkTheme: getDarkTheme(),
               themeMode: themeProvider.themeMode,

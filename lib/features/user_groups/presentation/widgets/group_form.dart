@@ -56,54 +56,56 @@ class _GroupFormState extends State<GroupForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF017278),
-        title: Text(
-          widget.group != null ? 'Edit Group' : 'Create Group',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF017278),
+          title: Text(
+            widget.group != null ? 'Edit Group' : 'Create Group',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          leading: BackButton(
+            color: Colors.white,
+            onPressed: () {
+              // Navigate back to the previous page
+              GoRouter.of(context).push(AppRouter.kGroupList);
+            },
+          ),
         ),
-        leading: BackButton(
-          color: Colors.white,
-          onPressed: () {
-            // Navigate back to the previous page
-            GoRouter.of(context).push(AppRouter.kGroupList);
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTextFormField(
-                label: 'Group Name',
-                initialValue: _name,
-                onSaved: (value) => _name = value ?? '',
-              ),
-              const SizedBox(height: 16),
-              _buildTextFormField(
-                label: 'Description',
-                initialValue: _description,
-                onSaved: (value) => _description = value ?? '',
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Assign Users',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Color(0xFF017278)),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: _buildUserList(),
-              ),
-              const SizedBox(height: 20),
-              _buildActionButtons(context),
-            ],
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTextFormField(
+                  label: 'Group Name',
+                  initialValue: _name,
+                  onSaved: (value) => _name = value ?? '',
+                ),
+                const SizedBox(height: 16),
+                _buildTextFormField(
+                  label: 'Description',
+                  initialValue: _description,
+                  onSaved: (value) => _description = value ?? '',
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Assign Users',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Color(0xFF017278)),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: _buildUserList(),
+                ),
+                const SizedBox(height: 20),
+                _buildActionButtons(context),
+              ],
+            ),
           ),
         ),
       ),

@@ -297,51 +297,53 @@ class _AuthorityPermissionsViewState extends State<AuthorityPermissionsView>
     context.read<PermissionCubit>().getPermissions();
     context.read<UserDtoCubit>().getUsers(roleId: widget.authority.id);
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Text(
-          widget.authority.authority ?? 'Authority Details',
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          title: Text(
+            widget.authority.authority ?? 'Authority Details',
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          iconTheme: const IconThemeData(color: Colors.black),
+          actions: [
+            IconButton(
+              onPressed: () {
+                context
+                    .read<PermissionCubit>()
+                    .getPermissions(roleName: widget.authority.authority);
+                context
+                    .read<UserDtoCubit>()
+                    .getUsers(roleId: widget.authority.id);
+              },
+              icon: const Icon(Icons.refresh),
+            )
+          ],
+          bottom: TabBar(
+            controller: _tabController,
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Colors.blue,
+            tabs: const [
+              Tab(text: 'General'),
+              Tab(text: 'Assigned'),
+              Tab(text: 'Permissions'),
+            ],
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context
-                  .read<PermissionCubit>()
-                  .getPermissions(roleName: widget.authority.authority);
-              context
-                  .read<UserDtoCubit>()
-                  .getUsers(roleId: widget.authority.id);
-            },
-            icon: const Icon(Icons.refresh),
-          )
-        ],
-        bottom: TabBar(
+        body: TabBarView(
           controller: _tabController,
-          labelColor: Colors.black,
-          unselectedLabelColor: Colors.grey,
-          indicatorColor: Colors.blue,
-          tabs: const [
-            Tab(text: 'General'),
-            Tab(text: 'Assigned'),
-            Tab(text: 'Permissions'),
+          children: [
+            _buildGeneralTab(),
+            _buildAssignedTab(context),
+            _buildPermissionsTab(context),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildGeneralTab(),
-          _buildAssignedTab(context),
-          _buildPermissionsTab(context),
-        ],
       ),
     );
   }

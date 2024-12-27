@@ -474,68 +474,71 @@ class _PaymentMethodManagementPageState
                                     bottomLeft: Radius.circular(20),
                                   ),
                                 ),
-                                child: Scaffold(
-                                  appBar: AppBar(
-                                    title: const Text('Add Payment Method'),
-                                    backgroundColor: primaryColor,
-                                    automaticallyImplyLeading: false,
-                                    actions: [
-                                      IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pop(); // Close the form
+                                child: SafeArea(
+                                  child: Scaffold(
+                                    appBar: AppBar(
+                                      title: const Text('Add Payment Method'),
+                                      backgroundColor: primaryColor,
+                                      automaticallyImplyLeading: false,
+                                      actions: [
+                                        IconButton(
+                                          icon: const Icon(Icons.close),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // Close the form
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    body: Padding(
+                                      padding: const EdgeInsets.all(70.0),
+                                      child: PaymentViewBody(
+                                        onBillingDataSubmitted:
+                                            (billingData) async {
+                                          try {
+                                            await _dio.post(
+                                              'http://localhost:8082/api/payment-methods/billing-account/${_selectedBillingAccount!['id']}',
+                                              options: Options(
+                                                headers: {
+                                                  'Authorization':
+                                                      'Bearer $jwtTokenPublic', // Include token for authorization
+                                                  'Content-Type':
+                                                      'application/json',
+                                                },
+                                              ),
+                                              data: {
+                                                'accountHolderName':
+                                                    billingData[
+                                                        'cardholderName'],
+                                                'cardNumber': billingData[
+                                                    'creditCardNumber'],
+                                                'expiryDate':
+                                                    billingData['expiryDate'],
+                                                'cvv': billingData['cvv'],
+                                                'postalCode':
+                                                    billingData['postalCode'],
+                                                'region': billingData['region'],
+                                                'methodName': 'Credit Card',
+                                              },
+                                            );
+
+                                            Navigator.of(context)
+                                                .pop(); // Close the drawer
+                                            _fetchPaymentMethods(
+                                                _selectedBillingAccount![
+                                                    'id']); // Refresh methods
+                                            showSnackBar(
+                                                context,
+                                                'Payment method added successfully!',
+                                                Colors.green);
+                                          } catch (e) {
+                                            showSnackBar(
+                                                context,
+                                                'Failed to add payment method: $e',
+                                                Colors.red);
+                                          }
                                         },
                                       ),
-                                    ],
-                                  ),
-                                  body: Padding(
-                                    padding: const EdgeInsets.all(70.0),
-                                    child: PaymentViewBody(
-                                      onBillingDataSubmitted:
-                                          (billingData) async {
-                                        try {
-                                          await _dio.post(
-                                            'http://localhost:8082/api/payment-methods/billing-account/${_selectedBillingAccount!['id']}',
-                                            options: Options(
-                                              headers: {
-                                                'Authorization':
-                                                    'Bearer $jwtTokenPublic', // Include token for authorization
-                                                'Content-Type':
-                                                    'application/json',
-                                              },
-                                            ),
-                                            data: {
-                                              'accountHolderName':
-                                                  billingData['cardholderName'],
-                                              'cardNumber': billingData[
-                                                  'creditCardNumber'],
-                                              'expiryDate':
-                                                  billingData['expiryDate'],
-                                              'cvv': billingData['cvv'],
-                                              'postalCode':
-                                                  billingData['postalCode'],
-                                              'region': billingData['region'],
-                                              'methodName': 'Credit Card',
-                                            },
-                                          );
-
-                                          Navigator.of(context)
-                                              .pop(); // Close the drawer
-                                          _fetchPaymentMethods(
-                                              _selectedBillingAccount![
-                                                  'id']); // Refresh methods
-                                          showSnackBar(
-                                              context,
-                                              'Payment method added successfully!',
-                                              Colors.green);
-                                        } catch (e) {
-                                          showSnackBar(
-                                              context,
-                                              'Failed to add payment method: $e',
-                                              Colors.red);
-                                        }
-                                      },
                                     ),
                                   ),
                                 ),

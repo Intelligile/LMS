@@ -135,7 +135,7 @@ class _BillingAccountManagementPageState
                         contactPhone: '',
                         country: '');
 
-                    if (isEditing && updatedAccount.id != null) {
+                    if (isEditing) {
                       result = await _billingAccountRemoteDataSource
                           .updateBillingAccount(updatedAccount);
                     } else {
@@ -186,94 +186,96 @@ class _BillingAccountManagementPageState
                   bottomLeft: Radius.circular(20),
                 ),
               ),
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text('Billing Account Details'),
-                  backgroundColor: Colors.white,
-                  automaticallyImplyLeading: false,
-                  titleTextStyle: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  iconTheme: const IconThemeData(color: Colors.black),
-                  elevation: 0,
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.black),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+              child: SafeArea(
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Billing Account Details'),
+                    backgroundColor: Colors.white,
+                    automaticallyImplyLeading: false,
+                    titleTextStyle: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Business Name Header
-                        Text(
-                          account.businessName,
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Section: Billing account details
-                        const Text(
-                          'Billing account details',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        _buildDetailRow('Sold to address:',
-                            '${account.firstName} ${account.lastName}\n${account.addressLine1}\n${account.city ?? ''}\n${account.country ?? ''}\n${account.businessPhoneNumber ?? ''}'),
-                        const SizedBox(height: 20),
-
-                        // Agreement Link
-                        GestureDetector(
-                          onTap: () {
-                            // Handle agreement navigation here
-                          },
-                          child: const Text(
-                            'Agreement: View Microsoft Online Subscription Agreement',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
+                    iconTheme: const IconThemeData(color: Colors.black),
+                    elevation: 0,
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.black),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                  body: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Business Name Header
+                          Text(
+                            account.businessName,
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        const Divider(thickness: 1),
+                          const SizedBox(height: 20),
 
-                        // Section: Registration number
-                        const Text(
-                          'Registration number (Optional)',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
+                          // Section: Billing account details
+                          const Text(
+                            'Billing account details',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 10),
+                          _buildDetailRow('Sold to address:',
+                              '${account.firstName} ${account.lastName}\n${account.addressLine1}\n${account.city ?? ''}\n${account.country ?? ''}\n${account.businessPhoneNumber ?? ''}'),
+                          const SizedBox(height: 20),
 
-                        // Section: Additional details (optional)
-                        const Divider(thickness: 1),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'These numbers help us review the details of your account. Learn more about registration numbers.',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
+                          // Agreement Link
+                          GestureDetector(
+                            onTap: () {
+                              // Handle agreement navigation here
+                            },
+                            child: const Text(
+                              'Agreement: View Microsoft Online Subscription Agreement',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 20),
+                          const Divider(thickness: 1),
+
+                          // Section: Registration number
+                          const Text(
+                            'Registration number (Optional)',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+
+                          // Section: Additional details (optional)
+                          const Divider(thickness: 1),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'These numbers help us review the details of your account. Learn more about registration numbers.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -400,7 +402,7 @@ class _BillingAccountManagementPageState
                                   onPressed: () async {
                                     try {
                                       await _billingAccountRemoteDataSource
-                                          .deleteBillingAccount(account.id!);
+                                          .deleteBillingAccount(account.id);
                                       _fetchBillingAccounts();
                                     } catch (e) {
                                       showSnackBar(

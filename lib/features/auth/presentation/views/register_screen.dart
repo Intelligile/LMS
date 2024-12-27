@@ -22,17 +22,19 @@ class RegisterScreen extends StatelessWidget {
     final authRepository =
         AuthRepositoryImpl(authRemoteDataSource: authRemoteDataSource);
 
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) => RegistrationCubit(
-          RegisterUseCase(authRepository: authRepository),
-          authRemoteDataSource,
-          LoginUseCase(authRepository), // Pass authRepository correctly
-        ),
-        child: AdaptiveLayout(
-          mobileLayout: (context) => const MobileRegisterForm(),
-          tabletLayout: (context) => const SizedBox(),
-          desktopLayout: (context) => const DesktopRegisterForm(),
+    return SafeArea(
+      child: Scaffold(
+        body: BlocProvider(
+          create: (context) => RegistrationCubit(
+            RegisterUseCase(authRepository: authRepository),
+            authRemoteDataSource,
+            LoginUseCase(authRepository), // Pass authRepository correctly
+          ),
+          child: AdaptiveLayout(
+            mobileLayout: (context) => const MobileRegisterForm(),
+            tabletLayout: (context) => const SizedBox(),
+            desktopLayout: (context) => const DesktopRegisterForm(),
+          ),
         ),
       ),
     );

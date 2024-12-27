@@ -1,10 +1,9 @@
 import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:lms/core/functions/show_snack_bar.dart';
 import 'package:lms/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:lms/features/auth/presentation/manager/sign_in_cubit/sign_in_cubit.dart';
 import 'package:lms/features/roles_and_premission/data/models/authority.dart';
@@ -408,301 +407,306 @@ class _UserFormState extends State<UserForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
-              child: Form(
-                key: _formKey,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 40.0, vertical: 24.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 16.0),
+                        child: Text(
+                          'Set up the basics',
+                          style: TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 24.0),
+                        child: Text(
+                          'To get started, fill out some basic information about who you’re adding as a user.',
+                          style:
+                              TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildTextField(
+                                    label: 'First name',
+                                    initialValue: _users[0].firstname,
+                                    onSaved: (value) =>
+                                        _users[0].firstname = value!,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: _buildTextField(
+                                    label: 'Last name',
+                                    initialValue: _users[0].lastname,
+                                    onSaved: (value) =>
+                                        _users[0].lastname = value!,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            _buildTextField(
+                              label: 'Username',
+                              initialValue: _users[0].username,
+                              onSaved: (value) => _users[0].username = value!,
+                            ),
+                            const SizedBox(height: 20),
+                            _buildTextField(
+                              label: 'Email',
+                              initialValue: _users[0].email,
+                              validator: (value) {
+                                if (!EmailValidator.validate(value ?? '')) {
+                                  return 'Invalid email format';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) => _users[0].email = value!,
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: _passwordController,
+                              obscureText: !_passwordVisible,
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                border: const OutlineInputBorder(),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _passwordVisible = !_passwordVisible;
+                                    });
+                                  },
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a password';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            _buildTextField(
+                              label: 'Phone',
+                              initialValue: _users[0].phone,
+                              onSaved: (value) => _users[0].phone = value!,
+                            ),
+                            const SizedBox(height: 20),
+                            SwitchListTile(
+                              title: const Text('Enabled',
+                                  style: TextStyle(fontSize: 18)),
+                              activeColor: const Color(0xFF017278),
+                              value: _users[0].enabled,
+                              onChanged: (value) {
+                                setState(() {
+                                  _users[0].enabled = value;
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 150),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: TextButton(
+                                    onPressed: _openDrawer,
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: const Color(0xFF017278),
+                                      padding: EdgeInsets.zero,
+                                    ).copyWith(
+                                      textStyle: WidgetStateProperty
+                                          .resolveWith<TextStyle>(
+                                        (Set<WidgetState> states) {
+                                          if (states
+                                              .contains(WidgetState.hovered)) {
+                                            return const TextStyle(
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              fontWeight: FontWeight.bold,
+                                            );
+                                          }
+                                          return const TextStyle(
+                                            decoration: TextDecoration.none,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    child: const Text('Manage Roles'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                                  child: Text(
+                                    'Assign License to User',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                DropdownButtonFormField(
+                                  value: _selectedLicense,
+                                  items: _licenses.map((license) {
+                                    return DropdownMenuItem(
+                                      value: license['licenseId'].toString(),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.key,
+                                              color: Colors.green),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                              'License ID: ${license['licenseId']}'),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedLicense = value;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    labelText: 'Select License',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: _selectedLicense != null
+                                      ? () => _assignLicense(_selectedLicense!)
+                                      : null,
+                                  child: const Text('Assign License'),
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    const SizedBox(width: 8),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _revokeLicense();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      child: const Text(
+                                        'Revoke',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(color: Colors.grey[300]),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('Cancel',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black)),
+                            ),
+                            ElevatedButton(
+                              onPressed: _submitForm,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF017278),
+                              ),
+                              child: const Text('Submit',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (_isDrawerOpen)
+              Container(
+                width: 300,
+                color: Colors.grey[200],
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(bottom: 16.0),
+                      padding: EdgeInsets.all(16.0),
                       child: Text(
-                        'Set up the basics',
+                        'Manage Roles',
                         style: TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 24.0),
-                      child: Text(
-                        'To get started, fill out some basic information about who you’re adding as a user.',
-                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Expanded(
-                      child: ListView(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildTextField(
-                                  label: 'First name',
-                                  initialValue: _users[0].firstname,
-                                  onSaved: (value) =>
-                                      _users[0].firstname = value!,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: _buildTextField(
-                                  label: 'Last name',
-                                  initialValue: _users[0].lastname,
-                                  onSaved: (value) =>
-                                      _users[0].lastname = value!,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          _buildTextField(
-                            label: 'Username',
-                            initialValue: _users[0].username,
-                            onSaved: (value) => _users[0].username = value!,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildTextField(
-                            label: 'Email',
-                            initialValue: _users[0].email,
-                            validator: (value) {
-                              if (!EmailValidator.validate(value ?? '')) {
-                                return 'Invalid email format';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) => _users[0].email = value!,
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            controller: _passwordController,
-                            obscureText: !_passwordVisible,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              border: const OutlineInputBorder(),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _passwordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _passwordVisible = !_passwordVisible;
-                                  });
-                                },
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a password';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          _buildTextField(
-                            label: 'Phone',
-                            initialValue: _users[0].phone,
-                            onSaved: (value) => _users[0].phone = value!,
-                          ),
-                          const SizedBox(height: 20),
-                          SwitchListTile(
-                            title: const Text('Enabled',
-                                style: TextStyle(fontSize: 18)),
-                            activeColor: const Color(0xFF017278),
-                            value: _users[0].enabled,
+                      child: ListView.builder(
+                        itemCount: _roles.length,
+                        itemBuilder: (context, index) {
+                          final role = _roles[index];
+                          return CheckboxListTile(
+                            title: Text(role.authority ?? ''),
+                            value: _selectedRoles.contains(role.id),
                             onChanged: (value) {
                               setState(() {
-                                _users[0].enabled = value;
+                                if (value!) {
+                                  _selectedRoles.add(role.id);
+                                } else {
+                                  _selectedRoles.remove(role.id);
+                                }
                               });
                             },
-                          ),
-                          const SizedBox(height: 20),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 150),
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: TextButton(
-                                  onPressed: _openDrawer,
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: const Color(0xFF017278),
-                                    padding: EdgeInsets.zero,
-                                  ).copyWith(
-                                    textStyle: MaterialStateProperty
-                                        .resolveWith<TextStyle>(
-                                      (Set<MaterialState> states) {
-                                        if (states
-                                            .contains(MaterialState.hovered)) {
-                                          return const TextStyle(
-                                            decoration:
-                                                TextDecoration.underline,
-                                            fontWeight: FontWeight.bold,
-                                          );
-                                        }
-                                        return const TextStyle(
-                                          decoration: TextDecoration.none,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  child: const Text('Manage Roles'),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16.0),
-                                child: Text(
-                                  'Assign License to User',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              DropdownButtonFormField(
-                                value: _selectedLicense,
-                                items: _licenses.map((license) {
-                                  return DropdownMenuItem(
-                                    value: license['licenseId'].toString(),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.key, color: Colors.green),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                            'License ID: ${license['licenseId']}'),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedLicense = value;
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: 'Select License',
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: _selectedLicense != null
-                                    ? () => _assignLicense(_selectedLicense!)
-                                    : null,
-                                child: const Text('Assign License'),
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                children: [
-                                  const SizedBox(width: 8),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      _revokeLicense();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                    ),
-                                    child: const Text(
-                                      'Revoke',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
-                    Divider(color: Colors.grey[300]),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Cancel',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black)),
-                          ),
-                          ElevatedButton(
-                            onPressed: _submitForm,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF017278),
-                            ),
-                            child: const Text('Submit',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white)),
-                          ),
-                        ],
+                    ElevatedButton(
+                      onPressed: _assignRoles,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF017278),
                       ),
+                      child: const Text('Save Roles'),
+                    ),
+                    TextButton(
+                      onPressed: _closeDrawer,
+                      child: const Text('Close'),
                     ),
                   ],
                 ),
               ),
-            ),
-          ),
-          if (_isDrawerOpen)
-            Container(
-              width: 300,
-              color: Colors.grey[200],
-              child: Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text(
-                      'Manage Roles',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: _roles.length,
-                      itemBuilder: (context, index) {
-                        final role = _roles[index];
-                        return CheckboxListTile(
-                          title: Text(role.authority ?? ''),
-                          value: _selectedRoles.contains(role.id),
-                          onChanged: (value) {
-                            setState(() {
-                              if (value!) {
-                                _selectedRoles.add(role.id);
-                              } else {
-                                _selectedRoles.remove(role.id);
-                              }
-                            });
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _assignRoles,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF017278),
-                    ),
-                    child: const Text('Save Roles'),
-                  ),
-                  TextButton(
-                    onPressed: _closeDrawer,
-                    child: const Text('Close'),
-                  ),
-                ],
-              ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
