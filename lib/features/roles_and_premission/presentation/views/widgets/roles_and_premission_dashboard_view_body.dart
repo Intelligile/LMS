@@ -59,7 +59,7 @@ class _RolesAndPermissionDashboardViewBodyState
               ),
               MediaQuery.sizeOf(context).width > 600
                   ? Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
                       child: Row(
                         children: [
                           GestureDetector(
@@ -96,8 +96,9 @@ class _RolesAndPermissionDashboardViewBodyState
           ),
           MediaQuery.sizeOf(context).width < 600
               ? Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
+                  padding: const EdgeInsets.only(top: 12.0, left: 12),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       GestureDetector(
                         onTap: () {

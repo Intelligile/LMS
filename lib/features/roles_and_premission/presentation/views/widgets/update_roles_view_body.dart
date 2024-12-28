@@ -196,16 +196,14 @@ class _RoleNameDropdownState extends State<RoleNameDropdown> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          SizedBox(
-            width: 200,
+          Flexible(
             child: Text(
               widget.title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 16.0),
-          SizedBox(
-            width: 300,
+          Expanded(
             child: DropdownButton<String>(
               isExpanded: true,
               value: selectedRole,
