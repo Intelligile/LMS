@@ -8,22 +8,22 @@ class RolesTableFilteringRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-            flex: 12,
-            child: SizedBox(),
-          ),
-          Expanded(
-            flex: 4,
-            child: CustomSearchBar(),
-          ),
-          Expanded(child: Icon(Icons.menu)),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: MediaQuery.sizeOf(context).width < 600
+          ? const CustomSearchBar()
+          : const Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: CustomSearchBar(),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: SizedBox(),
+                )
+              ],
+            ),
     );
   }
 }
