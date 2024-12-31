@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms/constants.dart';
 import 'package:lms/core/functions/show_snack_bar.dart';
-import 'package:lms/core/utils/api.dart';
 import 'package:lms/core/utils/app_router.dart';
 import 'package:lms/core/widgets/adaptive_layout_widget.dart';
 import 'package:lms/core/widgets/custom_breadcrumb.dart';
@@ -283,8 +282,7 @@ class _PaymentMethodManagementPageState
           child: Align(
             alignment: Alignment.centerRight,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.4,
-              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width * 0.6,
               decoration: const BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -458,7 +456,9 @@ class _PaymentMethodManagementPageState
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
-                                width: MediaQuery.of(context).size.width * 0.6,
+                                width: MediaQuery.of(context).size.width > 600
+                                    ? MediaQuery.of(context).size.width * 0.6
+                                    : MediaQuery.of(context).size.width * 0.8,
                                 height: MediaQuery.of(context).size.height,
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
@@ -490,55 +490,62 @@ class _PaymentMethodManagementPageState
                                         ),
                                       ],
                                     ),
-                                    body: Padding(
-                                      padding: const EdgeInsets.all(70.0),
-                                      child: PaymentViewBody(
-                                        onBillingDataSubmitted:
-                                            (billingData) async {
-                                          try {
-                                            await _dio.post(
-                                              'http://localhost:8082/api/payment-methods/billing-account/${_selectedBillingAccount!['id']}',
-                                              options: Options(
-                                                headers: {
-                                                  'Authorization':
-                                                      'Bearer $jwtTokenPublic', // Include token for authorization
-                                                  'Content-Type':
-                                                      'application/json',
-                                                },
-                                              ),
-                                              data: {
-                                                'accountHolderName':
-                                                    billingData[
-                                                        'cardholderName'],
-                                                'cardNumber': billingData[
-                                                    'creditCardNumber'],
-                                                'expiryDate':
-                                                    billingData['expiryDate'],
-                                                'cvv': billingData['cvv'],
-                                                'postalCode':
-                                                    billingData['postalCode'],
-                                                'region': billingData['region'],
-                                                'methodName': 'Credit Card',
-                                              },
-                                            );
+                                    body: Column(
+                                      children: [
+                                        const Expanded(child: SizedBox()),
+                                        Expanded(
+                                          flex: 14,
+                                          child: PaymentViewBody(
+                                            onBillingDataSubmitted:
+                                                (billingData) async {
+                                              try {
+                                                await _dio.post(
+                                                  'http://localhost:8082/api/payment-methods/billing-account/${_selectedBillingAccount!['id']}',
+                                                  options: Options(
+                                                    headers: {
+                                                      'Authorization':
+                                                          'Bearer $jwtTokenPublic', // Include token for authorization
+                                                      'Content-Type':
+                                                          'application/json',
+                                                    },
+                                                  ),
+                                                  data: {
+                                                    'accountHolderName':
+                                                        billingData[
+                                                            'cardholderName'],
+                                                    'cardNumber': billingData[
+                                                        'creditCardNumber'],
+                                                    'expiryDate': billingData[
+                                                        'expiryDate'],
+                                                    'cvv': billingData['cvv'],
+                                                    'postalCode': billingData[
+                                                        'postalCode'],
+                                                    'region':
+                                                        billingData['region'],
+                                                    'methodName': 'Credit Card',
+                                                  },
+                                                );
 
-                                            Navigator.of(context)
-                                                .pop(); // Close the drawer
-                                            _fetchPaymentMethods(
-                                                _selectedBillingAccount![
-                                                    'id']); // Refresh methods
-                                            showSnackBar(
-                                                context,
-                                                'Payment method added successfully!',
-                                                Colors.green);
-                                          } catch (e) {
-                                            showSnackBar(
-                                                context,
-                                                'Failed to add payment method: $e',
-                                                Colors.red);
-                                          }
-                                        },
-                                      ),
+                                                Navigator.of(context)
+                                                    .pop(); // Close the drawer
+                                                _fetchPaymentMethods(
+                                                    _selectedBillingAccount![
+                                                        'id']); // Refresh methods
+                                                showSnackBar(
+                                                    context,
+                                                    'Payment method added successfully!',
+                                                    Colors.green);
+                                              } catch (e) {
+                                                showSnackBar(
+                                                    context,
+                                                    'Failed to add payment method: $e',
+                                                    Colors.red);
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        const Expanded(child: SizedBox()),
+                                      ],
                                     ),
                                   ),
                                 ),

@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lms/core/utils/styles.dart';
 import 'package:lms/core/widgets/custom_button.dart';
 import 'package:lms/core/widgets/custom_text_field.dart';
 
@@ -153,38 +152,44 @@ class _PaymentViewBodyState extends State<PaymentViewBody> {
 
   @override
   Widget build(BuildContext context) {
+    return MediaQuery.sizeOf(context).width > 600
+        ? desktopPaymentCard(context)
+        : mobilePaymentCard(context);
+  }
+
+  Form desktopPaymentCard(BuildContext context) {
     return Form(
       key: _formKey,
       child: Row(
         children: [
           const Expanded(child: SizedBox()),
           Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Card(
-                elevation: 5,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: IconButton(
-                        icon: const Icon(Icons.close),
-                        color: Colors.grey,
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
+            flex: 6,
+            child: Card(
+              elevation: 5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      color: Colors.grey,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
-                    const SizedBox(height: 10),
-                    const CardTitle(),
-                    // CustomTextField(
-                    //   controller: _emailController,
-                    //   label: 'Email',
-                    //   validator: (value) =>
-                    //       _validateEmail(value!) ? null : 'Invalid email',
-                    // ),
+                  ),
+                  const SizedBox(height: 10),
+                  const CardTitle(),
+                  // CustomTextField(
+                  //   controller: _emailController,
+                  //   label: 'Email',
+                  //   validator: (value) =>
+                  //       _validateEmail(value!) ? null : 'Invalid email',
+                  // ),
+                  const SizedBox(height: 12),
+                  buildCenteredRow(
                     CustomTextField(
                       controller: _cardNumberController,
                       hint: '1234 1234 1234 1234',
@@ -206,57 +211,64 @@ class _PaymentViewBodyState extends State<PaymentViewBody> {
                         SizedBox(width: 10),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: CustomTextField(
-                            controller: _expiryDateController,
-                            hint: 'MM / YY',
-                            validator: (value) => _validateExpiryDate(value!)
-                                ? null
-                                : 'Invalid date',
-                            inputFormatters: [ExpiryDateInputFormatter()],
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Expanded(flex: 2, child: SizedBox()),
+                          Expanded(
+                            flex: 9,
+                            child: CustomTextField(
+                              controller: _expiryDateController,
+                              hint: 'MM / YY',
+                              validator: (value) => _validateExpiryDate(value!)
+                                  ? null
+                                  : 'Invalid date',
+                              inputFormatters: [ExpiryDateInputFormatter()],
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: CustomTextField(
-                            controller: _cvcController,
-                            hint: 'CVC',
-                            validator: (value) =>
-                                _validateCVC(value!) ? null : 'Invalid CVC',
-                            inputFormatters: [CvcInputFormatter()],
+                          Expanded(
+                            flex: 9,
+                            child: CustomTextField(
+                              controller: _cvcController,
+                              hint: 'CVC',
+                              validator: (value) =>
+                                  _validateCVC(value!) ? null : 'Invalid CVC',
+                              inputFormatters: [CvcInputFormatter()],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                          const Expanded(flex: 2, child: SizedBox()),
+                        ],
+                      )),
 
+                  buildCenteredRow(
                     CustomTextField(
                       controller: _cardHolderName,
                       label: 'Name On Card',
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: _buildRegionDropdown(),
-                        ),
-                      ],
+                  ),
+                  buildCenteredRow(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: _buildRegionDropdown(),
                     ),
+                  ),
+                  buildCenteredRow(
                     CustomTextField(
                       controller: _postalCodeController,
                       label: 'Postal code',
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 38),
-                      child: buildAnimatedButton(
-                        label: 'Pay',
-                        onPressed: _submitForm,
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                  buildCenteredRow(
+                    buildAnimatedButton(
+                      label: 'Pay',
+                      onPressed: _submitForm,
+                    ),
+                  )
+                ],
               ),
             ),
           ),
@@ -266,25 +278,134 @@ class _PaymentViewBodyState extends State<PaymentViewBody> {
     );
   }
 
-  Widget _buildRegionDropdown() {
-    return Flexible(
-      child: DropdownButtonFormField<String>(
-        decoration: const InputDecoration(
-          labelText: 'Country or region',
-          border: OutlineInputBorder(),
+  Form mobilePaymentCard(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: SizedBox(
+        width: MediaQuery.sizeOf(context).width,
+        height: MediaQuery.sizeOf(context).height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const CardTitle(),
+            // CustomTextField(
+            //   controller: _emailController,
+            //   label: 'Email',
+            //   validator: (value) =>
+            //       _validateEmail(value!) ? null : 'Invalid email',
+            // ),
+            const SizedBox(height: 12),
+            buildCenteredRow(
+              CustomTextField(
+                controller: _cardNumberController,
+                hint: '1234 1234 1234 1234',
+                label: 'Card information',
+                validator: (value) =>
+                    _validateCardNumber(value!) ? null : 'Invalid card number',
+                inputFormatters: [CardNumberInputFormatter()],
+                suffixIcons: const [
+                  Icon(FontAwesomeIcons.paypal),
+                  SizedBox(width: 5),
+                  Icon(FontAwesomeIcons.googlePay),
+                  SizedBox(width: 10),
+                  Icon(FontAwesomeIcons.applePay),
+                  SizedBox(width: 10),
+                  Icon(FontAwesomeIcons.ccVisa),
+                  SizedBox(width: 10),
+                  Icon(FontAwesomeIcons.ccMastercard),
+                  SizedBox(width: 10),
+                ],
+              ),
+            ),
+            Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Expanded(child: SizedBox()),
+                    Expanded(
+                      flex: 5,
+                      child: CustomTextField(
+                        controller: _expiryDateController,
+                        hint: 'MM / YY',
+                        validator: (value) =>
+                            _validateExpiryDate(value!) ? null : 'Invalid date',
+                        inputFormatters: [ExpiryDateInputFormatter()],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: CustomTextField(
+                        controller: _cvcController,
+                        hint: 'CVC',
+                        validator: (value) =>
+                            _validateCVC(value!) ? null : 'Invalid CVC',
+                        inputFormatters: [CvcInputFormatter()],
+                      ),
+                    ),
+                    const Expanded(child: SizedBox())
+                  ],
+                )),
+
+            buildCenteredRow(
+              CustomTextField(
+                controller: _cardHolderName,
+                label: 'Name On Card',
+              ),
+            ),
+            buildCenteredRow(
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: _buildRegionDropdown(),
+              ),
+            ),
+            buildCenteredRow(
+              CustomTextField(
+                controller: _postalCodeController,
+                label: 'Postal code',
+              ),
+            ),
+            buildCenteredRow(
+              buildAnimatedButton(
+                label: 'Pay',
+                onPressed: _submitForm,
+              ),
+            )
+          ],
         ),
-        items: _regions
-            .map((region) => DropdownMenuItem(
-                  value: region,
-                  child: Text(region),
-                ))
-            .toList(),
-        onChanged: (value) {},
-        validator: (value) =>
-            value == null || value.isEmpty ? 'Please select a region' : null,
       ),
     );
   }
+
+  Widget _buildRegionDropdown() {
+    return DropdownButtonFormField<String>(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: const InputDecoration(
+        labelText: 'Country or region',
+        border: OutlineInputBorder(),
+      ),
+      items: _regions
+          .map((region) => DropdownMenuItem(
+                value: region,
+                child: Text(region),
+              ))
+          .toList(),
+      onChanged: (value) {},
+      validator: (value) =>
+          value == null || value.isEmpty ? 'Please select a region' : null,
+    );
+  }
+}
+
+Row buildCenteredRow(Widget child) {
+  return Row(
+    children: [
+      const Expanded(child: SizedBox()), // First Expanded with SizedBox
+      Expanded(flex: 7, child: child), // Middle Expanded with provided child
+      const Expanded(child: SizedBox()), // Last Expanded with SizedBox
+    ],
+  );
 }
 
 class CardTitle extends StatelessWidget {
